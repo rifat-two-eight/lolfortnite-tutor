@@ -53,25 +53,22 @@ const tutors = [
     },
 ];
 
-export default function TopTutors() {
+export default function TutorsContent() {
     return (
-        <section className="w-full max-w-7xl mx-auto px-4 md:px-0 py-14 md:py-20">
+        <section className="w-full max-w-7xl mx-auto px-4 sm:px-8 md:px-16 py-10">
             {/* Header */}
-            <div className="text-center mb-10 space-y-3">
-                <h2 className="text-3xl md:text-4xl font-extrabold text-[#0D1C35] font-sans">
-                    Meet Our Top Tutors
-                </h2>
-                <p className="text-gray-400 text-sm md:text-base mx-auto leading-relaxed font-sans">
-                    Educated at the world's most prestigious universities, our tutors are <br className="hidden md:block" /> dedicated to your intellectual growth.
-                </p>
+            <div className="text-center mb-12">
+                <h1 className="text-3xl md:text-4xl font-bold text-[#0A47C2] font-sans">
+                    All Tutor
+                </h1>
             </div>
 
             {/* Tutor Cards */}
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-6">
                 {tutors.map((tutor) => (
                     <div
                         key={tutor.id}
-                        className="border border-[#0A47C2] rounded-2xl p-4 flex flex-col sm:flex-row gap-5"
+                        className="border border-[#0A47C2] rounded-2xl p-4 flex flex-col sm:flex-row gap-5 bg-white"
                     >
                         {/* Photo */}
                         <div className="relative w-full sm:w-28 md:w-60 h-96 md:h-60 shrink-0 rounded-xl overflow-hidden bg-gray-100">

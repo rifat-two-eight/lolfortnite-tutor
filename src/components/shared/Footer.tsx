@@ -12,7 +12,7 @@ const stats = [
 
 const footerLinks = {
     HOME: ["What is educate", "How it work", "Benefits", "Client Says"],
-    SUPPORT: ["Terms & Condition", "Privacy Policy", "FAQs"],
+    ABOUT_US: ["Terms & Condition", "Privacy Policy", "FAQs"],
     CONTACT: [
         { icon: "email", text: "hello@email.com" },
         { icon: "phone", text: "+915678871056" },
@@ -148,9 +148,9 @@ export default function Footer() {
 
                 {/* Support Links */}
                 <div className="space-y-3">
-                    <p className="text-white text-xs font-bold tracking-widest uppercase font-sans">Support</p>
+                    <p className="text-white text-xs font-bold tracking-widest uppercase font-sans">About Us</p>
                     <ul className="space-y-2.5">
-                        {footerLinks.SUPPORT.map((item) => (
+                        {footerLinks.ABOUT_US.map((item) => (
                             <li key={item}>
                                 <Link href="#" className="text-gray-400 text-xs hover:text-white transition-all font-sans">
                                     {item}
@@ -167,7 +167,13 @@ export default function Footer() {
                         {footerLinks.CONTACT.map((item) => (
                             <li key={item.text} className="flex items-center gap-2 text-gray-400 text-xs font-sans">
                                 <ContactIcon type={item.icon} />
-                                {item.text}
+                                {item.icon === "support" ? (
+                                    <Link href="/support" className="hover:text-white transition-all">
+                                        {item.text}
+                                    </Link>
+                                ) : (
+                                    item.text
+                                )}
                             </li>
                         ))}
                     </ul>

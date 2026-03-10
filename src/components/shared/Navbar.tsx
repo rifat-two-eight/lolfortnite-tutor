@@ -3,13 +3,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
-    const [activeLink, setActiveLink] = useState("Home");
+    const pathname = usePathname();
     const [menuOpen, setMenuOpen] = useState(false);
 
-    const navLinks = ["Home", "Classes", "Tutors"];
+    const navLinks = [
+        { name: "Home", href: "/" },
+        { name: "Classes", href: "/classes" },
+        { name: "Tutors", href: "/tutors" },
+    ];
+
+    const isActive = (href: string) => {
+        if (href === "/" && pathname === "/") return true;
+        if (href === "/tutors") return pathname === "/tutors";
+        if (href !== "/" && pathname.startsWith(href)) return true;
+        return false;
+    };
 
     return (
         <nav className="flex items-center justify-between px-4 sm:px-8 md:px-16 mt-0 md:-mt-10 mx-auto w-full relative">
@@ -21,23 +33,32 @@ export default function Navbar() {
             {/* Nav Links - Desktop */}
             <div className="hidden md:flex items-center gap-8">
                 {navLinks.map((link) => (
-                    <button
-                        key={link}
-                        onClick={() => setActiveLink(link)}
+                    <Link
+                        key={link.name}
+                        href={link.href}
                         className={cn(
                             "px-6 py-2 rounded-md font-bold transition-all duration-200",
-                            activeLink === link
+                            isActive(link.href)
                                 ? "bg-[#0A47C2] text-white"
                                 : "text-[#0A47C2] hover:bg-gray-50"
                         )}
                     >
-                        {link}
-                    </button>
+                        {link.name}
+                    </Link>
                 ))}
             </div>
 
             {/* Auth Buttons - Desktop */}
             <div className="hidden md:flex items-center gap-4">
+                <Link href="/profile" className="mr-2">
+                    <Image
+                        src="/demotutor.png"
+                        alt="User Avatar"
+                        width={40}
+                        height={40}
+                        className="rounded-full border border-[#0A47C2] object-cover"
+                    />
+                </Link>
                 <Link
                     href="/auth"
                     className="px-8 py-2 border border-[#0A47C2] text-[#0A47C2] font-bold rounded-lg hover:bg-gray-50 transition-all font-sans"
@@ -67,18 +88,19 @@ export default function Navbar() {
             {menuOpen && (
                 <div className="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 z-50 px-4 py-4 flex flex-col gap-3">
                     {navLinks.map((link) => (
-                        <button
-                            key={link}
-                            onClick={() => { setActiveLink(link); setMenuOpen(false); }}
+                        <Link
+                            key={link.name}
+                            href={link.href}
+                            onClick={() => setMenuOpen(false)}
                             className={cn(
                                 "w-full text-left px-4 py-2.5 rounded-md font-bold transition-all duration-200",
-                                activeLink === link
+                                isActive(link.href)
                                     ? "bg-[#0A47C2] text-white"
                                     : "text-[#0A47C2] hover:bg-gray-50"
                             )}
                         >
-                            {link}
-                        </button>
+                            {link.name}
+                        </Link>
                     ))}
                     <div className="flex flex-col gap-3 pt-2 border-t border-gray-100">
                         <Link
