@@ -44,7 +44,7 @@ const teacherCourses = [
 
 export default function TeacherProfilePage() {
     return (
-        <div className="p-4 md:p-8 space-y-10">
+        <div className="px-4 md:px-8 py-8 space-y-10">
             {/* Profile Header Block */}
             <div className="bg-white border border-blue-100 p-10 flex flex-col items-center text-center space-y-4 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-24 bg-blue-50/50 -z-10" />

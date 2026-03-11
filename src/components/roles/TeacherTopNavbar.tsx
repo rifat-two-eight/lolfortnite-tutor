@@ -3,8 +3,19 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function TeacherTopNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
+    const pathname = usePathname();
+
+    const getTitle = () => {
+        if (pathname === "/teacher/create") return "create a new class";
+        if (pathname === "/teacher/profile") return "Teacher Profile";
+        if (pathname === "/teacher/classes") return "My Class";
+        if (pathname === "/teacher/settings") return "Settings";
+        return "Dashboard";
+    };
+
     return (
         <header className="h-20 bg-white border-b border-gray-50 flex items-center justify-between px-4 md:px-8 shrink-0 sticky top-0 z-30">
             <div className="flex items-center gap-4">
@@ -22,7 +33,7 @@ export default function TeacherTopNavbar({ onMenuClick }: { onMenuClick?: () => 
 
                 <div>
                     <p className="text-gray-500 text-[10px] md:text-xs font-medium font-sans">Good Morning</p>
-                    <h1 className="text-lg md:text-xl font-bold text-[#0D1C35] font-sans">Dashboard</h1>
+                    <h1 className="text-lg md:text-xl font-bold text-[#0D1C35] font-sans capitalize">{getTitle()}</h1>
                 </div>
             </div>
 

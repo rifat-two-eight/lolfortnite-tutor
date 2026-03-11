@@ -58,7 +58,7 @@ const earningChartConfig = {
 
 export default function TeacherDashboard() {
     return (
-        <div className="p-8 space-y-8">
+        <div className="px-4 md:px-8 py-8 space-y-8">
             {/* Stat Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white p-8 flex items-center justify-center gap-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 rounded-none">
