@@ -149,9 +149,9 @@ export default function TopTutors() {
                             </div>
 
                             {/* Hire Button */}
-                            <button className="px-5 py-2 bg-[#0A47C2] text-white text-xs font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all whitespace-nowrap mt-auto">
+                            <Link href="/checkout" className="px-5 py-2 bg-[#0A47C2] text-white text-xs font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all whitespace-nowrap mt-auto text-center">
                                 Hire a tutor
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 ))}
