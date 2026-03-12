@@ -13,6 +13,7 @@ export default function TeacherTopNavbar({ onMenuClick }: { onMenuClick?: () => 
         if (pathname === "/teacher/profile") return "Teacher Profile";
         if (pathname === "/teacher/classes") return "My Class";
         if (pathname === "/teacher/settings") return "Settings";
+        if (pathname === "/teacher/earning") return "Earning";
         return "Dashboard";
     };
 
