@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { MessageSquare } from "lucide-react";
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -50,6 +51,9 @@ export default function Navbar() {
 
             {/* Auth Buttons - Desktop */}
             <div className="hidden md:flex items-center gap-4">
+                <Link href="/messages" className="p-2 text-[#0A47C2] hover:bg-blue-50 rounded-full transition-all">
+                    <MessageSquare size={22} />
+                </Link>
                 <Link href="/profile" className="mr-2">
                     <Image
                         src="/demotutor.png"

@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { MessageSquare } from "lucide-react";
 
 export default function AdminTopNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
     const pathname = usePathname();
@@ -14,6 +15,7 @@ export default function AdminTopNavbar({ onMenuClick }: { onMenuClick?: () => vo
         if (pathname === "/web-admin/payment") return "Payment";
         if (pathname === "/web-admin/withdrawer-request" || pathname === "/web-admin/withdrawal-request") return "Withdrawal Request";
         if (pathname === "/web-admin/settings") return "Settings";
+        if (pathname === "/web-admin/profile") return "Admin Profile";
         return "Dashboard";
     };
 
@@ -39,7 +41,10 @@ export default function AdminTopNavbar({ onMenuClick }: { onMenuClick?: () => vo
             </div>
 
             <div className="flex items-center gap-4">
-                <Link href="/web-admin/settings" className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm hover:ring-2 hover:ring-blue-100 transition-all">
+                <Link href="/messages" className="p-2 text-gray-400 hover:text-[#0A47C2] hover:bg-blue-50 rounded-full transition-all">
+                    <MessageSquare size={20} />
+                </Link>
+                <Link href="/web-admin/profile" className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm hover:ring-2 hover:ring-blue-100 transition-all">
                     <Image
                         src="/authpic.jpg"
                         alt="Profile"

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { MessageCircle } from "lucide-react";
+import Link from "next/link";
 
 const filterTabs = ["All Programs", "1-on-1 Sessions", "Group Classes"];
 
@@ -193,9 +194,9 @@ export default function Courses() {
 
             {/* View All Button */}
             <div className="flex justify-center mt-10">
-                <button className="px-8 py-3 bg-[#0D1C35] text-white text-sm font-bold rounded-full font-sans hover:bg-[#0A47C2] transition-all">
+                <Link href="/classes" className="px-8 py-3 bg-[#0D1C35] text-white text-sm font-bold rounded-full font-sans hover:bg-[#0A47C2] transition-all">
                     View All Programs →
-                </button>
+                </Link>
             </div>
         </section>
     );
