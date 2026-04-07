@@ -5,17 +5,33 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, User, LogOut } from "lucide-react";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect, useState as useMountedState } from "react";
 
 export default function Navbar() {
     const pathname = usePathname();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+    const { user, logout } = useAuthStore();
+    const [mounted, setMounted] = useMountedState(false);
+
+    // To prevent hydration mismatch
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "").replace(/\/$/, "");
+    const profileImageUrl = user?.profileImage
+        ? (user.profileImage.startsWith("http") ? user.profileImage : `${baseUrl}${user.profileImage}`)
+        : "/demotutor.png";
 
     const navLinks = [
         { name: "Home", href: "/" },
         { name: "Classes", href: "/classes" },
         { name: "Tutors", href: "/tutors" },
     ];
+
 
     const isActive = (href: string) => {
         if (href === "/" && pathname === "/") return true;
@@ -54,27 +70,86 @@ export default function Navbar() {
                 <Link href="/messages" className="p-2 text-[#0A47C2] hover:bg-blue-50 rounded-full transition-all">
                     <MessageSquare size={22} />
                 </Link>
-                <Link href="/profile" className="mr-2">
-                    <Image
-                        src="/demotutor.png"
-                        alt="User Avatar"
-                        width={40}
-                        height={40}
-                        className="rounded-full border border-[#0A47C2] object-cover"
-                    />
-                </Link>
-                <Link
-                    href="/auth"
-                    className="px-8 py-2 border border-[#0A47C2] text-[#0A47C2] font-bold rounded-lg hover:bg-gray-50 transition-all font-sans"
-                >
-                    Log In
-                </Link>
-                <Link
-                    href="/auth"
-                    className="px-8 py-2 bg-[#0A47C2] text-white font-bold rounded-lg hover:bg-[#083a9e] transition-all font-sans"
-                >
-                    Sign Up
-                </Link>
+
+                {mounted && user ? (
+                    <div className="flex items-center gap-4 relative">
+                        <button
+                            onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                            className="flex items-center gap-2 group focus:outline-none"
+                        >
+                            <div className="relative w-11 h-11 ring-2 ring-primary/20 rounded-full overflow-hidden transition-all group-hover:ring-primary/50 shadow-md">
+                                <Image
+                                    src={profileImageUrl}
+                                    alt={user.name}
+                                    fill
+                                    unoptimized
+                                    className="object-cover"
+                                />
+                            </div>
+
+                        </button>
+
+                        {/* Dropdown Menu */}
+                        {showProfileDropdown && (
+                            <>
+                                <div
+                                    className="fixed inset-0 z-40"
+                                    onClick={() => setShowProfileDropdown(false)}
+                                />
+                                <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl z-50 py-2 overflow-hidden animate-in fade-in zoom-in duration-200 origin-top-right">
+                                    <div className="px-4 py-3 border-b border-gray-50 bg-blue-50/30">
+                                        <p className="text-xs font-medium text-gray-500">Currently logged in as</p>
+                                        <p className="text-sm font-bold text-[#0A47C2] truncate">{user.name}</p>
+                                    </div>
+
+                                    <Link
+                                        href="/profile"
+                                        onClick={() => setShowProfileDropdown(false)}
+                                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-primary/5 transition-colors group"
+                                    >
+                                        <User size={18} className="text-primary group-hover:scale-110 transition-transform" />
+                                        <span>My Profile</span>
+                                    </Link>
+
+                                    <Link
+                                        href="/messages"
+                                        onClick={() => setShowProfileDropdown(false)}
+                                        className="flex md:hidden items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-primary/5 transition-colors group"
+                                    >
+                                        <MessageSquare size={18} className="text-primary group-hover:scale-110 transition-transform" />
+                                        <span>Messages</span>
+                                    </Link>
+
+                                    <button
+                                        onClick={() => {
+                                            logout();
+                                            setShowProfileDropdown(false);
+                                        }}
+                                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors group"
+                                    >
+                                        <LogOut size={18} className="group-hover:translate-x-1 transition-transform" />
+                                        <span className="font-medium">Logout</span>
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                ) : (
+                    <>
+                        <Link
+                            href="/auth"
+                            className="px-8 py-2 border border-[#0A47C2] text-[#0A47C2] font-bold rounded-lg hover:bg-gray-50 transition-all font-sans"
+                        >
+                            Log In
+                        </Link>
+                        <Link
+                            href="/auth"
+                            className="px-8 py-2 bg-[#0A47C2] text-white font-bold rounded-lg hover:bg-[#083a9e] transition-all font-sans"
+                        >
+                            Sign Up
+                        </Link>
+                    </>
+                )}
             </div>
 
             {/* Hamburger Button - Mobile/Tablet */}
@@ -107,20 +182,41 @@ export default function Navbar() {
                         </Link>
                     ))}
                     <div className="flex flex-col gap-3 pt-2 border-t border-gray-100">
-                        <Link
-                            href="/auth"
-                            onClick={() => setMenuOpen(false)}
-                            className="w-full text-center px-8 py-2.5 border border-[#0A47C2] text-[#0A47C2] font-bold rounded-lg hover:bg-gray-50 transition-all font-sans"
-                        >
-                            Log In
-                        </Link>
-                        <Link
-                            href="/auth"
-                            onClick={() => setMenuOpen(false)}
-                            className="w-full text-center px-8 py-2.5 bg-[#0A47C2] text-white font-bold rounded-lg hover:bg-[#083a9e] transition-all font-sans"
-                        >
-                            Sign Up
-                        </Link>
+                        {mounted && user ? (
+                            <div className="flex items-center justify-between px-4 py-2 bg-blue-50 rounded-xl">
+                                <Link href="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-3">
+                                    <div className="relative w-10 h-10 rounded-full overflow-hidden border border-primary/20">
+                                        <Image
+                                            src={profileImageUrl}
+                                            alt={user.name}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    </div>
+                                    <span className="font-bold text-[#0A47C2]">{user.name}</span>
+                                </Link>
+                                <button onClick={() => { logout(); setMenuOpen(false); }} className="text-red-500 p-2">
+                                    <LogOut size={20} />
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <Link
+                                    href="/auth"
+                                    onClick={() => setMenuOpen(false)}
+                                    className="w-full text-center px-8 py-2.5 border border-[#0A47C2] text-[#0A47C2] font-bold rounded-lg hover:bg-gray-50 transition-all font-sans"
+                                >
+                                    Log In
+                                </Link>
+                                <Link
+                                    href="/auth"
+                                    onClick={() => setMenuOpen(false)}
+                                    className="w-full text-center px-8 py-2.5 bg-[#0A47C2] text-white font-bold rounded-lg hover:bg-[#083a9e] transition-all font-sans"
+                                >
+                                    Sign Up
+                                </Link>
+                            </>
+                        )}
                     </div>
                 </div>
             )}

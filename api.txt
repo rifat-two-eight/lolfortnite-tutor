@@ -1,0 +1,31 @@
+{
+    "success": true,
+    "message": "User registered successfully",
+    "data": {
+        "user": {
+            "name": "John Doe",
+            "email": "johndoe@example3.com",
+            "role": "TEACHER",
+            "phone": "+1234567890",
+            "profileImage": "/uploads/profile-images/profile-231695-5825.webp",
+            "location": {
+                "lat": 23.8103,
+                "lng": 90.4125
+            },
+            "isActive": true,
+            "isEmailVerified": false,
+            "teacherApprovalStatus": "PENDING",
+            "preferences": {
+                "subjects": [],
+                "curriculum": [],
+                "languages": []
+            },
+            "balance": 0,
+            "percentage": 20,
+            "_id": "69d5670f05af619f3f898833",
+            "createdAt": "2026-04-07T20:20:31.998Z",
+            "updatedAt": "2026-04-07T20:20:31.998Z"
+        },
+        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWQ1NjcwZjA1YWY2MTlmM2Y4OTg4MzMiLCJuYW1lIjoiSm9obiBEb2UiLCJlbWFpbCI6ImpvaG5kb2VAZXhhbXBsZTMuY29tIiwicm9sZSI6IlRFQUNIRVIiLCJpYXQiOjE3NzU1OTMyMzIsImV4cCI6MTc3ODE4NTIzMn0.v5dY_XeWgOQzCZXyhwPnm3vRhbKhKImilPvky4pPiDU"
+    }
+}
