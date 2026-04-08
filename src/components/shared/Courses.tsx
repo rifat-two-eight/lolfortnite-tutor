@@ -1,10 +1,24 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import api from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { MessageCircle } from "lucide-react";
 import Link from "next/link";
+
+interface ClassData {
+    _id: string;
+    subject: string;
+    level: string;
+    language: string;
+    curriculum: string;
+    price: number;
+    tutorGender: string;
+    description: string;
+    classType: string;
+    images: string[];
+}
 
 const filterTabs = ["All Programs", "1-on-1 Sessions", "Group Classes"];
 
@@ -84,6 +98,31 @@ function ChevronDown() {
 
 export default function Courses() {
     const [activeTab, setActiveTab] = useState("All Programs");
+    const [classes, setClasses] = useState<ClassData[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchClasses = async () => {
+            try {
+                const response = await api.get("/classes?page=1&limit=3");
+                if (response.data.success) {
+                    setClasses(response.data.data);
+                }
+            } catch (error) {
+                console.error("Error fetching courses:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchClasses();
+    }, []);
+
+    const getImageUrl = (path: string) => {
+        if (!path) return "/democourse.png";
+        if (path.startsWith("http")) return path;
+        return `http://10.10.7.53:5010${path}`;
+    };
 
     return (
         <section className="w-full max-w-7xl mx-auto px-4 md:px-0 py-10 md:py-14">
@@ -132,64 +171,68 @@ export default function Courses() {
 
             {/* Course Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {courses.map((course) => (
-                    <div
-                        key={course.id}
-                        className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col"
-                    >
-                        {/* Image */}
-                        <div className="relative w-full aspect-video overflow-hidden">
-                            <Image
-                                src={course.image}
-                                alt={course.title}
-                                fill
-                                className="object-cover"
-                            />
-                            {/* Rating Badge */}
-                            <div className="absolute top-3 right-3 flex items-center gap-1 bg-white rounded-full px-2.5 py-1 text-xs font-bold text-[#0D1C35] font-sans">
-                                <StarIcon />
-                                <span>{course.rating}</span>
-                                <span className="text-gray-400 font-normal">({course.reviews})</span>
-                            </div>
-                        </div>
+                {loading
+                    ? Array.from({ length: 3 }).map((_, i) => (
+                          <div key={i} className="bg-gray-50 rounded-2xl aspect-video animate-pulse" />
+                      ))
+                    : classes.map((cls) => (
+                          <div
+                              key={cls._id}
+                              className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300"
+                          >
+                              {/* Image */}
+                              <div className="relative w-full aspect-video overflow-hidden">
+                                  <Image
+                                      src={getImageUrl(cls.images[0])}
+                                      alt={cls.subject}
+                                      fill
+                                      className="object-cover"
+                                  />
+                                  {/* Rating Badge */}
+                                  <div className="absolute top-3 right-3 flex items-center gap-1 bg-white rounded-full px-2.5 py-1 text-xs font-bold text-[#0D1C35] font-sans">
+                                      <StarIcon />
+                                      <span>4.9</span>
+                                      <span className="text-gray-400 font-normal">(125+)</span>
+                                  </div>
+                              </div>
 
-                        {/* Card Body */}
-                        <div className="p-4 flex flex-col gap-3 flex-1">
-                            {/* Badge */}
-                            <p className="text-[10px] font-bold tracking-widest uppercase text-[#0A47C2] font-sans">
-                                {course.badge}
-                            </p>
+                              {/* Card Body */}
+                              <div className="p-4 flex flex-col gap-3 flex-1">
+                                  {/* Badge */}
+                                  <p className="text-[10px] font-bold tracking-widest uppercase text-[#0A47C2] font-sans">
+                                      {cls.level} • {cls.curriculum}
+                                  </p>
 
-                            {/* Title */}
-                            <h3 className="text-lg font-extrabold text-[#0D1C35] font-sans leading-snug">
-                                {course.title}
-                            </h3>
+                                  {/* Title */}
+                                  <h3 className="text-lg font-extrabold text-[#0D1C35] font-sans leading-snug">
+                                      {cls.subject}
+                                  </h3>
 
-                            {/* Tags */}
-                            <div className="flex items-center gap-3 text-xs text-gray-400 font-sans">
-                                <span className="flex items-center gap-1">
-                                    <UserIcon /> {course.tags[0]}
-                                </span>
-                                <span className="flex items-center gap-1">
-                                    <CertIcon /> {course.tags[1]}
-                                </span>
-                            </div>
+                                  {/* Tags */}
+                                  <div className="flex items-center gap-3 text-xs text-gray-400 font-sans">
+                                      <span className="flex items-center gap-1">
+                                          <UserIcon /> {cls.classType === "GROUP" ? "Group Class" : "1-on-1 Session"}
+                                      </span>
+                                      <span className="flex items-center gap-1">
+                                          <CertIcon /> {cls.language}
+                                      </span>
+                                  </div>
 
-                            {/* Divider */}
-                            <div className="w-full h-px border border-gray-300 mt-4" />
+                                  {/* Divider */}
+                                  <div className="w-full h-px border border-gray-300 mt-4" />
 
-                            {/* CTA Row */}
-                            <div className="flex items-center gap-3 mt-auto">
-                                <button className="flex-1 py-2.5 bg-[#0A47C2] text-white text-sm font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all">
-                                    Book Now
-                                </button>
-                                <button className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-xl text-gray-400 hover:text-[#0A47C2] hover:border-[#0A47C2] transition-all">
-                                    <MessageCircle />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                ))}
+                                  {/* CTA Row */}
+                                  <div className="flex items-center gap-3 mt-auto">
+                                      <Link href={`/classes/${cls._id}`} className="flex-1 py-2.5 bg-[#0A47C2] text-white text-center text-sm font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all">
+                                          Book Now
+                                      </Link>
+                                      <button className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-xl text-gray-400 hover:text-[#0A47C2] hover:border-[#0A47C2] transition-all">
+                                          <MessageCircle />
+                                      </button>
+                                  </div>
+                              </div>
+                          </div>
+                      ))}
             </div>
 
             {/* View All Button */}

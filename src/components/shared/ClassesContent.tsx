@@ -48,8 +48,27 @@ const courses = [
 ];
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FilterModal from "./FilterModal";
+import api from "@/lib/axios";
+
+interface ClassData {
+    _id: string;
+    subject: string;
+    level: string;
+    language: string;
+    curriculum: string;
+    price: number;
+    tutorGender: string;
+    maxStudents: number;
+    description: string;
+    classType: string;
+    images: string[];
+    createdBy: {
+        name: string;
+        profileImage: string;
+    };
+}
 
 function CertIcon() {
     return (
@@ -71,6 +90,36 @@ function UserIcon() {
 
 export default function ClassesContent() {
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+    const [classes, setClasses] = useState<ClassData[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    const fetchClasses = async (currentPage: number) => {
+        setLoading(true);
+        try {
+            const response = await api.get(`/classes?page=${currentPage}&limit=9`);
+            if (response.data.success) {
+                setClasses(response.data.data);
+                setTotalPages(response.data.meta.totalPages);
+            }
+        } catch (error) {
+            console.error("Error fetching classes:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchClasses(page);
+    }, [page]);
+
+    const getImageUrl = (path: string) => {
+        if (!path) return "/democourse.png";
+        if (path.startsWith("http")) return path;
+        // Base URL from env or hardcoded as per next.config.ts
+        return `http://10.10.7.53:5010${path}`;
+    };
 
     return (
         <section className="w-full max-w-7xl mb-10 mx-auto px-4 sm:px-8 md:px-16 py-6">
@@ -114,66 +163,96 @@ export default function ClassesContent() {
             </div>
 
             {/* Class Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {courses.map((course) => (
-                    <div
-                        key={course.id}
-                        className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col"
+            {loading ? (
+                <div className="flex justify-center items-center h-64">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0A47C2]"></div>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {classes.map((cls) => (
+                        <div
+                            key={cls._id}
+                            className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300"
+                        >
+                            {/* Image */}
+                            <div className="relative w-full aspect-video overflow-hidden">
+                                <Image
+                                    src={getImageUrl(cls.images[0])}
+                                    alt={cls.subject}
+                                    fill
+                                    unoptimized
+                                    className="object-cover"
+                                />
+                                {/* Rating Badge (Placeholder since not in API) */}
+                                <div className="absolute top-3 right-3 flex items-center gap-1 bg-white rounded-full px-2.5 py-1 text-xs font-bold text-[#0D1C35] font-sans">
+                                    <StarIcon />
+                                    <span>4.9</span>
+                                    <span className="text-gray-400 font-normal">(125+)</span>
+                                </div>
+                            </div>
+
+                            {/* Card Body */}
+                            <div className="p-4 flex flex-col gap-3 flex-1">
+                                {/* Badge */}
+                                <p className="text-[10px] font-bold tracking-widest uppercase text-[#0A47C2] font-sans">
+                                    {cls.level} • {cls.curriculum}
+                                </p>
+
+                                {/* Title */}
+                                <h3 className="text-lg font-extrabold text-[#0D1C35] font-sans leading-snug">
+                                    {cls.subject}
+                                </h3>
+
+                                {/* Tags */}
+                                <div className="flex items-center gap-3 text-xs text-gray-400 font-sans">
+                                    <span className="flex items-center gap-1">
+                                        <UserIcon /> {cls.classType === "GROUP" ? "Group Class" : "1-on-1 Session"}
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                        <CertIcon /> {cls.language}
+                                    </span>
+                                </div>
+
+                                {/* Divider */}
+                                <div className="w-full h-px border border-gray-300 mt-4" />
+
+                                {/* CTA Row */}
+                                <div className="flex items-center gap-3 mt-auto">
+                                    <Link href={`/classes/${cls._id}`} className="flex-1 py-2.5 bg-[#0A47C2] text-white text-center text-sm font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all">
+                                        Book Now
+                                    </Link>
+                                    <button className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-xl text-gray-400 hover:text-[#0A47C2] hover:border-[#0A47C2] transition-all">
+                                        <MessageCircle />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* Pagination */}
+            {!loading && totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 mt-12">
+                    <button
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        className="px-4 py-2 border border-gray-200 rounded-md disabled:opacity-50 text-sm font-bold text-[#0A47C2]"
                     >
-                        {/* Image */}
-                        <div className="relative w-full aspect-video overflow-hidden">
-                            <Image
-                                src={course.image}
-                                alt={course.title}
-                                fill
-                                className="object-cover"
-                            />
-                            {/* Rating Badge */}
-                            <div className="absolute top-3 right-3 flex items-center gap-1 bg-white rounded-full px-2.5 py-1 text-xs font-bold text-[#0D1C35] font-sans">
-                                <StarIcon />
-                                <span>{course.rating}</span>
-                                <span className="text-gray-400 font-normal">({course.reviews})</span>
-                            </div>
-                        </div>
-
-                        {/* Card Body */}
-                        <div className="p-4 flex flex-col gap-3 flex-1">
-                            {/* Badge */}
-                            <p className="text-[10px] font-bold tracking-widest uppercase text-[#0A47C2] font-sans">
-                                {course.badge}
-                            </p>
-
-                            {/* Title */}
-                            <h3 className="text-lg font-extrabold text-[#0D1C35] font-sans leading-snug">
-                                {course.title}
-                            </h3>
-
-                            {/* Tags */}
-                            <div className="flex items-center gap-3 text-xs text-gray-400 font-sans">
-                                <span className="flex items-center gap-1">
-                                    <UserIcon /> {course.tags[0]}
-                                </span>
-                                <span className="flex items-center gap-1">
-                                    <CertIcon /> {course.tags[1]}
-                                </span>
-                            </div>
-
-                            {/* Divider */}
-                            <div className="w-full h-px border border-gray-300 mt-4" />
-
-                            {/* CTA Row */}
-                            <div className="flex items-center gap-3 mt-auto">
-                                <button className="flex-1 py-2.5 bg-[#0A47C2] text-white text-sm font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all">
-                                    Book Now
-                                </button>
-                                <button className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-xl text-gray-400 hover:text-[#0A47C2] hover:border-[#0A47C2] transition-all">
-                                    <MessageCircle />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
+                        Previous
+                    </button>
+                    <span className="text-sm font-bold text-gray-600">
+                        Page {page} of {totalPages}
+                    </span>
+                    <button
+                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
+                        className="px-4 py-2 border border-gray-200 rounded-md disabled:opacity-50 text-sm font-bold text-[#0A47C2]"
+                    >
+                        Next
+                    </button>
+                </div>
+            )}
         </section>
     );
 }

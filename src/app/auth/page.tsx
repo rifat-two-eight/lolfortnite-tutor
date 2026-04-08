@@ -8,13 +8,35 @@ import api from "@/lib/axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect } from "react";
 
 export default function AuthPage() {
     const router = useRouter();
-    const { setUser, setToken } = useAuthStore();
+    const { user, setUser, setToken, accessToken } = useAuthStore();
     const [activeTab, setActiveTab] = useState<"login" | "register">("login");
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
+
+    // Auto-redirection for already authenticated users
+    useEffect(() => {
+        if (accessToken && user) {
+            if (user.role === "STUDENT") {
+                router.push("/");
+            } else {
+                router.push("/web-admin");
+            }
+        }
+    }, [accessToken, user, router]);
+
+    // Remember Me pre-fill
+    useEffect(() => {
+        const savedEmail = localStorage.getItem("rememberedEmail");
+        if (savedEmail) {
+            setFormData((prev) => ({ ...prev, email: savedEmail }));
+            setRememberMe(true);
+        }
+    }, []);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -102,6 +124,13 @@ export default function AuthPage() {
                     
                     if (accessToken) {
                         localStorage.setItem("accessToken", accessToken);
+                    }
+
+                    // Handle Remember Me
+                    if (rememberMe) {
+                        localStorage.setItem("rememberedEmail", formData.email);
+                    } else {
+                        localStorage.removeItem("rememberedEmail");
                     }
 
                     if (user.role === "STUDENT") {
@@ -278,7 +307,12 @@ export default function AuthPage() {
                 {activeTab === "login" && (
                     <div className="flex items-center justify-between text-xs sm:text-sm px-1">
                         <label className="flex items-center gap-2 cursor-pointer text-gray-500">
-                            <input type="checkbox" className="w-4 h-4 rounded border-primary/30 text-primary focus:ring-primary" />
+                            <input
+                                type="checkbox"
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                                className="w-4 h-4 rounded border-primary/30 text-primary focus:ring-primary"
+                            />
                             Remember me
                         </label>
                         <Link href="/auth/forgot-password" title="Forgot Password" className="text-gray-500 hover:text-primary transition-colors">

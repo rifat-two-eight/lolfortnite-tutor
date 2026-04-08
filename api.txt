@@ -1,20 +1,12 @@
 {
     "success": true,
-    "message": "User registered successfully",
-    "data": {
-        "user": {
-            "name": "John Doe",
-            "email": "johndoe@example3.com",
-            "role": "TEACHER",
-            "phone": "+1234567890",
-            "profileImage": "/uploads/profile-images/profile-231695-5825.webp",
+    "message": "Students retrieved successfully",
+    "data": [
+        {
             "location": {
                 "lat": 23.8103,
                 "lng": 90.4125
             },
-            "isActive": true,
-            "isEmailVerified": false,
-            "teacherApprovalStatus": "PENDING",
             "preferences": {
                 "subjects": [],
                 "curriculum": [],
@@ -22,10 +14,50 @@
             },
             "balance": 0,
             "percentage": 20,
-            "_id": "69d5670f05af619f3f898833",
-            "createdAt": "2026-04-07T20:20:31.998Z",
-            "updatedAt": "2026-04-07T20:20:31.998Z"
+            "_id": "69af257459570e24cc392e43",
+            "name": "John Doe",
+            "email": "rolemak524@keecs.com",
+            "role": "STUDENT",
+            "phone": "01700000000",
+            "profileImage": "/uploads/profile-images/profile-067903-4969.webp",
+            "isActive": true,
+            "isEmailVerified": true,
+            "createdAt": "2026-03-09T19:54:28.409Z",
+            "updatedAt": "2026-03-09T19:55:35.454Z",
+            "totalPurchaseClass": 0,
+            "totalSpend": 0
         },
-        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWQ1NjcwZjA1YWY2MTlmM2Y4OTg4MzMiLCJuYW1lIjoiSm9obiBEb2UiLCJlbWFpbCI6ImpvaG5kb2VAZXhhbXBsZTMuY29tIiwicm9sZSI6IlRFQUNIRVIiLCJpYXQiOjE3NzU1OTMyMzIsImV4cCI6MTc3ODE4NTIzMn0.v5dY_XeWgOQzCZXyhwPnm3vRhbKhKImilPvky4pPiDU"
+        {
+            "location": {
+                "lat": 23.8103,
+                "lng": 90.4125
+            },
+            "preferences": {
+                "subjects": [],
+                "curriculum": [],
+                "languages": []
+            },
+            "balance": 0,
+            "percentage": 20,
+            "_id": "69af1fcc59570e24cc392e3e",
+            "name": "John Doe",
+            "email": "john@example.com",
+            "role": "STUDENT",
+            "phone": "01700000000",
+            "profileImage": "/uploads/profile-images/profile-620296-4807.webp",
+            "isActive": true,
+            "isEmailVerified": false,
+            "verificationToken": "c0fe3355ebea685664c17b60a5a11969f4b37fd090c0b5aca85920aae514e279",
+            "verificationExpiry": "2026-03-10T19:30:20.750Z",
+            "createdAt": "2026-03-09T19:30:20.760Z",
+            "updatedAt": "2026-03-09T19:30:20.760Z",
+            "totalPurchaseClass": 0,
+            "totalSpend": 0
+        }
+    ],
+    "meta": {
+        "page": 1,
+        "limit": 10,
+        "total": 9
     }
 }

@@ -4,10 +4,17 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, LogOut, User, Settings, ChevronDown } from "lucide-react";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { cn, getImageUrl } from "@/lib/utils";
 
 export default function AdminTopNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
     const pathname = usePathname();
+    const router = useRouter();
+    const { user, logout } = useAuthStore();
+    const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
     const getTitle = () => {
         if (pathname === "/web-admin/teacher") return "Teacher";
@@ -35,23 +42,95 @@ export default function AdminTopNavbar({ onMenuClick }: { onMenuClick?: () => vo
                 </button>
 
                 <div>
-                    <p className="text-gray-400 text-[10px] md:text-xs font-medium font-sans">Super Admin</p>
+                    <p className="text-gray-400 text-[10px] md:text-xs font-medium font-sans">{user?.name || "Super Admin"}</p>
                     <h1 className="text-lg md:text-xl font-bold text-[#0D1C35] font-sans capitalize">{getTitle()}</h1>
                 </div>
             </div>
 
             <div className="flex items-center gap-4">
-                <Link href="/messages" className="p-2 text-gray-400 hover:text-[#0A47C2] hover:bg-blue-50 rounded-full transition-all">
+                <Link href="/web-admin/messages" className="p-2 text-gray-400 hover:text-[#0A47C2] hover:bg-blue-50 rounded-full transition-all">
                     <MessageSquare size={20} />
                 </Link>
-                <Link href="/web-admin/profile" className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm hover:ring-2 hover:ring-blue-100 transition-all">
-                    <Image
-                        src="/authpic.jpg"
-                        alt="Profile"
-                        fill
-                        className="object-cover"
-                    />
-                </Link>
+
+                {/* Profile Dropdown */}
+                <div className="relative">
+                    <button
+                        onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                        className="flex items-center gap-2 p-1 hover:bg-gray-50 rounded-full transition-all border border-transparent hover:border-gray-100"
+                    >
+                        <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm transition-all bg-gray-100">
+                            {user?.profileImage ? (
+                                <Image
+                                    src={getImageUrl(user.profileImage)}
+                                    alt="Profile"
+                                    fill
+                                    className="object-cover"
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-blue-50 text-[#0A47C2]">
+                                    <User size={20} />
+                                </div>
+                            )}
+                        </div>
+                        <ChevronDown size={14} className={cn("text-gray-400 transition-transform duration-200", showProfileDropdown && "rotate-180")} />
+                    </button>
+
+                    {showProfileDropdown && (
+                        <>
+                            {/* Backdrop for closing */}
+                            <div
+                                className="fixed inset-0 z-40"
+                                onClick={() => setShowProfileDropdown(false)}
+                            />
+
+                            <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-50 py-2 z-50 animate-in fade-in zoom-in duration-200">
+                                <div className="px-4 py-3 border-b border-gray-50">
+                                    <p className="text-xs text-gray-400 font-sans">Signed in as</p>
+                                    <p className="text-sm font-bold text-[#0D1C35] font-sans truncate">{user?.name}</p>
+                                    <p className="text-[10px] text-gray-400 font-sans truncate">{user?.email}</p>
+                                </div>
+
+                                <div className="p-1">
+                                    <Link
+                                        href="/web-admin/profile"
+                                        onClick={() => setShowProfileDropdown(false)}
+                                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-[#0A47C2] rounded-xl transition-all group"
+                                    >
+                                        <div className="p-1.5 bg-gray-50 group-hover:bg-white rounded-lg transition-colors">
+                                            <User size={16} />
+                                        </div>
+                                        <span>My Profile</span>
+                                    </Link>
+                                    <Link
+                                        href="/web-admin/settings"
+                                        onClick={() => setShowProfileDropdown(false)}
+                                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-[#0A47C2] rounded-xl transition-all group"
+                                    >
+                                        <div className="p-1.5 bg-gray-50 group-hover:bg-white rounded-lg transition-colors">
+                                            <Settings size={16} />
+                                        </div>
+                                        <span>Settings</span>
+                                    </Link>
+                                </div>
+
+                                <div className="p-1 border-t border-gray-50 mt-1">
+                                    <button
+                                        onClick={() => {
+                                            logout();
+                                            router.push("/auth");
+                                        }}
+                                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-500 hover:bg-red-50 rounded-xl transition-all group"
+                                    >
+                                        <div className="p-1.5 bg-red-50 group-hover:bg-white rounded-lg transition-colors">
+                                            <LogOut size={16} />
+                                        </div>
+                                        <span>Logout</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
         </header>
     );
