@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import api from "@/lib/axios";
+import axios from "axios";
 import { cn } from "@/lib/utils";
 import { MessageCircle } from "lucide-react";
 import Link from "next/link";
@@ -104,7 +104,7 @@ export default function Courses() {
     useEffect(() => {
         const fetchClasses = async () => {
             try {
-                const response = await api.get("/classes?page=1&limit=3");
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/classes?page=1&limit=3`);
                 if (response.data.success) {
                     setClasses(response.data.data);
                 }

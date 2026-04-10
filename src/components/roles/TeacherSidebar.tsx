@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutDashboard,
     PlusCircle,
@@ -12,6 +12,7 @@ import {
     LogOut
 } from "lucide-react";
 import Image from "next/image";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const navItems = [
     { name: "Dashboard", href: "/teacher", icon: LayoutDashboard },
@@ -23,6 +24,14 @@ const navItems = [
 
 export default function TeacherSidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
     const pathname = usePathname();
+    const router = useRouter();
+    const { logout } = useAuthStore();
+
+    const handleLogout = () => {
+        logout();
+        router.push("/auth");
+        if (onClose) onClose();
+    };
 
     return (
         <>
@@ -73,7 +82,7 @@ export default function TeacherSidebar({ isOpen, onClose }: { isOpen?: boolean; 
 
                 {/* Sign Out */}
                 <div className="p-4 border-t border-gray-100 mb-safe">
-                    <button className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-red-200 text-red-500 rounded-none text-sm font-bold hover:bg-red-50 transition-all">
+                    <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-red-200 text-red-500 rounded-none text-sm font-bold hover:bg-red-50 transition-all">
                         <LogOut size={18} />
                         Sign-out
                     </button>

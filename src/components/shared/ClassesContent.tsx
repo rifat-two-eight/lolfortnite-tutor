@@ -50,7 +50,7 @@ const courses = [
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import FilterModal from "./FilterModal";
-import api from "@/lib/axios";
+import axios from "axios";
 
 interface ClassData {
     _id: string;
@@ -98,7 +98,7 @@ export default function ClassesContent() {
     const fetchClasses = async (currentPage: number) => {
         setLoading(true);
         try {
-            const response = await api.get(`/classes?page=${currentPage}&limit=9`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/classes?page=${currentPage}&limit=9`);
             if (response.data.success) {
                 setClasses(response.data.data);
                 setTotalPages(response.data.meta.totalPages);

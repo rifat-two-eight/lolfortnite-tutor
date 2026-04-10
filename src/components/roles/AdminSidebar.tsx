@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutDashboard,
     Users,
@@ -13,6 +13,7 @@ import {
     LogOut
 } from "lucide-react";
 import Image from "next/image";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const navItems = [
     { name: "Dashboard", href: "/web-admin", icon: LayoutDashboard },
@@ -25,6 +26,14 @@ const navItems = [
 
 export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
     const pathname = usePathname();
+    const router = useRouter();
+    const { logout } = useAuthStore();
+
+    const handleLogout = () => {
+        logout();
+        router.push("/auth");
+        if (onClose) onClose();
+    };
 
     return (
         <>
@@ -75,7 +84,7 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
 
                 {/* Sign Out */}
                 <div className="p-4 mb-safe">
-                    <button className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-red-100 text-red-500 rounded-none text-sm font-bold hover:bg-red-50 transition-all">
+                    <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-red-100 text-red-500 rounded-none text-sm font-bold hover:bg-red-50 transition-all">
                         <LogOut size={18} />
                         Sign-out
                     </button>
