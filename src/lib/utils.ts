@@ -9,5 +9,6 @@ export function getImageUrl(path: string | undefined) {
     if (!path) return "";
     if (path.startsWith("http")) return path;
     const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "";
-    return `${baseUrl}/${path.replace(/\\/g, "/")}`;
+    const cleanPath = path.replace(/\\/g, "/").replace(/^\//, "");
+    return `${baseUrl}/${cleanPath}`;
 }

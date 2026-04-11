@@ -1,13 +1,11 @@
 "use client";
 
-import React from "react";
-import { Users, GraduationCap, ChevronDown } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Users } from "lucide-react";
 import {
     Area,
     AreaChart,
     CartesianGrid,
-    XAxis,
-    YAxis,
 } from "recharts"
 
 import {
@@ -17,24 +15,22 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import Image from "next/image";
+import api from "@/lib/axios";
 
-const ratingChartData = [
-    { day: "Sun", rating: 4.0 },
-    { day: "Mon", rating: 4.2 },
-    { day: "Tue", rating: 4.1 },
-    { day: "Wed", rating: 4.4 },
-    { day: "Thu", rating: 4.3 },
-    { day: "Fri", rating: 4.6 },
-    { day: "Sat", rating: 4.5 },
-]
+// ── Types ─────────────────────────────────────────────────────────────────────
+interface RatingDistribution {
+    star: number;
+    count: number;
+    percentage: number;
+}
 
-const ratingChartConfig = {
-    rating: {
-        label: "Rating",
-        color: "#0A47C2",
-    },
-} satisfies ChartConfig
+interface TeacherRatings {
+    averageRating: number;
+    totalRatings: number;
+    distribution: RatingDistribution[];
+}
 
+// ── Static chart data (no API yet) ────────────────────────────────────────────
 const earningChartData = [
     { day: "Sun", mobile: 60000, desktop: 80000 },
     { day: "Mon", mobile: 140000, desktop: 120000 },
@@ -46,17 +42,49 @@ const earningChartData = [
 ]
 
 const earningChartConfig = {
-    desktop: {
-        label: "Desktop",
-        color: "#0A47C2",
-    },
-    mobile: {
-        label: "Mobile",
-        color: "rgba(10, 71, 194, 0.3)",
-    },
+    desktop: { label: "Desktop", color: "#0A47C2" },
+    mobile: { label: "Mobile", color: "rgba(10, 71, 194, 0.3)" },
 } satisfies ChartConfig
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function StarIcon({ filled }: { filled: boolean }) {
+    return (
+        <svg width="16" height="16" viewBox="0 0 12 12" fill={filled ? "#F59E0B" : "#D1D5DB"}>
+            <path d="M6 1L7.545 4.13L11 4.635L8.5 7.07L9.09 10.5L6 8.875L2.91 10.5L3.5 7.07L1 4.635L4.455 4.13L6 1Z" />
+        </svg>
+    );
+}
+
+function BlueStarIcon({ filled }: { filled: boolean }) {
+    return (
+        <svg width="16" height="16" viewBox="0 0 12 12" fill={filled ? "#0A47C2" : "#D1D5DB"}>
+            <path d="M6 1L7.545 4.13L11 4.635L8.5 7.07L9.09 10.5L6 8.875L2.91 10.5L3.5 7.07L1 4.635L4.455 4.13L6 1Z" />
+        </svg>
+    );
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
 export default function TeacherDashboard() {
+    const [ratings, setRatings] = useState<TeacherRatings | null>(null);
+    const [ratingsLoading, setRatingsLoading] = useState(true);
+
+    useEffect(() => {
+        api.get("/dashboard/teacher-ratings")
+            .then(res => {
+                if (res.data.success) setRatings(res.data.data);
+            })
+            .catch(console.error)
+            .finally(() => setRatingsLoading(false));
+    }, []);
+
+    // Build ordered distribution (5 → 1)
+    const distribution: RatingDistribution[] = ratings?.distribution
+        ? [...ratings.distribution].sort((a, b) => b.star - a.star)
+        : [5, 4, 3, 2, 1].map(star => ({ star, count: 0, percentage: 0 }));
+
+    const avg = ratings?.averageRating ?? 0;
+    const filledStars = Math.round(avg);
+
     return (
         <div className="px-4 md:px-8 py-8 space-y-8">
             {/* Stat Cards */}
@@ -84,133 +112,91 @@ export default function TeacherDashboard() {
 
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Overall Class Rating */}
+
+                {/* ── Overall Class Rating ── */}
                 <div className="bg-white p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 rounded-none space-y-6">
                     <div className="flex items-center justify-between">
                         <h3 className="text-base font-medium text-[#0D1C35] font-sans">Overall Class Rating</h3>
-                        <div className="flex items-center gap-1 text-xs text-gray-400 font-sans cursor-pointer">
-                            This week <ChevronDown size={14} />
-                        </div>
+                        {ratings && (
+                            <span className="text-xs text-gray-400 font-sans">
+                                {ratings.totalRatings} review{ratings.totalRatings !== 1 ? "s" : ""}
+                            </span>
+                        )}
                     </div>
 
-                    <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 pt-4">
-                        <div className="bg-blue-50 p-11 flex flex-col items-center justify-center w-full sm:min-w-[160px] lg:min-w-[200px] rounded-none">
-                            <span className="text-5xl lg:text-6xl font-medium text-[#0D1C35] font-sans">4.6</span>
-                            <div className="flex gap-1 mt-2">
-                                {[1, 2, 3, 4].map(s => (
-                                    <svg key={s} width="16" height="16" viewBox="0 0 12 12" fill="#F59E0B">
-                                        <path d="M6 1L7.545 4.13L11 4.635L8.5 7.07L9.09 10.5L6 8.875L2.91 10.5L3.5 7.07L1 4.635L4.455 4.13L6 1Z" />
-                                    </svg>
+                    {ratingsLoading ? (
+                        <div className="flex items-center justify-center h-40">
+                            <div className="w-8 h-8 border-2 border-[#0A47C2] border-t-transparent rounded-full animate-spin" />
+                        </div>
+                    ) : (
+                        <>
+                            {/* Average score box */}
+                            <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 pt-4">
+                                <div className="bg-blue-50 p-11 flex flex-col items-center justify-center w-full sm:min-w-[160px] lg:min-w-[200px] rounded-none">
+                                    <span className="text-5xl lg:text-6xl font-medium text-[#0D1C35] font-sans">
+                                        {avg > 0 ? avg.toFixed(1) : "—"}
+                                    </span>
+                                    <div className="flex gap-1 mt-2">
+                                        {[1, 2, 3, 4, 5].map(s => (
+                                            <StarIcon key={s} filled={s <= filledStars} />
+                                        ))}
+                                    </div>
+                                    <span className="text-xs text-gray-400 mt-2 font-sans font-bold text-center">Overall Rating</span>
+                                </div>
+                            </div>
+
+                            {/* Star Breakdown */}
+                            <div className="space-y-4 pt-4">
+                                {distribution.map((item) => (
+                                    <div key={item.star} className="flex items-center gap-6 lg:gap-10 w-full">
+                                        <div className="flex gap-1.5 w-40 shrink-0">
+                                            {[...Array(5)].map((_, i) => (
+                                                <BlueStarIcon key={i} filled={i < item.star} />
+                                            ))}
+                                            <span className="text-sm text-gray-400 font-sans ml-2">{item.star} Star</span>
+                                        </div>
+                                        <div className="flex-1 h-4 bg-gray-100 overflow-hidden rounded-none">
+                                            <div
+                                                style={{ width: `${item.percentage}%`, transition: "width 0.6s ease" }}
+                                                className="h-full bg-[#0A47C2] rounded-none"
+                                            />
+                                        </div>
+                                        <span className="text-sm text-gray-400 font-sans w-12 text-right font-medium shrink-0">
+                                            {item.percentage > 0 ? `${item.percentage}%` : "0%"}
+                                        </span>
+                                    </div>
                                 ))}
-                                <svg width="16" height="16" viewBox="0 0 12 12" fill="#D1D5DB">
-                                    <path d="M6 1L7.545 4.13L11 4.635L8.5 7.07L9.09 10.5L6 8.875L2.91 10.5L3.5 7.07L1 4.635L4.455 4.13L6 1Z" />
-                                </svg>
                             </div>
-                            <span className="text-xs text-gray-400 mt-2 font-sans font-bold text-center">Overall Rating</span>
-                        </div>
-
-                        {/* Overall Rating Wavy Area Chart */}
-                        <div className="w-full flex-1 h-32 lg:h-48 relative mt-4 sm:mt-0">
-                            <ChartContainer config={ratingChartConfig} className="h-full w-full">
-                                <AreaChart
-                                    data={ratingChartData}
-                                    margin={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                                >
-                                    <ChartTooltip
-                                        cursor={false}
-                                        content={<ChartTooltipContent hideLabel indicator="line" />}
-                                    />
-                                    <Area
-                                        dataKey="rating"
-                                        type="monotone"
-                                        fill="var(--color-rating)"
-                                        fillOpacity={0.1}
-                                        stroke="var(--color-rating)"
-                                        strokeWidth={2}
-                                    />
-                                </AreaChart>
-                            </ChartContainer>
-                        </div>
-                    </div>
-
-                    {/* Star Breakdown */}
-                    <div className="space-y-4 pt-8">
-                        {[
-                            { stars: 5, percent: 56 },
-                            { stars: 4, percent: 37 },
-                            { stars: 3, percent: 8 },
-                            { stars: 2, percent: 1 },
-                            { stars: 1, percent: "<1" },
-                        ].map((item) => (
-                            <div key={item.stars} className="flex items-center gap-6 lg:gap-10 w-full">
-                                <div className="flex gap-1.5 w-40 shrink-0">
-                                    {[...Array(5)].map((_, i) => (
-                                        <svg key={i} width="16" height="16" viewBox="0 0 12 12" fill={i < item.stars ? "#0A47C2" : "#D1D5DB"}>
-                                            <path d="M6 1L7.545 4.13L11 4.635L8.5 7.07L9.09 10.5L6 8.875L2.91 10.5L3.5 7.07L1 4.635L4.455 4.13L6 1Z" />
-                                        </svg>
-                                    ))}
-                                    <span className="text-sm text-gray-400 font-sans ml-2">{item.stars} Star</span>
-                                </div>
-                                <div className="flex-1 h-4 bg-gray-100 overflow-hidden rounded-none">
-                                    <div
-                                        style={{ width: typeof item.percent === 'number' ? `${item.percent}%` : '0.5%' }}
-                                        className="h-full bg-[#0A47C2] rounded-none"
-                                    />
-                                </div>
-                                <span className="text-sm text-gray-400 font-sans w-12 text-right font-medium shrink-0">{item.percent}%</span>
-                            </div>
-                        ))}
-                    </div>
+                        </>
+                    )}
                 </div>
 
-                {/* Total Earning */}
+                {/* ── Total Earning ── */}
                 <div className="bg-white p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 rounded-none space-y-6">
                     <div className="flex items-center justify-between">
                         <h3 className="text-base font-medium text-[#0D1C35] font-sans">Total Earning</h3>
-                        <div className="flex items-center gap-1 text-xs text-gray-400 font-sans cursor-pointer">
-                            This week <ChevronDown size={14} />
-                        </div>
                     </div>
 
                     <div className="relative pt-4">
-                        {/* Earning Chart Placeholder (Styled like Figma) */}
                         <div className="w-full aspect-4/3 relative flex flex-col justify-between pt-4">
                             {/* Grid Lines */}
                             {[100, 75, 50, 25, 0].map(val => (
                                 <div key={val} className="flex items-center gap-4 w-full">
                                     <span className="text-[10px] text-gray-300 w-8 font-sans">
-                                        {val === 100 ? "1m" : val === 75 ? "500k" : val === 50 ? "100k" : val === 25 ? "50k" : val === 0 ? "10k" : "0"}
+                                        {val === 100 ? "1m" : val === 75 ? "500k" : val === 50 ? "100k" : val === 25 ? "50k" : "10k"}
                                     </span>
                                     <div className="flex-1 h-px bg-gray-50" />
                                 </div>
                             ))}
 
-                            {/* Shadcn Area Chart for Earnings */}
+                            {/* Earnings Area Chart */}
                             <div className="absolute inset-0 left-8 top-8">
                                 <ChartContainer config={earningChartConfig} className="h-full w-full">
-                                    <AreaChart
-                                        data={earningChartData}
-                                        margin={{ left: 0, right: 0, top: 10, bottom: 0 }}
-                                    >
+                                    <AreaChart data={earningChartData} margin={{ left: 0, right: 0, top: 10, bottom: 0 }}>
                                         <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f0f0f0" />
-                                        <ChartTooltip
-                                            cursor={false}
-                                            content={<ChartTooltipContent indicator="dot" />}
-                                        />
-                                        <Area
-                                            dataKey="mobile"
-                                            type="monotone"
-                                            fill="none"
-                                            stroke="var(--color-mobile)"
-                                            strokeWidth={3}
-                                        />
-                                        <Area
-                                            dataKey="desktop"
-                                            type="monotone"
-                                            fill="none"
-                                            stroke="var(--color-desktop)"
-                                            strokeWidth={3}
-                                        />
+                                        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                                        <Area dataKey="mobile" type="monotone" fill="none" stroke="var(--color-mobile)" strokeWidth={3} />
+                                        <Area dataKey="desktop" type="monotone" fill="none" stroke="var(--color-desktop)" strokeWidth={3} />
                                     </AreaChart>
                                 </ChartContainer>
                             </div>

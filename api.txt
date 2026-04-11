@@ -1,44 +1,35 @@
 {
     "success": true,
-    "message": "Withdrawal requests retrieved successfully",
-    "data": [
-        {
-            "_id": "69d6ccab95a8e2e8fd44671d",
-            "teacher": {
-                "_id": "69b3120ef779774d519b183a",
-                "name": "Md. Appon Islam",
-                "email": "koxip16361@flosek.com",
-                "profileImage": "/uploads/profile-images/profile-535786-8881.webp",
-                "balance": 200
+    "message": "Teacher rating stats retrieved successfully",
+    "data": {
+        "averageRating": 0,
+        "totalRatings": 0,
+        "distribution": [
+            {
+                "star": 5,
+                "count": 0,
+                "percentage": 0
             },
-            "amount": 200,
-            "status": "PENDING",
-            "bankDetails": {
-                "_id": "69d6cc8b95a8e2e8fd446717",
-                "userId": "69b3120ef779774d519b183a",
-                "accountHolderName": "Rifat Ahmed",
-                "bankName": "National Bank of Kuwait",
-                "accountNumber": "123456789012",
-                "routingNumber": "987654321",
-                "branchName": "Sharq Branch",
-                "swiftCode": "NBOKKWKK",
-                "iban": "KW12NBOK000000123456789012",
-                "country": "Kuwait",
-                "bankAddress": "Abdullah Al-Mubarak Street, Kuwait City",
-                "isVerified": false,
-                "isDefault": true,
-                "createdAt": "2026-04-08T21:45:47.244Z",
-                "updatedAt": "2026-04-08T21:45:47.244Z"
+            {
+                "star": 4,
+                "count": 0,
+                "percentage": 0
             },
-            "adminComment": "Your request is currently under review",
-            "createdAt": "2026-04-08T21:46:19.717Z",
-            "updatedAt": "2026-04-08T21:46:19.717Z"
-        }
-    ],
-    "meta": {
-        "page": 1,
-        "limit": 10,
-        "total": 1,
-        "totalPages": 1
+            {
+                "star": 3,
+                "count": 0,
+                "percentage": 0
+            },
+            {
+                "star": 2,
+                "count": 0,
+                "percentage": 0
+            },
+            {
+                "star": 1,
+                "count": 0,
+                "percentage": 0
+            }
+        ]
     }
 }

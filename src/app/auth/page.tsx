@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Lock, Eye, EyeOff, User, MapPin, Phone, Camera } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, User, Phone, Camera } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import api from "@/lib/axios";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEffect } from "react";
+import TeacherOnboarding from "@/components/roles/TeacherOnboarding";
 
 export default function AuthPage() {
     const router = useRouter();
@@ -17,17 +18,21 @@ export default function AuthPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
+    const [showTeacherOnboarding, setShowTeacherOnboarding] = useState(false);
 
     // Auto-redirection for already authenticated users
+    // Guard: don't redirect while teacher onboarding is in progress
     useEffect(() => {
-        if (accessToken && user) {
+        if (accessToken && user && !showTeacherOnboarding) {
             if (user.role === "STUDENT") {
                 router.push("/");
+            } else if (user.role === "TEACHER") {
+                router.push("/teacher");
             } else {
                 router.push("/web-admin");
             }
         }
-    }, [accessToken, user, router]);
+    }, [accessToken, user, router, showTeacherOnboarding]);
 
     // Remember Me pre-fill
     useEffect(() => {
@@ -104,7 +109,10 @@ export default function AuthPage() {
                     setToken(accessToken);
                     localStorage.setItem("accessToken", accessToken);
 
-                    if (user.role === "STUDENT") {
+                    if (user.role === "TEACHER") {
+                        // Show onboarding wizard for teachers
+                        setShowTeacherOnboarding(true);
+                    } else if (user.role === "STUDENT") {
                         router.push("/");
                     } else {
                         router.push("/web-admin");
@@ -135,6 +143,8 @@ export default function AuthPage() {
 
                     if (user.role === "STUDENT") {
                         router.push("/");
+                    } else if (user.role === "TEACHER") {
+                        router.push("/teacher");
                     } else {
                         router.push("/web-admin");
                     }
@@ -150,6 +160,10 @@ export default function AuthPage() {
     };
 
     return (
+        <>
+        {showTeacherOnboarding && (
+            <TeacherOnboarding onComplete={() => setShowTeacherOnboarding(false)} />
+        )}
         <div className="flex flex-col items-center">
             <h2 className="text-3xl font-medium text-gray-800 mb-8">
                 Welcome To Educate..!
@@ -330,5 +344,6 @@ export default function AuthPage() {
                 </button>
             </form>
         </div>
+        </>
     );
 }
