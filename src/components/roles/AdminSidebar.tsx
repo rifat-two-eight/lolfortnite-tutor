@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutDashboard,
     Users,
+    BookOpen,
     GraduationCap,
     CreditCard,
     ArrowUpRight,
@@ -18,6 +19,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 const navItems = [
     { name: "Dashboard", href: "/web-admin", icon: LayoutDashboard },
     { name: "Teacher", href: "/web-admin/teacher", icon: Users },
+    { name: "Classes", href: "/web-admin/classes", icon: BookOpen },
     { name: "Student", href: "/web-admin/student", icon: GraduationCap },
     { name: "Payment", href: "/web-admin/payment", icon: CreditCard },
     { name: "Withdrawal Request", href: "/web-admin/withdrawal-request", icon: ArrowUpRight },

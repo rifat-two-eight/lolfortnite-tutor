@@ -16,7 +16,6 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 const navItems = [
     { name: "Dashboard", href: "/teacher", icon: LayoutDashboard },
-    { name: "Create New Class", href: "/teacher/create", icon: PlusCircle },
     { name: "My Class", href: "/teacher/classes", icon: BookOpen },
     { name: "Earning", href: "/teacher/earning", icon: DollarSign },
     { name: "Settings", href: "/teacher/settings", icon: Settings },
