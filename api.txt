@@ -1,307 +1,45 @@
 {
     "success": true,
-    "message": "All classes retrieved successfully for admin",
+    "message": "Your withdrawal requests retrieved successfully",
     "data": [
         {
-            "_id": "69dabd69fceac99877402ad1",
-            "subject": "Advanced Math",
-            "level": "High School",
-            "language": "adfadsf",
-            "price": 100,
-            "tutorGender": "MALE",
-            "maxStudents": 1,
-            "enrolledStudents": 0,
-            "whatsappGroupLink": "http://localhost:3000",
-            "description": "Intensive math course",
-            "youtubeVideoLink": "https://youtu.be/xND0t1pr3KY?si=nv9ZEZGl3gEQxM1i",
-            "classType": "ONE_TO_ONE",
-            "runningStatus": "RUNNING",
-            "images": [
-                "/uploads/class-images/class-017206-1929.webp"
-            ],
-            "status": "PENDING",
-            "createdBy": {
-                "_id": "69b3120ef779774d519b183a",
-                "name": "Md. Appon Islam",
-                "email": "koxip16361@flosek.com",
-                "profileImage": "/uploads/profile-images/profile-535786-8881.webp"
-            },
-            "isDeleted": false,
-            "createdAt": "2026-04-11T21:30:17.269Z",
-            "updatedAt": "2026-04-11T21:30:17.269Z",
-            "averageRating": 0,
-            "ratingCount": 0
-        },
-        {
-            "_id": "69dabcb4fb2e855fe81ac833",
-            "subject": "Facilis laboris odit",
-            "level": "Quaerat culpa corru",
-            "language": "Eum repellendus Sit",
-            "curriculum": "Expedita et doloribu",
-            "price": 178,
-            "tutorGender": "MALE",
-            "maxStudents": 27,
-            "enrolledStudents": 0,
-            "whatsappGroupLink": "Eos nihil ea in temp",
-            "description": "Aperiam cum ut quibu",
-            "youtubeVideoLink": "https://www.youtube.com/watch?v=GBBSHdjEelA",
-            "classType": "GROUP",
-            "runningStatus": "RUNNING",
-            "images": [
-                "/uploads/class-images/class-836845-9059.webp"
-            ],
-            "status": "PENDING",
-            "createdBy": {
-                "_id": "69da993e19df04063239da45",
-                "name": "Jocelyn Macias",
-                "email": "pojygi@mailinator.com"
-            },
-            "isDeleted": false,
-            "createdAt": "2026-04-11T21:27:16.968Z",
-            "updatedAt": "2026-04-11T21:27:16.968Z",
-            "averageRating": 5,
-            "ratingCount": 1
-        },
-        {
-            "_id": "69dabc82fb2e855fe81ac82a",
-            "subject": "Sed at vitae in nisi",
-            "level": "Commodo ut ea cumque",
-            "language": "chinese",
-            "curriculum": "Incididunt libero no",
-            "price": 581,
-            "tutorGender": "FEMALE",
-            "maxStudents": 45,
-            "enrolledStudents": 0,
-            "whatsappGroupLink": "Incididunt facilis v",
-            "description": "Ullam exercitationem",
-            "youtubeVideoLink": "https://www.youtube.com/watch?v=GBBSHdjEelA",
-            "classType": "GROUP",
-            "runningStatus": "RUNNING",
-            "images": [
-                "/uploads/class-images/class-786095-300.webp"
-            ],
-            "status": "PENDING",
-            "createdBy": {
-                "_id": "69da993e19df04063239da45",
-                "name": "Jocelyn Macias",
-                "email": "pojygi@mailinator.com"
-            },
-            "isDeleted": false,
-            "createdAt": "2026-04-11T21:26:26.148Z",
-            "updatedAt": "2026-04-11T21:26:26.148Z",
-            "averageRating": 0,
-            "ratingCount": 0
-        },
-        {
-            "_id": "69dab8a567306e778bd79c1a",
-            "subject": "Advanced Math",
-            "level": "High School",
-            "language": "English",
-            "price": 100,
-            "tutorGender": "MALE",
-            "maxStudents": 1,
-            "enrolledStudents": 0,
-            "whatsappGroupLink": "http://localhost:3000",
-            "description": "Intensive math course",
-            "youtubeVideoLink": "https://youtu.be/xND0t1pr3KY?si=nv9ZEZGl3gEQxM1i",
-            "classType": "ONE_TO_ONE",
-            "runningStatus": "RUNNING",
-            "images": [
-                "/uploads/class-images/class-797869-7378.webp"
-            ],
-            "status": "PENDING",
-            "createdBy": {
-                "_id": "69b3120ef779774d519b183a",
-                "name": "Md. Appon Islam",
-                "email": "koxip16361@flosek.com",
-                "profileImage": "/uploads/profile-images/profile-535786-8881.webp"
-            },
-            "isDeleted": false,
-            "createdAt": "2026-04-11T21:09:57.917Z",
-            "updatedAt": "2026-04-11T21:09:57.917Z",
-            "averageRating": 0,
-            "ratingCount": 0
-        },
-        {
-            "_id": "69dab89767306e778bd79c17",
-            "subject": "Advanced Math",
-            "level": "High School",
-            "language": "English",
-            "price": 100,
-            "tutorGender": "MALE",
-            "maxStudents": 10,
-            "enrolledStudents": 0,
-            "whatsappGroupLink": "http://localhost:3000",
-            "description": "Intensive math course",
-            "youtubeVideoLink": "https://youtu.be/xND0t1pr3KY?si=nv9ZEZGl3gEQxM1i",
-            "classType": "GROUP",
-            "runningStatus": "RUNNING",
-            "images": [
-                "/uploads/class-images/class-783134-521.webp"
-            ],
-            "status": "PENDING",
-            "createdBy": {
-                "_id": "69b3120ef779774d519b183a",
-                "name": "Md. Appon Islam",
-                "email": "koxip16361@flosek.com",
-                "profileImage": "/uploads/profile-images/profile-535786-8881.webp"
-            },
-            "isDeleted": false,
-            "createdAt": "2026-04-11T21:09:43.182Z",
-            "updatedAt": "2026-04-11T21:09:43.182Z",
-            "averageRating": 0,
-            "ratingCount": 0
-        },
-        {
-            "_id": "69dab87867306e778bd79bf4",
-            "subject": "Id neque laboris re",
-            "level": "Blanditiis assumenda",
-            "language": "English",
-            "curriculum": "Reprehenderit in aut",
-            "price": 359,
-            "tutorGender": "MALE",
-            "maxStudents": 90,
-            "enrolledStudents": 0,
-            "whatsappGroupLink": "http://localhost:3000/teacher/classes",
-            "description": "Enim voluptatibus qu",
-            "youtubeVideoLink": "https://www.youtube.com/watch?v=GBBSHdjEelA",
-            "classType": "GROUP",
-            "runningStatus": "RUNNING",
-            "images": [
-                "/uploads/class-images/class-752427-339.webp"
-            ],
-            "status": "PENDING",
-            "createdBy": {
-                "_id": "69da993e19df04063239da45",
-                "name": "Jocelyn Macias",
-                "email": "pojygi@mailinator.com"
-            },
-            "isDeleted": false,
-            "createdAt": "2026-04-11T21:09:12.535Z",
-            "updatedAt": "2026-04-11T21:09:12.535Z",
-            "averageRating": 0,
-            "ratingCount": 0
-        },
-        {
-            "_id": "69dab41167306e778bd79b5d",
-            "subject": "Advanced Math",
-            "level": "High School",
-            "language": "English",
-            "price": 100,
-            "tutorGender": "MALE",
-            "maxStudents": 10,
-            "enrolledStudents": 0,
-            "description": "Intensive math course",
-            "runningStatus": "RUNNING",
-            "images": [
-                "/uploads/class-images/class-625410-8018.webp"
-            ],
-            "status": "PENDING",
-            "createdBy": {
+            "_id": "69dfc161b71f0ce30bace6d5",
+            "teacher": {
                 "_id": "69da8026f548e28884849a58",
                 "name": "Kiayada Ballard",
-                "email": "zohe@mailinator.com"
+                "email": "zohe@mailinator.com",
+                "balance": 300
             },
-            "isDeleted": false,
-            "createdAt": "2026-04-11T20:50:25.596Z",
-            "updatedAt": "2026-04-11T20:50:25.596Z",
-            "classType": "GROUP",
-            "averageRating": 0,
-            "ratingCount": 0
-        },
-        {
-            "_id": "69dab31667306e778bd79b53",
-            "subject": "Advanced Math",
-            "level": "High School",
-            "language": "English",
-            "price": 100,
-            "tutorGender": "MALE",
-            "maxStudents": 10,
-            "enrolledStudents": 0,
-            "whatsappGroupLink": "http://localhost:3000",
-            "description": "Intensive math course",
-            "youtubeVideoLink": "https://youtu.be/xND0t1pr3KY?si=nv9ZEZGl3gEQxM1i",
-            "runningStatus": "RUNNING",
-            "images": [
-                "/uploads/class-images/class-374222-7642.webp"
-            ],
+            "amount": 200,
             "status": "PENDING",
-            "createdBy": {
-                "_id": "69b3120ef779774d519b183a",
-                "name": "Md. Appon Islam",
-                "email": "koxip16361@flosek.com",
-                "profileImage": "/uploads/profile-images/profile-535786-8881.webp"
+            "bankDetails": {
+                "_id": "69dfc0db2ded7732c0a3b97e",
+                "userId": "69da8026f548e28884849a58",
+                "accountHolderName": "John Doe",
+                "bankName": "National Bank of Kuwait",
+                "accountNumber": "1234567890",
+                "routingNumber": "NBKUKWKK",
+                "branchName": "Sharq Branch",
+                "swiftCode": "NBKUKWKKXXX",
+                "iban": "KW12NBKU000000001234567890",
+                "country": "Kuwait",
+                "bankAddress": "Abdullah Al-Mubarak Street, Kuwait City",
+                "beneficiaryAddress": "Salmiya, Block 10, Street 1, House 5",
+                "isVerified": false,
+                "isDefault": true,
+                "isDeleted": false,
+                "createdAt": "2026-04-15T16:46:19.925Z",
+                "updatedAt": "2026-04-15T16:46:19.925Z"
             },
-            "isDeleted": false,
-            "createdAt": "2026-04-11T20:46:14.282Z",
-            "updatedAt": "2026-04-11T20:46:14.282Z",
-            "classType": "GROUP",
-            "averageRating": 0,
-            "ratingCount": 0
-        },
-        {
-            "_id": "69dab19f67306e778bd79b2b",
-            "subject": "Advanced Math",
-            "level": "High School",
-            "language": "English",
-            "price": 100,
-            "tutorGender": "MALE",
-            "maxStudents": 10,
-            "enrolledStudents": 0,
-            "description": "Intensive math course",
-            "runningStatus": "RUNNING",
-            "images": [
-                "/uploads/class-images/class-999038-1939.webp"
-            ],
-            "status": "PENDING",
-            "createdBy": {
-                "_id": "69b3120ef779774d519b183a",
-                "name": "Md. Appon Islam",
-                "email": "koxip16361@flosek.com",
-                "profileImage": "/uploads/profile-images/profile-535786-8881.webp"
-            },
-            "isDeleted": false,
-            "createdAt": "2026-04-11T20:39:59.112Z",
-            "updatedAt": "2026-04-11T20:39:59.112Z",
-            "classType": "GROUP",
-            "averageRating": 0,
-            "ratingCount": 0
-        },
-        {
-            "_id": "69da9ca219df04063239dade",
-            "subject": "Economics",
-            "level": "Secondary",
-            "language": "English",
-            "curriculum": "Bangla Medium",
-            "price": 51,
-            "tutorGender": "MALE",
-            "maxStudents": 45,
-            "enrolledStudents": 0,
-            "whatsappGroupLink": "https://www.youtube.com/watch?v=nfYiUg8exEU",
-            "description": "sdf",
-            "youtubeVideoLink": "https://www.youtube.com/watch?v=nfYiUg8exEU",
-            "classType": "GROUP",
-            "runningStatus": "RUNNING",
-            "images": [
-                "/uploads/class-images/class-626624-8851.webp"
-            ],
-            "status": "PENDING",
-            "createdBy": {
-                "_id": "69da993e19df04063239da45",
-                "name": "Jocelyn Macias",
-                "email": "pojygi@mailinator.com"
-            },
-            "isDeleted": false,
-            "createdAt": "2026-04-11T19:10:26.679Z",
-            "updatedAt": "2026-04-11T19:10:26.679Z",
-            "averageRating": 0,
-            "ratingCount": 0
+            "adminComment": "Your request is currently under review",
+            "createdAt": "2026-04-15T16:48:33.490Z",
+            "updatedAt": "2026-04-15T16:48:33.490Z"
         }
     ],
     "meta": {
         "page": 1,
         "limit": 10,
-        "total": 14,
-        "totalPages": 2
+        "total": 1,
+        "totalPages": 1
     }
 }
