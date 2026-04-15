@@ -50,7 +50,7 @@ export default function AdminPaymentPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
     const [page, setPage] = useState(1);
-    
+
     const [payments, setPayments] = useState<Payment[]>([]);
     const [meta, setMeta] = useState<Meta>({ page: 1, limit: 10, total: 0 });
     const [loading, setLoading] = useState(true);
@@ -113,14 +113,14 @@ export default function AdminPaymentPage() {
     // Client-side filtering fallback for exact tab status routing
     const filteredPayments = payments.filter((payment) => {
         const query = debouncedSearchQuery.toLowerCase();
-        const matchesSearch = 
-            payment.student.name.toLowerCase().includes(query) || 
+        const matchesSearch =
+            payment.student.name.toLowerCase().includes(query) ||
             payment.teacher.name.toLowerCase().includes(query) ||
             payment.student.email.toLowerCase().includes(query) ||
             (payment.invoiceId || "").toLowerCase().includes(query);
-            
+
         const matchesTab = activeTab === "All" || payment.status === activeTab;
-        
+
         return matchesSearch && matchesTab;
     });
 
@@ -137,8 +137,8 @@ export default function AdminPaymentPage() {
                     <button
                         onClick={() => { setActiveTab("All"); setPage(1); }}
                         className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "All"
-                                ? "bg-[#E0EAFF] text-[#0A47C2]"
-                                : "bg-gray-50 text-gray-500 hover:bg-gray-100"
+                            ? "bg-[#E0EAFF] text-[#0A47C2]"
+                            : "bg-gray-50 text-gray-500 hover:bg-gray-100"
                             }`}
                     >
                         All
@@ -146,8 +146,8 @@ export default function AdminPaymentPage() {
                     <button
                         onClick={() => { setActiveTab("PAID"); setPage(1); }}
                         className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "PAID"
-                                ? "bg-green-50 text-green-600"
-                                : "bg-gray-50 text-gray-500 hover:bg-gray-100"
+                            ? "bg-green-50 text-green-600"
+                            : "bg-gray-50 text-gray-500 hover:bg-gray-100"
                             }`}
                     >
                         Paid
@@ -155,8 +155,8 @@ export default function AdminPaymentPage() {
                     <button
                         onClick={() => { setActiveTab("PENDING"); setPage(1); }}
                         className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "PENDING"
-                                ? "bg-amber-50 text-amber-600"
-                                : "bg-gray-50 text-gray-500 hover:bg-gray-100"
+                            ? "bg-amber-50 text-amber-600"
+                            : "bg-gray-50 text-gray-500 hover:bg-gray-100"
                             }`}
                     >
                         Pending
@@ -164,8 +164,8 @@ export default function AdminPaymentPage() {
                     <button
                         onClick={() => { setActiveTab("FAILED"); setPage(1); }}
                         className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "FAILED"
-                                ? "bg-red-50 text-red-500"
-                                : "bg-gray-50 text-gray-500 hover:bg-gray-100"
+                            ? "bg-red-50 text-red-500"
+                            : "bg-gray-50 text-gray-500 hover:bg-gray-100"
                             }`}
                     >
                         Failed
@@ -224,8 +224,7 @@ export default function AdminPaymentPage() {
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center font-bold text-[#0D1C35]">{payment.teacherFee} {payment.currency}</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{formatDate(payment.createdAt)}</td>
                                         <td className="px-6 py-4 text-center">
-                                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold ${
-                                                    payment.status === "PAID"
+                                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold ${payment.status === "PAID"
                                                     ? "bg-green-50 text-green-500"
                                                     : payment.status === "FAILED"
                                                         ? "bg-red-50 text-red-500"
@@ -252,7 +251,7 @@ export default function AdminPaymentPage() {
 
             {/* Pagination UI */}
             <div className="flex items-center justify-end gap-2 mt-6">
-                <button 
+                <button
                     onClick={() => setPage(Math.max(1, page - 1))}
                     disabled={page === 1}
                     className="p-2 text-gray-400 hover:text-blue-600 disabled:opacity-50 transition-colors"
@@ -261,20 +260,19 @@ export default function AdminPaymentPage() {
                 </button>
                 <div className="flex items-center gap-1">
                     {Array.from({ length: Math.ceil(meta.total / meta.limit) || 1 }, (_, i) => i + 1).map((pageNum) => (
-                        <button 
+                        <button
                             key={pageNum}
                             onClick={() => setPage(pageNum)}
-                            className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all ${
-                                page === pageNum 
-                                ? "bg-[#0A47C2] text-white shadow-lg shadow-blue-200" 
-                                : "text-gray-400 hover:text-blue-600 hover:bg-gray-50"
-                            }`}
+                            className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all ${page === pageNum
+                                    ? "bg-[#0A47C2] text-white shadow-lg shadow-blue-200"
+                                    : "text-gray-400 hover:text-blue-600 hover:bg-gray-50"
+                                }`}
                         >
                             {pageNum.toString().padStart(2, '0')}
                         </button>
                     ))}
                 </div>
-                <button 
+                <button
                     onClick={() => setPage(Math.min(Math.ceil(meta.total / meta.limit), page + 1))}
                     disabled={page >= Math.ceil(meta.total / meta.limit)}
                     className="p-2 text-blue-600 hover:bg-blue-50 disabled:opacity-50 rounded-full transition-colors"
@@ -303,12 +301,12 @@ export default function AdminPaymentPage() {
                             <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm w-full md:w-64">
                                 <div className="flex items-start gap-4">
                                     <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100">
-                                        <Image 
+                                        <Image
                                             unoptimized
-                                            src={getImageUrl(selectedPayment.student.profileImage, selectedPayment.student.name)} 
-                                            alt="Student" 
-                                            fill 
-                                            className="object-cover" 
+                                            src={getImageUrl(selectedPayment.student.profileImage, selectedPayment.student.name)}
+                                            alt="Student"
+                                            fill
+                                            className="object-cover"
                                         />
                                     </div>
                                     <div className="space-y-1">
@@ -334,12 +332,12 @@ export default function AdminPaymentPage() {
                             <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm w-full md:w-64">
                                 <div className="flex items-start gap-4">
                                     <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100">
-                                        <Image 
+                                        <Image
                                             unoptimized
-                                            src={getImageUrl(selectedPayment.teacher.profileImage, selectedPayment.teacher.name)} 
-                                            alt="Teacher" 
-                                            fill 
-                                            className="object-cover" 
+                                            src={getImageUrl(selectedPayment.teacher.profileImage, selectedPayment.teacher.name)}
+                                            alt="Teacher"
+                                            fill
+                                            className="object-cover"
                                         />
                                     </div>
                                     <div className="space-y-1">
@@ -355,7 +353,7 @@ export default function AdminPaymentPage() {
                                 </div>
                             </div>
                         </div>
-                        
+
                         {/* Transaction ID & Date Footer */}
                         <div className="mt-8 flex justify-between items-center pt-4 border-t border-gray-50">
                             <span className="text-xs text-gray-400 font-mono tracking-widest">{selectedPayment._id}</span>

@@ -51,9 +51,9 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
                 }`}>
                 {/* Logo */}
                 <div className="px-6 flex items-center justify-between lg:justify-start gap-2 h-20">
-                    <div className="flex items-center gap-2">
+                    <Link href="/" className="flex items-center gap-2">
                         <Image src="/logo2.svg" alt="Logo" width={161} height={60} />
-                    </div>
+                    </Link>
                     {/* Mobile Close Button */}
                     <button onClick={onClose} className="lg:hidden text-gray-400 p-1">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

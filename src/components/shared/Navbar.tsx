@@ -5,26 +5,33 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { MessageSquare, User, LogOut } from "lucide-react";
+import { MessageSquare, User, LogOut, Home, LayoutDashboard } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEffect, useState as useMountedState } from "react";
+import { getImageUrl } from "@/lib/utils";
+import api from "@/lib/axios";
 
 export default function Navbar() {
     const pathname = usePathname();
     const [menuOpen, setMenuOpen] = useState(false);
     const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-    const { user, logout } = useAuthStore();
+    const user = useAuthStore((state) => state.user);
+    const setUser = useAuthStore((state) => state.setUser);
+    const logout = useAuthStore((state) => state.logout);
     const [mounted, setMounted] = useMountedState(false);
 
     // To prevent hydration mismatch
     useEffect(() => {
         setMounted(true);
-    }, []);
+        // Fetch fresh user data on mount to ensure sync across the platform
+        api.get("/auth/me").then((res) => {
+            if (res.data.success) {
+                setUser(res.data.data);
+            }
+        });
+    }, [setUser]);
 
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "").replace(/\/$/, "");
-    const profileImageUrl = user?.profileImage
-        ? (user.profileImage.startsWith("http") ? user.profileImage : `${baseUrl}${user.profileImage}`)
-        : "/demotutor.png";
+    const profileImageUrl = getImageUrl(user?.profileImage) || "/demotutor.png";
 
     const navLinks = [
         { name: "Home", href: "/" },
@@ -102,34 +109,53 @@ export default function Navbar() {
                                         <p className="text-sm font-bold text-[#0A47C2] truncate">{user.name}</p>
                                     </div>
 
-                                    <Link
-                                        href="/profile"
-                                        onClick={() => setShowProfileDropdown(false)}
-                                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-primary/5 transition-colors group"
-                                    >
-                                        <User size={18} className="text-primary group-hover:scale-110 transition-transform" />
-                                        <span>My Profile</span>
-                                    </Link>
+                                    <div className="p-1">
+                                        <Link
+                                            href="/"
+                                            onClick={() => setShowProfileDropdown(false)}
+                                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-[#0A47C2] rounded-xl transition-all group"
+                                        >
+                                            <div className="p-1.5 bg-gray-50 group-hover:bg-white rounded-lg transition-colors">
+                                                <Home size={16} />
+                                            </div>
+                                            <span>Home</span>
+                                        </Link>
+                                        <Link
+                                            href={user.role === "TEACHER" ? "/teacher" : (user.role === "STUDENT" ? "/student/dashboard" : "/web-admin")}
+                                            onClick={() => setShowProfileDropdown(false)}
+                                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-[#0A47C2] rounded-xl transition-all group"
+                                        >
+                                            <div className="p-1.5 bg-gray-50 group-hover:bg-white rounded-lg transition-colors">
+                                                <LayoutDashboard size={16} />
+                                            </div>
+                                            <span>Dashboard</span>
+                                        </Link>
+                                        <Link
+                                            href={user.role === "TEACHER" ? "/teacher/profile" : (user.role === "STUDENT" ? "/student/profile" : "/web-admin/profile")}
+                                            onClick={() => setShowProfileDropdown(false)}
+                                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-[#0A47C2] rounded-xl transition-all group"
+                                        >
+                                            <div className="p-1.5 bg-gray-50 group-hover:bg-white rounded-lg transition-colors">
+                                                <User size={16} />
+                                            </div>
+                                            <span>Profile</span>
+                                        </Link>
+                                    </div>
 
-                                    <Link
-                                        href="/messages"
-                                        onClick={() => setShowProfileDropdown(false)}
-                                        className="flex md:hidden items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-primary/5 transition-colors group"
-                                    >
-                                        <MessageSquare size={18} className="text-primary group-hover:scale-110 transition-transform" />
-                                        <span>Messages</span>
-                                    </Link>
-
-                                    <button
-                                        onClick={() => {
-                                            logout();
-                                            setShowProfileDropdown(false);
-                                        }}
-                                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors group"
-                                    >
-                                        <LogOut size={18} className="group-hover:translate-x-1 transition-transform" />
-                                        <span className="font-medium">Logout</span>
-                                    </button>
+                                    <div className="p-1 border-t border-gray-50 mt-1">
+                                        <button
+                                            onClick={() => {
+                                                logout();
+                                                setShowProfileDropdown(false);
+                                            }}
+                                            className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors group"
+                                        >
+                                            <div className="p-1.5 bg-red-50 group-hover:bg-white rounded-lg transition-colors">
+                                                <LogOut size={16} />
+                                            </div>
+                                            <span className="font-medium">Logout</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </>
                         )}
@@ -183,21 +209,44 @@ export default function Navbar() {
                     ))}
                     <div className="flex flex-col gap-3 pt-2 border-t border-gray-100">
                         {mounted && user ? (
-                            <div className="flex items-center justify-between px-4 py-2 bg-blue-50 rounded-xl">
-                                <Link href="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-3">
-                                    <div className="relative w-10 h-10 rounded-full overflow-hidden border border-primary/20">
-                                        <Image
-                                            src={profileImageUrl}
-                                            alt={user.name}
-                                            fill
-                                            className="object-cover"
-                                        />
+                            <div className="flex flex-col gap-2 p-2 bg-blue-50 rounded-2xl">
+                                <div className="flex items-center justify-between px-2 py-1">
+                                    <div className="flex items-center gap-3">
+                                        <div className="relative w-10 h-10 rounded-full overflow-hidden border border-primary/20 bg-white">
+                                            <Image
+                                                src={profileImageUrl}
+                                                alt={user.name}
+                                                fill
+                                                className="object-cover"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="font-bold text-[#0A47C2] text-sm leading-tight">{user.name}</span>
+                                            <span className="text-[10px] text-gray-500">{user.role}</span>
+                                        </div>
                                     </div>
-                                    <span className="font-bold text-[#0A47C2]">{user.name}</span>
-                                </Link>
-                                <button onClick={() => { logout(); setMenuOpen(false); }} className="text-red-500 p-2">
-                                    <LogOut size={20} />
-                                </button>
+                                    <button onClick={() => { logout(); setMenuOpen(false); }} className="text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors">
+                                        <LogOut size={20} />
+                                    </button>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2 pt-1">
+                                    <Link
+                                        href={user.role === "TEACHER" ? "/teacher" : (user.role === "STUDENT" ? "/student/dashboard" : "/web-admin")}
+                                        onClick={() => setMenuOpen(false)}
+                                        className="flex items-center justify-center gap-2 py-2 bg-white rounded-xl text-xs font-bold text-[#0A47C2] border border-blue-100"
+                                    >
+                                        <LayoutDashboard size={14} />
+                                        Dashboard
+                                    </Link>
+                                    <Link
+                                        href={user.role === "TEACHER" ? "/teacher/profile" : (user.role === "STUDENT" ? "/student/profile" : "/web-admin/profile")}
+                                        onClick={() => setMenuOpen(false)}
+                                        className="flex items-center justify-center gap-2 py-2 bg-white rounded-xl text-xs font-bold text-[#0A47C2] border border-blue-100"
+                                    >
+                                        <User size={14} />
+                                        Profile
+                                    </Link>
+                                </div>
                             </div>
                         ) : (
                             <>

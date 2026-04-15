@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { 
-    Search, 
-    MoreHorizontal, 
-    ChevronRight, 
-    ChevronLeft, 
+import {
+    Search,
+    MoreHorizontal,
+    ChevronRight,
+    ChevronLeft,
     X,
     Trash2,
     Eye,
@@ -38,7 +38,7 @@ export default function AdminStudentPage() {
     const [activeTab, setActiveTab] = useState<"Active" | "Deactivate">("Active");
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-    
+
     const [students, setStudents] = useState<Student[]>([]);
     const [meta, setMeta] = useState<Meta>({ page: 1, limit: 10, total: 0 });
     const [loading, setLoading] = useState(true);
@@ -106,11 +106,11 @@ export default function AdminStudentPage() {
     // Local filtering fallback for search robustness and Activity tabs
     const filteredStudents = students.filter((student) => {
         const query = debouncedSearchQuery.toLowerCase();
-        const matchesSearch = 
-            (student.name || "").toLowerCase().includes(query) || 
+        const matchesSearch =
+            (student.name || "").toLowerCase().includes(query) ||
             (student.email || "").toLowerCase().includes(query) ||
             (student.phone || "").toLowerCase().includes(query);
-            
+
         const matchesTab = activeTab === "Active" ? student.isActive : !student.isActive;
         return matchesSearch && matchesTab;
     });
@@ -126,7 +126,7 @@ export default function AdminStudentPage() {
             const response = await api.patch(`/users/toggle-active/${id}`);
             if (response.data.success) {
                 toast.success(`Student ${currentStatus ? 'Deactivated' : 'Activated'} successfully`);
-                setStudents(current => current.map(s => 
+                setStudents(current => current.map(s =>
                     s._id === id ? { ...s, isActive: !s.isActive } : s
                 ));
             } else {
@@ -150,32 +150,30 @@ export default function AdminStudentPage() {
             {/* Top Bar Card */}
             <div className="bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                    <button 
+                    <button
                         onClick={() => handleTabChange("Active")}
-                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                            activeTab === "Active" 
-                            ? "bg-[#22C55E] text-white" 
+                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "Active"
+                            ? "bg-[#22C55E] text-white"
                             : "bg-gray-50 text-gray-500 hover:bg-gray-100"
-                        }`}
+                            }`}
                     >
                         Active
                     </button>
-                    <button 
+                    <button
                         onClick={() => handleTabChange("Deactivate")}
-                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                            activeTab === "Deactivate" 
-                            ? "bg-[#E0EAFF] text-[#0A47C2]" 
+                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "Deactivate"
+                            ? "bg-[#E0EAFF] text-[#0A47C2]"
                             : "bg-gray-50 text-gray-500 hover:bg-gray-100"
-                        }`}
+                            }`}
                     >
                         Deactivate
                     </button>
                 </div>
 
                 <div className="relative w-full md:w-64">
-                    <input 
-                        type="text" 
-                        placeholder="Search" 
+                    <input
+                        type="text"
+                        placeholder="Search"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-4 pr-10 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-sans"
@@ -223,16 +221,15 @@ export default function AdminStudentPage() {
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">${(student.totalSpend || 0).toLocaleString()}</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{formatDate(student.createdAt)}</td>
                                         <td className="px-6 py-4 text-center">
-                                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold ${
-                                                student.isActive 
-                                                ? "bg-green-50 text-green-500" 
+                                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold ${student.isActive
+                                                ? "bg-green-50 text-green-500"
                                                 : "bg-[#E0EAFF] text-[#0A47C2]"
-                                            }`}>
+                                                }`}>
                                                 {student.isActive ? "Active" : "Deactivate"}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-center relative">
-                                            <button 
+                                            <button
                                                 onClick={() => handleActionClick(student._id)}
                                                 className="p-1 hover:bg-gray-100 rounded-md transition-colors text-gray-400 group-hover:text-blue-600"
                                             >
@@ -241,12 +238,12 @@ export default function AdminStudentPage() {
 
                                             {/* Action Popover */}
                                             {activePopoverId === student._id && (
-                                                <div 
+                                                <div
                                                     ref={popoverRef}
                                                     className="absolute right-full mr-2 top-0 z-50 w-48 bg-white shadow-xl rounded-xl border border-gray-100 p-2 animate-in fade-in zoom-in duration-200 flex flex-col gap-1"
                                                 >
                                                     {student.isActive ? (
-                                                        <button 
+                                                        <button
                                                             onClick={() => handleToggleActive(student._id, true)}
                                                             className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors"
                                                         >
@@ -254,7 +251,7 @@ export default function AdminStudentPage() {
                                                             Deactivate
                                                         </button>
                                                     ) : (
-                                                        <button 
+                                                        <button
                                                             onClick={() => handleToggleActive(student._id, false)}
                                                             className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors"
                                                         >
@@ -263,7 +260,7 @@ export default function AdminStudentPage() {
                                                         </button>
                                                     )}
 
-                                                    <button 
+                                                    <button
                                                         onClick={() => router.push(`/web-admin/student/${student._id}`)}
                                                         className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors"
                                                     >
@@ -283,7 +280,7 @@ export default function AdminStudentPage() {
 
             {/* Pagination UI */}
             <div className="flex items-center justify-end gap-2 mt-6">
-                <button 
+                <button
                     onClick={() => setPage(Math.max(1, page - 1))}
                     disabled={page === 1}
                     className="p-2 text-gray-400 hover:text-blue-600 disabled:opacity-50 transition-colors"
@@ -292,20 +289,19 @@ export default function AdminStudentPage() {
                 </button>
                 <div className="flex items-center gap-1">
                     {Array.from({ length: Math.ceil(meta.total / meta.limit) || 1 }, (_, i) => i + 1).map((pageNum) => (
-                        <button 
+                        <button
                             key={pageNum}
                             onClick={() => setPage(pageNum)}
-                            className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all ${
-                                page === pageNum 
-                                ? "bg-[#0A47C2] text-white shadow-lg shadow-blue-200" 
+                            className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all ${page === pageNum
+                                ? "bg-[#0A47C2] text-white shadow-lg shadow-blue-200"
                                 : "text-gray-400 hover:text-blue-600 hover:bg-gray-50"
-                            }`}
+                                }`}
                         >
                             {pageNum.toString().padStart(2, '0')}
                         </button>
                     ))}
                 </div>
-                <button 
+                <button
                     onClick={() => setPage(Math.min(Math.ceil(meta.total / meta.limit), page + 1))}
                     disabled={page >= Math.ceil(meta.total / meta.limit)}
                     className="p-2 text-blue-600 hover:bg-blue-50 disabled:opacity-50 rounded-full transition-colors"

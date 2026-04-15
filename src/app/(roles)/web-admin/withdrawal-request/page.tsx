@@ -2,10 +2,10 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { 
-    Search, 
-    MoreHorizontal, 
-    ChevronRight, 
+import {
+    Search,
+    MoreHorizontal,
+    ChevronRight,
     ChevronLeft,
     Clock,
     XCircle,
@@ -110,12 +110,12 @@ export default function AdminWithdrawalPage() {
     // Client-side filtering fallback
     const filteredWithdrawals = withdrawals.filter((item) => {
         const query = debouncedSearchQuery.toLowerCase();
-        const matchesSearch = 
-            item.teacher.name.toLowerCase().includes(query) || 
+        const matchesSearch =
+            item.teacher.name.toLowerCase().includes(query) ||
             item.teacher.email.toLowerCase().includes(query);
-            
+
         const matchesTab = item.status === activeTab;
-        
+
         return matchesSearch && matchesTab;
     });
 
@@ -144,7 +144,7 @@ export default function AdminWithdrawalPage() {
             if (response.data.success) {
                 toast.success(`Withdrawal request marked as ${action === "PAID" ? "Paid" : "Rejected"}`);
                 fetchWithdrawals(); // Refresh list to reflect correct tab location
-                
+
                 // If modal is open for this withdrawal, update it too optimistically
                 if (selectedWithdrawal && selectedWithdrawal._id === withdrawalId) {
                     setSelectedWithdrawal({ ...selectedWithdrawal, status: action });
@@ -171,42 +171,39 @@ export default function AdminWithdrawalPage() {
             {/* Top Bar Card */}
             <div className="bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                    <button 
+                    <button
                         onClick={() => { setActiveTab("PENDING"); setPage(1); }}
-                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                            activeTab === "PENDING" 
-                            ? "bg-[#FFFBEB] text-amber-600" 
+                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "PENDING"
+                            ? "bg-[#FFFBEB] text-amber-600"
                             : "bg-gray-50 text-gray-500 hover:bg-gray-100"
-                        }`}
+                            }`}
                     >
                         Pending
                     </button>
-                    <button 
+                    <button
                         onClick={() => { setActiveTab("PAID"); setPage(1); }}
-                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                            activeTab === "PAID" 
-                            ? "bg-[#22C55E] text-white" 
+                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "PAID"
+                            ? "bg-[#22C55E] text-white"
                             : "bg-gray-50 text-gray-500 hover:bg-gray-100"
-                        }`}
+                            }`}
                     >
                         Paid
                     </button>
-                    <button 
+                    <button
                         onClick={() => { setActiveTab("REJECTED"); setPage(1); }}
-                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                            activeTab === "REJECTED" 
-                            ? "bg-red-50 text-red-500" 
+                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "REJECTED"
+                            ? "bg-red-50 text-red-500"
                             : "bg-gray-50 text-gray-500 hover:bg-gray-100"
-                        }`}
+                            }`}
                     >
                         Rejected
                     </button>
                 </div>
 
                 <div className="relative w-full md:w-64">
-                    <input 
-                        type="text" 
-                        placeholder="Search teacher..." 
+                    <input
+                        type="text"
+                        placeholder="Search teacher..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-4 pr-10 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-sans"
@@ -260,18 +257,17 @@ export default function AdminWithdrawalPage() {
                                             {formatDate(withdrawal.createdAt)}
                                         </td>
                                         <td className="px-6 py-4 text-center">
-                                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold ${
-                                                withdrawal.status === "PAID"
-                                                ? "bg-green-50 text-green-500" 
+                                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold ${withdrawal.status === "PAID"
+                                                ? "bg-green-50 text-green-500"
                                                 : withdrawal.status === "REJECTED"
-                                                ? "bg-red-50 text-red-500"
-                                                : "bg-[#FFFBEB] text-amber-600"
-                                            }`}>
+                                                    ? "bg-red-50 text-red-500"
+                                                    : "bg-[#FFFBEB] text-amber-600"
+                                                }`}>
                                                 {withdrawal.status}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-center relative">
-                                            <button 
+                                            <button
                                                 onClick={() => handleActionClick(withdrawal._id, withdrawal.status)}
                                                 className="p-1 hover:bg-gray-100 rounded-md transition-colors text-gray-400 group-hover:text-blue-600"
                                             >
@@ -280,13 +276,13 @@ export default function AdminWithdrawalPage() {
 
                                             {/* Action Popover */}
                                             {activePopoverId === withdrawal._id && (
-                                                <div 
+                                                <div
                                                     ref={popoverRef}
                                                     className="absolute right-full mr-2 top-0 z-50 w-48 bg-white shadow-xl rounded-xl border border-gray-100 p-2 animate-in fade-in zoom-in duration-200 flex flex-col gap-1"
                                                 >
                                                     {withdrawal.status === "PENDING" && (
                                                         <>
-                                                            <button 
+                                                            <button
                                                                 onClick={() => handleAction("PAID", withdrawal._id)}
                                                                 className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors"
                                                             >
@@ -294,7 +290,7 @@ export default function AdminWithdrawalPage() {
                                                                 Paid
                                                             </button>
 
-                                                            <button 
+                                                            <button
                                                                 onClick={() => handleAction("REJECTED", withdrawal._id)}
                                                                 className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors"
                                                             >
@@ -304,7 +300,7 @@ export default function AdminWithdrawalPage() {
                                                         </>
                                                     )}
 
-                                                    <button 
+                                                    <button
                                                         onClick={() => handleViewDetail(withdrawal)}
                                                         className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors"
                                                     >
@@ -324,7 +320,7 @@ export default function AdminWithdrawalPage() {
 
             {/* Pagination */}
             <div className="flex items-center justify-end gap-2 mt-6">
-                <button 
+                <button
                     onClick={() => setPage(Math.max(1, page - 1))}
                     disabled={page === 1}
                     className="p-2 text-gray-400 hover:text-blue-600 disabled:opacity-50 transition-colors"
@@ -333,20 +329,19 @@ export default function AdminWithdrawalPage() {
                 </button>
                 <div className="flex items-center gap-1">
                     {Array.from({ length: Math.ceil(meta.total / meta.limit) || 1 }, (_, i) => i + 1).map((pageNum) => (
-                        <button 
+                        <button
                             key={pageNum}
                             onClick={() => setPage(pageNum)}
-                            className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all ${
-                                page === pageNum 
-                                ? "bg-[#0A47C2] text-white shadow-lg shadow-blue-200" 
+                            className={`w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all ${page === pageNum
+                                ? "bg-[#0A47C2] text-white shadow-lg shadow-blue-200"
                                 : "text-gray-400 hover:text-blue-600 hover:bg-gray-50"
-                            }`}
+                                }`}
                         >
                             {pageNum.toString().padStart(2, '0')}
                         </button>
                     ))}
                 </div>
-                <button 
+                <button
                     onClick={() => setPage(Math.min(Math.ceil(meta.total / meta.limit), page + 1))}
                     disabled={page >= Math.ceil(meta.total / meta.limit)}
                     className="p-2 text-blue-600 hover:bg-blue-50 disabled:opacity-50 rounded-full transition-colors"
@@ -372,13 +367,13 @@ export default function AdminWithdrawalPage() {
 
                         {selectedWithdrawal.status === "PENDING" && (
                             <div className="flex items-center gap-3 mb-6 bg-amber-50/50 p-4 rounded-xl border border-amber-100/50">
-                                <button 
+                                <button
                                     onClick={() => handleAction("PAID", selectedWithdrawal._id)}
                                     className="px-4 py-2 bg-[#22C55E] text-white hover:bg-green-600 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2"
                                 >
                                     <CheckCircle2 size={16} /> Mark as Paid
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => handleAction("REJECTED", selectedWithdrawal._id)}
                                     className="px-4 py-2 bg-red-500 text-white hover:bg-red-600 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2"
                                 >
@@ -400,8 +395,8 @@ export default function AdminWithdrawalPage() {
                                     {selectedWithdrawal.status === "PENDING" && <Clock size={14} className="text-amber-500" />}
                                     <span className={
                                         selectedWithdrawal.status === "PAID" ? "text-green-600" :
-                                        selectedWithdrawal.status === "REJECTED" ? "text-red-600" :
-                                        "text-amber-600"
+                                            selectedWithdrawal.status === "REJECTED" ? "text-red-600" :
+                                                "text-amber-600"
                                     }>{selectedWithdrawal.status}</span>
                                 </div>
                             </div>
@@ -409,12 +404,12 @@ export default function AdminWithdrawalPage() {
                             {/* Right: Teacher Info Profile */}
                             <div className="flex-1 bg-white border border-gray-100 rounded-2xl p-6 shadow-sm flex flex-col items-center text-center gap-3">
                                 <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-50 relative shrink-0">
-                                    <Image 
+                                    <Image
                                         unoptimized
-                                        src={getImageUrl(selectedWithdrawal.teacher.profileImage, selectedWithdrawal.teacher.name)} 
-                                        alt={selectedWithdrawal.teacher.name} 
-                                        fill 
-                                        className="object-cover" 
+                                        src={getImageUrl(selectedWithdrawal.teacher.profileImage, selectedWithdrawal.teacher.name)}
+                                        alt={selectedWithdrawal.teacher.name}
+                                        fill
+                                        className="object-cover"
                                     />
                                 </div>
                                 <div>
@@ -435,7 +430,7 @@ export default function AdminWithdrawalPage() {
                                 <Landmark size={20} className="text-[#0A47C2]" />
                                 <h3 className="text-base font-bold text-[#0D1C35]">Bank Information</h3>
                             </div>
-                            
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
                                 <div>
                                     <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Bank Name</span>

@@ -130,9 +130,9 @@ export default function AdminTeacherPage() {
 
             if (response.data.success) {
                 toast.success(`Teacher moved to ${status.toLowerCase()}`);
-                
+
                 // Instantly update UI reflection
-                setTeachers(current => current.map(t => 
+                setTeachers(current => current.map(t =>
                     t._id === activePopoverId ? { ...t, teacherApprovalStatus: status } : t
                 ));
             } else {

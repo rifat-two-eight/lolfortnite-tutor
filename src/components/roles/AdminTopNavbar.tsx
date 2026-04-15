@@ -4,17 +4,31 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MessageSquare, LogOut, User, Settings, ChevronDown } from "lucide-react";
+import { MessageSquare, LogOut, User, Settings, ChevronDown, Home, LayoutDashboard } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn, getImageUrl } from "@/lib/utils";
+import api from "@/lib/axios";
 
 export default function AdminTopNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
     const pathname = usePathname();
     const router = useRouter();
-    const { user, logout } = useAuthStore();
+    const user = useAuthStore((state) => state.user);
+    const setUser = useAuthStore((state) => state.setUser);
+    const logout = useAuthStore((state) => state.logout);
     const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    React.useEffect(() => {
+        setMounted(true);
+        // Sync administrative user data on mount
+        api.get("/auth/me").then((res) => {
+            if (res.data.success) {
+                setUser(res.data.data);
+            }
+        });
+    }, [setUser]);
 
     const getTitle = () => {
         if (pathname === "/web-admin/teacher") return "Teacher";
@@ -58,18 +72,17 @@ export default function AdminTopNavbar({ onMenuClick }: { onMenuClick?: () => vo
                         onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                         className="flex items-center gap-2 p-1 hover:bg-gray-50 rounded-full transition-all border border-transparent hover:border-gray-100"
                     >
-                        <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm transition-all bg-gray-100">
-                            {user?.profileImage ? (
+                        <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm transition-all bg-gray-50 flex items-center justify-center">
+                            {mounted && user?.profileImage ? (
                                 <Image
                                     src={getImageUrl(user.profileImage)}
-                                    alt="Profile"
+                                    alt="Admin"
+                                    unoptimized
                                     fill
                                     className="object-cover"
                                 />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-blue-50 text-[#0A47C2]">
-                                    <User size={20} />
-                                </div>
+                                <User size={20} className="text-blue-200" />
                             )}
                         </div>
                         <ChevronDown size={14} className={cn("text-gray-400 transition-transform duration-200", showProfileDropdown && "rotate-180")} />
@@ -91,6 +104,26 @@ export default function AdminTopNavbar({ onMenuClick }: { onMenuClick?: () => vo
                                 </div>
 
                                 <div className="p-1">
+                                    <Link
+                                        href="/"
+                                        onClick={() => setShowProfileDropdown(false)}
+                                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-[#0A47C2] rounded-xl transition-all group"
+                                    >
+                                        <div className="p-1.5 bg-gray-50 group-hover:bg-white rounded-lg transition-colors">
+                                            <Home size={16} />
+                                        </div>
+                                        <span>Home</span>
+                                    </Link>
+                                    <Link
+                                        href="/web-admin"
+                                        onClick={() => setShowProfileDropdown(false)}
+                                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-[#0A47C2] rounded-xl transition-all group"
+                                    >
+                                        <div className="p-1.5 bg-gray-50 group-hover:bg-white rounded-lg transition-colors">
+                                            <LayoutDashboard size={16} />
+                                        </div>
+                                        <span>Dashboard</span>
+                                    </Link>
                                     <Link
                                         href="/web-admin/profile"
                                         onClick={() => setShowProfileDropdown(false)}

@@ -1,45 +1,28 @@
 {
-    "success": true,
-    "message": "Your withdrawal requests retrieved successfully",
-    "data": [
-        {
-            "_id": "69dfc161b71f0ce30bace6d5",
-            "teacher": {
-                "_id": "69da8026f548e28884849a58",
-                "name": "Kiayada Ballard",
-                "email": "zohe@mailinator.com",
-                "balance": 300
-            },
-            "amount": 200,
-            "status": "PENDING",
-            "bankDetails": {
-                "_id": "69dfc0db2ded7732c0a3b97e",
-                "userId": "69da8026f548e28884849a58",
-                "accountHolderName": "John Doe",
-                "bankName": "National Bank of Kuwait",
-                "accountNumber": "1234567890",
-                "routingNumber": "NBKUKWKK",
-                "branchName": "Sharq Branch",
-                "swiftCode": "NBKUKWKKXXX",
-                "iban": "KW12NBKU000000001234567890",
-                "country": "Kuwait",
-                "bankAddress": "Abdullah Al-Mubarak Street, Kuwait City",
-                "beneficiaryAddress": "Salmiya, Block 10, Street 1, House 5",
-                "isVerified": false,
-                "isDefault": true,
-                "isDeleted": false,
-                "createdAt": "2026-04-15T16:46:19.925Z",
-                "updatedAt": "2026-04-15T16:46:19.925Z"
-            },
-            "adminComment": "Your request is currently under review",
-            "createdAt": "2026-04-15T16:48:33.490Z",
-            "updatedAt": "2026-04-15T16:48:33.490Z"
-        }
-    ],
-    "meta": {
-        "page": 1,
-        "limit": 10,
-        "total": 1,
-        "totalPages": 1
-    }
+"name": "Md. Appon Islam",
+"phone": "01712345678",
+"language": "English",
+"location": {
+"lat": 23.8103,
+"lng": 90.4125
+},
+"address": {
+"street": "House 12, Road 5",
+"city": "Dhaka",
+"state": "Dhaka",
+"zipCode": "1207",
+"country": "Bangladesh"
+},
+"availabilityLocation": {
+"address": "Dhanmondi, Dhaka",
+"lat": 23.7465,
+"lng": 90.3760,
+"radiusKm": 10
+},
+"preferences": {
+"subjects": ["Math", "Physics"],
+"curriculum": ["English Medium", "Bangla Medium"],
+"teacherGender": "Male",
+"languages": ["English", "Bangla"]
+}
 }

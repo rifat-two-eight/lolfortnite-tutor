@@ -120,7 +120,7 @@ export default function ProfilePage() {
                         {purchaseHistory.map((item) => (
                             <div key={item.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow group flex flex-col">
                                 <div className="relative aspect-5/4 overflow-hidden bg-gray-100">
-                                    <Image src={item.image} alt={item.tutor} fill className="object-cover" />
+                                    <Image src={item.image} alt={item.tutor} unoptimized fill className="object-cover" />
                                     <span className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-[10px] font-bold px-2 py-1 rounded-md text-emerald-600 font-sans">
                                         {item.status}
                                     </span>
