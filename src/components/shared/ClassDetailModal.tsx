@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { X, Star, Users, Globe, BookOpen, Clock, Tag, MessageCircle, PlayCircle } from "lucide-react";
 import Image from "next/image";
+import api from "@/lib/axios";
 import { cn } from "@/lib/utils";
 
 interface ClassData {
@@ -35,7 +36,28 @@ interface ClassDetailModalProps {
 }
 
 export default function ClassDetailModal({ isOpen, onClose, data }: ClassDetailModalProps) {
+    const [isBooking, setIsBooking] = useState(false);
+
     if (!isOpen || !data) return null;
+
+    const handleBookSession = async () => {
+        if (!data) return;
+        setIsBooking(true);
+        try {
+            const response = await api.post("/class-payments/initiate-payment", {
+                classType: "CLASS",
+                classId: data._id
+            });
+            if (response.data.success && response.data.data.paymentUrl) {
+                window.location.href = response.data.data.paymentUrl;
+            }
+        } catch (error) {
+            console.error("Payment initiation failed:", error);
+            alert("Failed to initiate payment. Please try again.");
+        } finally {
+            setIsBooking(false);
+        }
+    };
 
     const getImageUrl = (path: string) => {
         if (!path) return "/democourse.png";
@@ -193,8 +215,12 @@ export default function ClassDetailModal({ isOpen, onClose, data }: ClassDetailM
 
                         {/* CTA Row */}
                         <div className="mt-10 flex items-center gap-4 pt-6 border-t border-gray-100">
-                            <button className="flex-1 py-4 bg-[#0A47C2] text-white font-bold rounded-none text-sm font-sans hover:bg-[#083a9e] transition-all shadow-lg shadow-blue-100">
-                                Book This Session
+                            <button 
+                                onClick={handleBookSession}
+                                disabled={isBooking}
+                                className="flex-1 py-4 bg-[#0A47C2] text-white font-bold rounded-none text-sm font-sans hover:bg-[#083a9e] transition-all shadow-lg shadow-blue-100 disabled:opacity-70 disabled:cursor-not-allowed"
+                            >
+                                {isBooking ? "Redirecting..." : "Book This Session"}
                             </button>
                             <button className="w-14 h-14 flex items-center justify-center border border-gray-200 rounded-none text-[#0D1C35] hover:bg-gray-50 transition-all">
                                 <MessageCircle size={24} />

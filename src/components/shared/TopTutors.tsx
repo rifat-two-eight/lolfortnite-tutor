@@ -55,7 +55,7 @@ export default function TopTutors() {
                 const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/hourly-classes`);
                 if (response.data.success) {
                     // Sort by average rating high to low
-                    const sorted = response.data.data.sort((a: HourlyClassData, b: HourlyClassData) => 
+                    const sorted = response.data.data.sort((a: HourlyClassData, b: HourlyClassData) =>
                         (b.averageRating || 0) - (a.averageRating || 0)
                     );
                     setTutors(sorted.slice(0, 3));
@@ -77,12 +77,12 @@ export default function TopTutors() {
     };
 
     return (
-        <section className="w-full max-w-7xl mx-auto px-4 md:px-0 py-14 md:py-20">
+        <section className="w-full max-w-7xl mx-auto px-4 md:px-0 py-10 md:py-14">
             {/* Modal */}
-            <HourlyTutorDetailModal 
-                isOpen={isModalOpen} 
-                onClose={() => setIsModalOpen(false)} 
-                data={selectedTutor} 
+            <HourlyTutorDetailModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                data={selectedTutor}
             />
 
             {/* Header */}
@@ -99,7 +99,7 @@ export default function TopTutors() {
             <div className="flex flex-col gap-6">
                 {loading ? (
                     <div className="flex justify-center items-center h-64">
-                         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#0A47C2]"></div>
+                        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#0A47C2]"></div>
                     </div>
                 ) : (
                     <>
@@ -185,18 +185,19 @@ export default function TopTutors() {
                                 </div>
                             </div>
                         ))}
-                        
-                        {/* View All Button */}
-                        <div className="flex justify-center mt-10">
-                            <Link 
-                                href="/tutors" 
-                                className="px-10 py-3 bg-white border-2 border-[#0A47C2] text-[#0A47C2] text-sm font-bold rounded-xl font-sans hover:bg-[#0A47C2] hover:text-white transition-all transform hover:scale-105"
-                            >
-                                View all tutors
-                            </Link>
-                        </div>
+
                     </>
                 )}
+            </div>
+
+            {/* View All Button */}
+            <div className="flex justify-center mt-10">
+                <Link
+                    href="/tutors"
+                    className="px-8 py-3 bg-[#0D1C35] text-white text-sm font-bold rounded-full font-sans hover:bg-[#0A47C2] transition-all"
+                >
+                    View all tutors →
+                </Link>
             </div>
         </section>
     );

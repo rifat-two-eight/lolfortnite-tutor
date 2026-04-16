@@ -51,6 +51,7 @@ const courses = [
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import api from "@/lib/axios";
 import FilterModal from "./FilterModal";
 import ClassDetailModal from "./ClassDetailModal";
 
@@ -106,6 +107,26 @@ export default function ClassesContent() {
     const [searchTerm, setSearchTerm] = useState("");
     const [activeClassType, setActiveClassType] = useState("all");
     const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
+    const [bookingClassId, setBookingClassId] = useState<string | null>(null);
+
+    const handleBookNow = async (e: React.MouseEvent, classId: string) => {
+        e.stopPropagation();
+        setBookingClassId(classId);
+        try {
+            const response = await api.post("/class-payments/initiate-payment", {
+                classType: "CLASS",
+                classId: classId
+            });
+            if (response.data.success && response.data.data.paymentUrl) {
+                window.location.href = response.data.data.paymentUrl;
+            }
+        } catch (error) {
+            console.error("Payment initiation failed:", error);
+            alert("Failed to initiate payment. Please try again.");
+        } finally {
+            setBookingClassId(null);
+        }
+    };
 
     const fetchClasses = async (currentPage: number) => {
         setLoading(true);
@@ -314,9 +335,13 @@ export default function ClassesContent() {
 
                                 {/* CTA Row */}
                                 <div className="flex items-center gap-3 mt-auto">
-                                    <Link href={`/classes/${cls._id}`} className="flex-1 py-2.5 bg-[#0A47C2] text-white text-center text-sm font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all">
-                                        Book Now
-                                    </Link>
+                                    <button 
+                                        onClick={(e) => handleBookNow(e, cls._id)}
+                                        disabled={bookingClassId === cls._id}
+                                        className="flex-1 py-2.5 bg-[#0A47C2] text-white text-center text-sm font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                                    >
+                                        {bookingClassId === cls._id ? "Booking..." : "Book Now"}
+                                    </button>
                                     <button className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-xl text-gray-400 hover:text-[#0A47C2] hover:border-[#0A47C2] transition-all">
                                         <MessageCircle />
                                     </button>
