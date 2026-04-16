@@ -46,6 +46,7 @@ export default function AdminTeacherPage() {
     const [loading, setLoading] = useState(true);
 
     const [activePopoverId, setActivePopoverId] = useState<string | null>(null);
+    const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
     const [isApproveSubMenuOpen, setIsApproveSubMenuOpen] = useState(false);
     const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -72,9 +73,21 @@ export default function AdminTeacherPage() {
                 setIsApproveSubMenuOpen(false);
             }
         };
+
+        const handleScroll = () => {
+            if (activePopoverId) {
+                setActivePopoverId(null);
+                setIsApproveSubMenuOpen(false);
+            }
+        };
+
         document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+        window.addEventListener("scroll", handleScroll, true); // true to catch scrolls in overflow containers
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            window.removeEventListener("scroll", handleScroll, true);
+        };
+    }, [activePopoverId]);
 
     // Fetch Teachers
     useEffect(() => {
@@ -115,7 +128,9 @@ export default function AdminTeacherPage() {
         setPage(1);
     };
 
-    const handleActionClick = (id: string) => {
+    const handleActionClick = (e: React.MouseEvent, id: string) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setPopoverPosition({ top: rect.top, left: rect.left });
         setActivePopoverId(activePopoverId === id ? null : id);
         setIsApproveSubMenuOpen(false);
     };
@@ -256,17 +271,22 @@ export default function AdminTeacherPage() {
                                         </td>
                                         <td className="px-6 py-4 text-center relative">
                                             <button
-                                                onClick={() => handleActionClick(teacher._id)}
+                                                onClick={(e) => handleActionClick(e, teacher._id)}
                                                 className="p-1 hover:bg-gray-100 rounded-md transition-colors text-gray-400 group-hover:text-blue-600"
                                             >
                                                 <MoreHorizontal size={20} />
                                             </button>
 
-                                            {/* Small Popover Modal */}
                                             {activePopoverId === teacher._id && (
                                                 <div
                                                     ref={popoverRef}
-                                                    className="absolute right-full mr-2 top-0 z-50 w-48 bg-white shadow-xl rounded-xl border border-gray-100 p-2 animate-in fade-in zoom-in duration-200 flex flex-col gap-1"
+                                                    style={{
+                                                        position: 'fixed',
+                                                        top: `${popoverPosition.top}px`,
+                                                        left: `${popoverPosition.left - 200}px`,
+                                                        zIndex: 9999
+                                                    }}
+                                                    className="w-48 bg-white shadow-xl rounded-xl border border-gray-100 p-2 animate-in fade-in zoom-in duration-200 flex flex-col gap-1"
                                                 >
                                                     <div className="relative group/approve">
                                                         <button

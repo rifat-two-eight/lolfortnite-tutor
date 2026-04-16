@@ -76,6 +76,7 @@ export default function AdminClassesPage() {
     const [loading, setLoading] = useState(true);
 
     const [activePopoverId, setActivePopoverId] = useState<string | null>(null);
+    const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
     const popoverRef = useRef<HTMLDivElement>(null);
 
     const [selectedClass, setSelectedClass] = useState<ClassData | null>(null);
@@ -103,9 +104,20 @@ export default function AdminClassesPage() {
                 setActivePopoverId(null);
             }
         };
+
+        const handleScroll = () => {
+            if (activePopoverId) {
+                setActivePopoverId(null);
+            }
+        };
+
         document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+        window.addEventListener("scroll", handleScroll, true);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            window.removeEventListener("scroll", handleScroll, true);
+        };
+    }, [activePopoverId]);
 
     // Fetch Classes
     const fetchClasses = useCallback(async () => {
@@ -303,7 +315,11 @@ export default function AdminClassesPage() {
                                         </td>
                                         <td className="px-6 py-5 text-center relative">
                                             <button
-                                                onClick={() => setActivePopoverId(activePopoverId === cls._id ? null : cls._id)}
+                                                onClick={(e) => {
+                                                    const rect = e.currentTarget.getBoundingClientRect();
+                                                    setPopoverPosition({ top: rect.top, left: rect.left });
+                                                    setActivePopoverId(activePopoverId === cls._id ? null : cls._id);
+                                                }}
                                                 className="p-2 hover:bg-gray-100 text-gray-400 hover:text-[#0A47C2] transition-colors rounded-none"
                                             >
                                                 <MoreHorizontal size={20} />
@@ -312,7 +328,13 @@ export default function AdminClassesPage() {
                                             {activePopoverId === cls._id && (
                                                 <div
                                                     ref={popoverRef}
-                                                    className="absolute right-full mr-2 top-0 z-50 w-52 bg-white shadow-2xl border border-gray-100 p-2 animate-in fade-in zoom-in duration-200 flex flex-col gap-1 rounded-none font-sans"
+                                                    style={{
+                                                        position: 'fixed',
+                                                        top: `${popoverPosition.top}px`,
+                                                        left: `${popoverPosition.left - 200}px`,
+                                                        zIndex: 9999
+                                                    }}
+                                                    className="w-52 bg-white shadow-2xl border border-gray-100 p-2 animate-in fade-in zoom-in duration-200 flex flex-col gap-1 rounded-none font-sans"
                                                 >
                                                     {cls.status === "PENDING" && (
                                                         <>

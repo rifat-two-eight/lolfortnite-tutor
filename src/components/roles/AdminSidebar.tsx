@@ -11,7 +11,9 @@ import {
     CreditCard,
     ArrowUpRight,
     Settings,
-    LogOut
+    LogOut,
+    ShieldCheck,
+    FileText
 } from "lucide-react";
 import Image from "next/image";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -23,6 +25,8 @@ const navItems = [
     { name: "Student", href: "/web-admin/student", icon: GraduationCap },
     { name: "Payment", href: "/web-admin/payment", icon: CreditCard },
     { name: "Withdrawal Request", href: "/web-admin/withdrawal-request", icon: ArrowUpRight },
+    { name: "Privacy Policy", href: "/web-admin/privacy", icon: ShieldCheck },
+    { name: "Terms & Conditions", href: "/web-admin/terms", icon: FileText },
     { name: "Settings", href: "/web-admin/settings", icon: Settings },
 ];
 

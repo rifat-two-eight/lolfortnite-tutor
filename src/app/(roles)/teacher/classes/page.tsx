@@ -101,6 +101,7 @@ export default function MyClassPage() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+    const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [selectedClass, setSelectedClass] = useState<ClassData | null>(null);
@@ -129,6 +130,18 @@ export default function MyClassPage() {
     useEffect(() => {
         fetchClasses(page, statusFilter);
     }, [page, statusFilter, fetchClasses]);
+
+    // Close menu on scroll
+    useEffect(() => {
+        const handleScroll = () => {
+            if (openMenuId) {
+                setOpenMenuId(null);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll, true);
+        return () => window.removeEventListener("scroll", handleScroll, true);
+    }, [openMenuId]);
 
     const handleFilterChange = (newStatus: string) => {
         setStatusFilter(newStatus);
@@ -235,6 +248,8 @@ export default function MyClassPage() {
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
+                                                const rect = e.currentTarget.getBoundingClientRect();
+                                                setPopoverPosition({ top: rect.top, left: rect.left });
                                                 setOpenMenuId(openMenuId === cls._id ? null : cls._id);
                                             }}
                                             className="w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-md text-[#0D1C35] hover:text-[#0A47C2] transition-colors rounded-none shadow-sm"
@@ -243,29 +258,34 @@ export default function MyClassPage() {
                                         </button>
 
                                         {openMenuId === cls._id && (
-                                            <>
-                                                <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
-                                                <div className="absolute right-0 bottom-10 w-44 bg-white border border-gray-100 shadow-2xl z-30 rounded-none py-2 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
-                                                    <button
-                                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-gray-700 hover:bg-blue-50 hover:text-[#0A47C2] transition-colors"
-                                                        onClick={() => {
-                                                            setSelectedClass(cls);
-                                                            setShowDetailModal(true);
-                                                            setOpenMenuId(null);
-                                                        }}
-                                                    >
-                                                        <BookOpen size={16} />
-                                                        View Details
-                                                    </button>
-                                                    <button
-                                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 transition-colors"
-                                                        onClick={() => handleDelete(cls._id)}
-                                                    >
-                                                        <Trash2 size={16} />
-                                                        Delete Class
-                                                    </button>
-                                                </div>
-                                            </>
+                                            <div 
+                                                style={{
+                                                    position: 'fixed',
+                                                    top: `${popoverPosition.top - 85}px`, // Opening above the button
+                                                    left: `${popoverPosition.left - 150}px`,
+                                                    zIndex: 9999
+                                                }}
+                                                className="w-44 bg-white border border-gray-100 shadow-2xl rounded-none py-2 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200"
+                                            >
+                                                <button
+                                                    className="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-gray-700 hover:bg-blue-50 hover:text-[#0A47C2] transition-colors"
+                                                    onClick={() => {
+                                                        setSelectedClass(cls);
+                                                        setShowDetailModal(true);
+                                                        setOpenMenuId(null);
+                                                    }}
+                                                >
+                                                    <BookOpen size={16} />
+                                                    View Details
+                                                </button>
+                                                <button
+                                                    className="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 transition-colors"
+                                                    onClick={() => handleDelete(cls._id)}
+                                                >
+                                                    <Trash2 size={16} />
+                                                    Delete Class
+                                                </button>
+                                            </div>
                                         )}
                                     </div>
                                 </div>

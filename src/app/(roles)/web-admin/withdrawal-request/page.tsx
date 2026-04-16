@@ -54,6 +54,7 @@ export default function AdminWithdrawalPage() {
     const [loading, setLoading] = useState(true);
 
     const [activePopoverId, setActivePopoverId] = useState<string | null>(null);
+    const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
     const popoverRef = useRef<HTMLDivElement>(null);
 
     const [selectedWithdrawal, setSelectedWithdrawal] = useState<WithdrawalRequest | null>(null);
@@ -74,9 +75,20 @@ export default function AdminWithdrawalPage() {
                 setActivePopoverId(null);
             }
         };
+
+        const handleScroll = () => {
+            if (activePopoverId) {
+                setActivePopoverId(null);
+            }
+        };
+
         document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+        window.addEventListener("scroll", handleScroll, true);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            window.removeEventListener("scroll", handleScroll, true);
+        };
+    }, [activePopoverId]);
 
     const fetchWithdrawals = async () => {
         setLoading(true);
@@ -124,7 +136,9 @@ export default function AdminWithdrawalPage() {
         return new Date(dateString).toLocaleDateString('en-GB', options);
     };
 
-    const handleActionClick = (id: string, withdrawalStatus: string) => {
+    const handleActionClick = (e: React.MouseEvent, id: string, withdrawalStatus: string) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setPopoverPosition({ top: rect.top, left: rect.left });
         setActivePopoverId(activePopoverId === id ? null : id);
     };
 
@@ -268,17 +282,22 @@ export default function AdminWithdrawalPage() {
                                         </td>
                                         <td className="px-6 py-4 text-center relative">
                                             <button
-                                                onClick={() => handleActionClick(withdrawal._id, withdrawal.status)}
+                                                onClick={(e) => handleActionClick(e, withdrawal._id, withdrawal.status)}
                                                 className="p-1 hover:bg-gray-100 rounded-md transition-colors text-gray-400 group-hover:text-blue-600"
                                             >
                                                 <MoreHorizontal size={20} />
                                             </button>
 
-                                            {/* Action Popover */}
                                             {activePopoverId === withdrawal._id && (
                                                 <div
                                                     ref={popoverRef}
-                                                    className="absolute right-full mr-2 top-0 z-50 w-48 bg-white shadow-xl rounded-xl border border-gray-100 p-2 animate-in fade-in zoom-in duration-200 flex flex-col gap-1"
+                                                    style={{
+                                                        position: 'fixed',
+                                                        top: `${popoverPosition.top}px`,
+                                                        left: `${popoverPosition.left - 200}px`,
+                                                        zIndex: 9999
+                                                    }}
+                                                    className="w-48 bg-white shadow-xl rounded-xl border border-gray-100 p-2 animate-in fade-in zoom-in duration-200 flex flex-col gap-1"
                                                 >
                                                     {withdrawal.status === "PENDING" && (
                                                         <>

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Hero() {
     return (
@@ -21,12 +22,16 @@ export default function Hero() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 items-center md:items-start justify-center md:justify-start">
-                    <button className="w-full sm:w-auto px-8 sm:px-10 py-4 bg-[#0A47C2] text-white font-bold rounded-xl transition-all font-sans">
-                        Book a Consultation
-                    </button>
-                    <button className="w-full sm:w-auto px-8 sm:px-10 py-4 bg-white border border-gray-200 text-[#0D1C35] font-bold rounded-xl hover:bg-gray-50 transition-all font-sans">
-                        Explore Courses
-                    </button>
+                    <Link href="/tutors">
+                        <button className="w-full sm:w-auto px-8 sm:px-10 py-4 bg-[#0A47C2] text-white font-bold rounded-xl transition-all font-sans">
+                            Book a Consultation
+                        </button>
+                    </Link>
+                    <Link href="/classes">
+                        <button className="w-full sm:w-auto px-8 sm:px-10 py-4 bg-white border border-gray-200 text-[#0D1C35] font-bold rounded-xl hover:bg-gray-50 transition-all font-sans">
+                            Explore Courses
+                        </button>
+                    </Link>
                 </div>
             </div>
 

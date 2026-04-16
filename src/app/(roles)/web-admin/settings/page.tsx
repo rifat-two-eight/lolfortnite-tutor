@@ -149,33 +149,6 @@ export default function AdminSettingsPage() {
         <div className="px-4 md:px-8 py-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 max-w-7xl">
 
-                {/* Left Side: Web Setting */}
-                {/* <div className="lg:col-span-5 space-y-6">
-                    <h2 className="text-xl font-bold text-[#0D1C35] mb-8">Web Setting</h2>
-                    <div className="space-y-4">
-                        {webSettings.map((setting) => (
-                            <div 
-                                key={setting.id}
-                                className="bg-white px-8 py-5 rounded-full border border-gray-100 shadow-sm flex items-center justify-between group hover:border-blue-100"
-                            >
-                                <span className="text-sm font-medium text-gray-600 font-sans">{setting.label}</span>
-                                <button 
-                                    onClick={() => toggleSetting(setting.id)}
-                                    className={`relative inline-flex h-7 w-14 items-center rounded-full focus:outline-none ${
-                                        setting.active ? "bg-[#0A47C2]" : "bg-gray-200"
-                                    }`}
-                                >
-                                    <span 
-                                        className={`inline-block h-5 w-5 transform rounded-full bg-white ${
-                                            setting.active ? "translate-x-8" : "translate-x-1"
-                                        }`} 
-                                    />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div> */}
-
                 {/* Center/Right: Account Settings */}
                 <div className="lg:col-span-7">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-12">

@@ -106,6 +106,7 @@ export default function TeacherEarningPage() {
     const [withdrawAmount, setWithdrawAmount] = useState("");
     const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
     const [activeActionId, setActiveActionId] = useState<string | null>(null);
+    const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
     const [stats, setStats] = useState<FinancialStats | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -141,16 +142,28 @@ export default function TeacherEarningPage() {
     const [selectedDate, setSelectedDate] = useState<string>(toISODate(new Date()));
     const calendarRef = useRef<HTMLDivElement>(null);
 
-    // Close calendar on outside click
+    // Close calendar/popover on outside click/scroll
     useEffect(() => {
         function handleClickOutside(e: MouseEvent) {
             if (calendarRef.current && !calendarRef.current.contains(e.target as Node)) {
                 setShowCalendar(false);
             }
         }
+
+        const handleScroll = () => {
+            if (activeActionId) {
+                setActiveActionId(null);
+            }
+        };
+
         if (showCalendar) document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [showCalendar]);
+        window.addEventListener("scroll", handleScroll, true);
+        
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            window.removeEventListener("scroll", handleScroll, true);
+        };
+    }, [showCalendar, activeActionId]);
 
     useEffect(() => {
         api.get("/dashboard/teacher-financial-stats")
@@ -627,13 +640,25 @@ export default function TeacherEarningPage() {
                                             </td>
                                             <td className="py-5 text-right relative">
                                                 <button
-                                                    onClick={() => setActiveActionId(activeActionId === row._id ? null : row._id)}
+                                                    onClick={(e) => {
+                                                        const rect = e.currentTarget.getBoundingClientRect();
+                                                        setPopoverPosition({ top: rect.top, left: rect.left });
+                                                        setActiveActionId(activeActionId === row._id ? null : row._id);
+                                                    }}
                                                     className="p-2 text-gray-200 group-hover:text-gray-400 transition-colors"
                                                 >
                                                     <MoreHorizontal size={18} />
                                                 </button>
                                                 {activeActionId === row._id && (
-                                                    <div className="absolute top-12 right-0 bg-white shadow-xl border border-gray-100 py-3 px-6 z-10 whitespace-nowrap">
+                                                    <div 
+                                                        style={{
+                                                            position: 'fixed',
+                                                            top: `${popoverPosition.top}px`,
+                                                            left: `${popoverPosition.left - 180}px`,
+                                                            zIndex: 9999
+                                                        }}
+                                                        className="bg-white shadow-xl border border-gray-100 py-3 px-6 whitespace-nowrap animate-in fade-in zoom-in duration-200"
+                                                    >
                                                         {row.status === "PENDING" ? (
                                                             <button
                                                                 onClick={() => handleCancelWithdraw(row._id)}

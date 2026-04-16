@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Search, ChevronDown, Settings2, ShieldCheck, MessageCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 function StarIcon() {
     return (
@@ -49,8 +50,9 @@ const courses = [
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import FilterModal from "./FilterModal";
 import axios from "axios";
+import FilterModal from "./FilterModal";
+import ClassDetailModal from "./ClassDetailModal";
 
 interface ClassData {
     _id: string;
@@ -64,9 +66,14 @@ interface ClassData {
     description: string;
     classType: string;
     images: string[];
+    createdAt: string;
+    averageRating: number;
+    ratingCount: number;
+    youtubeVideoLink?: string;
+    whatsappGroupLink?: string;
     createdBy: {
         name: string;
-        profileImage: string;
+        profileImage?: string;
     };
 }
 
@@ -94,13 +101,31 @@ export default function ClassesContent() {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [selectedClass, setSelectedClass] = useState<ClassData | null>(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [activeClassType, setActiveClassType] = useState("all");
+    const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
 
     const fetchClasses = async (currentPage: number) => {
         setLoading(true);
         try {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/classes?page=${currentPage}&limit=9`);
+            let url = `${process.env.NEXT_PUBLIC_API_URL}/classes?page=${currentPage}&limit=9`;
+            
+            if (searchTerm) {
+                url += `&searchTerm=${encodeURIComponent(searchTerm)}`;
+            }
+            if (activeClassType !== "all") {
+                url += `&classType=${activeClassType}`;
+            }
+
+            const response = await axios.get(url);
             if (response.data.success) {
-                setClasses(response.data.data);
+                // Sorting New to Old based on createdAt
+                const sorted = response.data.data.sort((a: ClassData, b: ClassData) =>
+                    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                );
+                setClasses(sorted);
                 setTotalPages(response.data.meta.totalPages);
             }
         } catch (error) {
@@ -110,9 +135,32 @@ export default function ClassesContent() {
         }
     };
 
+    // Effect for pagination
     useEffect(() => {
         fetchClasses(page);
     }, [page]);
+
+    // Effect for filters - reset to page 1
+    useEffect(() => {
+        if (page !== 1) {
+            setPage(1);
+        } else {
+            fetchClasses(1);
+        }
+    }, [activeClassType]);
+
+    // Debounced search effect
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            if (page !== 1) {
+                setPage(1);
+            } else {
+                fetchClasses(1);
+            }
+        }, 500);
+
+        return () => clearTimeout(handler);
+    }, [searchTerm]);
 
     const getImageUrl = (path: string) => {
         if (!path) return "/democourse.png";
@@ -126,21 +174,55 @@ export default function ClassesContent() {
             {/* Filter Modal */}
             <FilterModal isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} />
 
+            {/* Detail Modal */}
+            <ClassDetailModal
+                isOpen={isDetailModalOpen}
+                onClose={() => setIsDetailModalOpen(false)}
+                data={selectedClass}
+            />
+
             {/* Top Bar Filters */}
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-10">
                 {/* Left side dropdowns */}
-                <div className="flex items-center gap-2">
-                    <button className="flex items-center gap-2 px-4 py-1.5 bg-[#0A47C2] text-white font-bold rounded-md text-[13px] font-sans">
-                        Group class <ChevronDown size={14} />
-                    </button>
-                    <button className="flex items-center gap-2 px-4 py-1.5 bg-[#0A47C2] text-white font-bold rounded-md text-[13px] font-sans">
-                        Set <ChevronDown size={14} />
-                    </button>
+                <div className="flex items-center gap-2 relative">
+                    <div className="relative">
+                        <button 
+                            onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
+                            className="flex items-center gap-2 px-4 py-1.5 bg-[#0A47C2] text-white font-bold rounded-md text-[13px] font-sans min-w-[130px] justify-between"
+                        >
+                            {activeClassType === "all" ? "All Classes" : 
+                             activeClassType === "GROUP" ? "Group Class" : "1-on-1 Session"} 
+                            <ChevronDown size={14} className={cn("transition-transform", isTypeDropdownOpen && "rotate-180")} />
+                        </button>
+                        
+                        {isTypeDropdownOpen && (
+                            <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl z-20 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                                <button 
+                                    onClick={() => { setActiveClassType("all"); setIsTypeDropdownOpen(false); }}
+                                    className={cn("w-full text-left px-4 py-2 text-sm font-bold font-sans hover:bg-gray-50", activeClassType === "all" ? "text-[#0A47C2]" : "text-gray-600")}
+                                >
+                                    All Classes
+                                </button>
+                                <button 
+                                    onClick={() => { setActiveClassType("GROUP"); setIsTypeDropdownOpen(false); }}
+                                    className={cn("w-full text-left px-4 py-2 text-sm font-bold font-sans hover:bg-gray-50", activeClassType === "GROUP" ? "text-[#0A47C2]" : "text-gray-600")}
+                                >
+                                    Group Class
+                                </button>
+                                <button 
+                                    onClick={() => { setActiveClassType("ONE_TO_ONE"); setIsTypeDropdownOpen(false); }}
+                                    className={cn("w-full text-left px-4 py-2 text-sm font-bold font-sans hover:bg-gray-50", activeClassType === "ONE_TO_ONE" ? "text-[#0A47C2]" : "text-gray-600")}
+                                >
+                                    1-on-1 Session
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Center Title */}
                 <h1 className="text-3xl md:text-4xl font-bold text-[#0A47C2] font-sans text-center">
-                    Live Classes
+                    All Classes
                 </h1>
 
                 {/* Right side search + filter */}
@@ -148,7 +230,9 @@ export default function ClassesContent() {
                     <div className="relative w-48 md:w-56">
                         <input
                             type="text"
-                            placeholder="Search"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Search classes..."
                             className="w-full pl-4 pr-10 py-1.5 border border-gray-200 rounded-md focus:outline-none font-sans text-sm text-gray-700 bg-white shadow-sm"
                         />
                         <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
@@ -172,7 +256,11 @@ export default function ClassesContent() {
                     {classes.map((cls) => (
                         <div
                             key={cls._id}
-                            className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300"
+                            onClick={() => {
+                                setSelectedClass(cls);
+                                setIsDetailModalOpen(true);
+                            }}
+                            className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
                         >
                             {/* Image */}
                             <div className="relative w-full aspect-video overflow-hidden">
@@ -183,11 +271,11 @@ export default function ClassesContent() {
                                     unoptimized
                                     className="object-cover"
                                 />
-                                {/* Rating Badge (Placeholder since not in API) */}
+                                {/* Rating Badge */}
                                 <div className="absolute top-3 right-3 flex items-center gap-1 bg-white rounded-full px-2.5 py-1 text-xs font-bold text-[#0D1C35] font-sans">
                                     <StarIcon />
-                                    <span>4.9</span>
-                                    <span className="text-gray-400 font-normal">(125+)</span>
+                                    <span>{cls.averageRating || 0}</span>
+                                    <span className="text-gray-400 font-normal">({cls.ratingCount || 0})</span>
                                 </div>
                             </div>
 
@@ -203,6 +291,11 @@ export default function ClassesContent() {
                                     {cls.subject}
                                 </h3>
 
+                                {/* Description Truncated to 3 words */}
+                                <p className="text-xs text-gray-500 font-sans leading-relaxed">
+                                    {cls.description?.split(" ").slice(0, 3).join(" ")}...
+                                </p>
+
                                 {/* Tags */}
                                 <div className="flex items-center gap-3 text-xs text-gray-400 font-sans">
                                     <span className="flex items-center gap-1">
@@ -210,6 +303,9 @@ export default function ClassesContent() {
                                     </span>
                                     <span className="flex items-center gap-1">
                                         <CertIcon /> {cls.language}
+                                    </span>
+                                    <span className="ml-auto font-extrabold text-[#0D1C35]">
+                                        ${cls.price}
                                     </span>
                                 </div>
 

@@ -1,28 +1,229 @@
 {
-"name": "Md. Appon Islam",
-"phone": "01712345678",
-"language": "English",
-"location": {
-"lat": 23.8103,
-"lng": 90.4125
-},
-"address": {
-"street": "House 12, Road 5",
-"city": "Dhaka",
-"state": "Dhaka",
-"zipCode": "1207",
-"country": "Bangladesh"
-},
-"availabilityLocation": {
-"address": "Dhanmondi, Dhaka",
-"lat": 23.7465,
-"lng": 90.3760,
-"radiusKm": 10
-},
-"preferences": {
-"subjects": ["Math", "Physics"],
-"curriculum": ["English Medium", "Bangla Medium"],
-"teacherGender": "Male",
-"languages": ["English", "Bangla"]
-}
+    "success": true,
+    "message": "Hourly classes retrieved successfully",
+    "data": [
+        {
+            "_id": "69dff12aaaf28b4527e80c7a",
+            "createdBy": {
+                "_id": "69dff120273a9f84094fa2de",
+                "name": "Linda Ward",
+                "email": "qovi@mailinator.com",
+                "profileImage": "/uploads/profile-images/profile-279809-4680.webp"
+            },
+            "createdAt": "2026-04-15T20:12:24.159Z",
+            "curriculum": "English Medium",
+            "description": "sd",
+            "language": "English",
+            "pricePerHour": 77,
+            "subjects": [
+                "Chemistry"
+            ],
+            "updatedAt": "2026-04-15T20:12:24.159Z",
+            "randomSort": 0.0038268426303349843,
+            "averageRating": 0,
+            "ratingCount": 0
+        },
+        {
+            "_id": "69da83dbaaf28b4527e65c58",
+            "createdBy": {
+                "_id": "69da82d8f548e28884849b40",
+                "name": "Fay Mcconnell",
+                "email": "rycugiq@mailinator.com"
+            },
+            "createdAt": "2026-04-11T17:24:42.342Z",
+            "curriculum": "English Medium",
+            "description": "ppppp",
+            "language": "English",
+            "pricePerHour": 78,
+            "subjects": [
+                "ICT",
+                "Geography"
+            ],
+            "updatedAt": "2026-04-11T17:24:42.342Z",
+            "randomSort": 0.06608698939810899,
+            "averageRating": 0,
+            "ratingCount": 0
+        },
+        {
+            "_id": "69da994baaf28b4527e65e17",
+            "createdBy": {
+                "_id": "69da993e19df04063239da45",
+                "name": "Jocelyn Macias",
+                "email": "pojygi@mailinator.com"
+            },
+            "createdAt": "2026-04-11T18:56:09.536Z",
+            "curriculum": "A Level",
+            "description": "Labore ut eius dolor",
+            "language": "English",
+            "pricePerHour": 83,
+            "subjects": [
+                "Geography",
+                "Physics",
+                "Chemistry"
+            ],
+            "updatedAt": "2026-04-11T18:56:09.536Z",
+            "randomSort": 0.2766787640163038,
+            "averageRating": 0,
+            "ratingCount": 0
+        },
+        {
+            "_id": "69dfb933aaf28b4527e807a3",
+            "createdBy": {
+                "_id": "69dfb92000129237ccdb5f6e",
+                "name": "Autumn Mckay",
+                "email": "ferewu@mailinator.com",
+                "profileImage": "/uploads/profile-images/profile-600228-935.webp"
+            },
+            "createdAt": "2026-04-15T16:13:37.560Z",
+            "curriculum": "SET A",
+            "description": "ggggggggggggggg",
+            "language": "English",
+            "pricePerHour": 45,
+            "subjects": [
+                "Geography",
+                "Physics"
+            ],
+            "updatedAt": "2026-04-15T16:13:37.560Z",
+            "randomSort": 0.3499300964337378,
+            "averageRating": 0,
+            "ratingCount": 0
+        },
+        {
+            "_id": "69d59474aaf28b4527e5b022",
+            "createdBy": {
+                "_id": "69d59458d71fee4fa8cf70df",
+                "name": "Shhsb",
+                "email": "hshs@gmail.com",
+                "profileImage": "/uploads/profile-images/profile-824325-3773.webp"
+            },
+            "createdAt": "2026-04-07T23:34:09.574Z",
+            "curriculum": "American",
+            "description": "ajha sjssb sjs",
+            "language": "English",
+            "pricePerHour": 20,
+            "subjects": [
+                "Maths",
+                "Physics"
+            ],
+            "updatedAt": "2026-04-07T23:36:27.691Z",
+            "randomSort": 0.4977861716376856,
+            "averageRating": 0,
+            "ratingCount": 0
+        },
+        {
+            "_id": "69da8234aaf28b4527e65c17",
+            "createdBy": {
+                "_id": "69da8026f548e28884849a58",
+                "name": "Kiayada Ballard",
+                "email": "zohe@mailinator.com",
+                "profileImage": "/uploads/profile-images/profile-489184-2419.webp"
+            },
+            "createdAt": "2026-04-11T17:17:38.590Z",
+            "curriculum": "English Medium",
+            "description": "wsefd",
+            "language": "English",
+            "pricePerHour": 45,
+            "subjects": [
+                "Math",
+                "Physics"
+            ],
+            "updatedAt": "2026-04-11T17:17:38.590Z",
+            "randomSort": 0.6631417059861853,
+            "averageRating": 0,
+            "ratingCount": 0
+        },
+        {
+            "_id": "69d5958caaf28b4527e5b0a1",
+            "createdBy": {
+                "_id": "69d5955bd71fee4fa8cf7107",
+                "name": "Billal",
+                "email": "s@gmail.com",
+                "profileImage": "/uploads/profile-images/profile-451066-5982.webp"
+            },
+            "createdAt": "2026-04-07T23:38:49.772Z",
+            "curriculum": "American",
+            "description": "uahhsvs uwjeeh",
+            "language": "English",
+            "pricePerHour": 30,
+            "subjects": [
+                "Maths",
+                "Environmental Science"
+            ],
+            "updatedAt": "2026-04-07T23:38:49.772Z",
+            "randomSort": 0.7030206182833949,
+            "averageRating": 0,
+            "ratingCount": 0
+        },
+        {
+            "_id": "69dfe6ecaaf28b4527e80c18",
+            "createdBy": {
+                "_id": "69dfe6dd273a9f84094fa2dc",
+                "name": "Soluta duis quod aut",
+                "email": "pulov@mailinator.com",
+                "profileImage": "/uploads/profile-images/profile-308847-8640.webp"
+            },
+            "createdAt": "2026-04-15T19:28:41.910Z",
+            "curriculum": "English Medium",
+            "description": "fffffffff",
+            "language": "English",
+            "pricePerHour": 55,
+            "subjects": [
+                "Chemistry"
+            ],
+            "updatedAt": "2026-04-15T19:28:41.910Z",
+            "randomSort": 0.7490780277536595,
+            "averageRating": 0,
+            "ratingCount": 0
+        },
+        {
+            "_id": "69d5987daaf28b4527e5b0bd",
+            "createdBy": {
+                "_id": "69d59862d71fee4fa8cf7124",
+                "name": "Sshsk",
+                "email": "h@gmail.com",
+                "profileImage": "/uploads/profile-images/profile-886060-6148.webp"
+            },
+            "createdAt": "2026-04-07T23:51:22.645Z",
+            "curriculum": "American",
+            "description": "hchcycyc",
+            "language": "English",
+            "pricePerHour": 20,
+            "subjects": [
+                "Maths",
+                "Physics"
+            ],
+            "updatedAt": "2026-04-13T20:32:45.752Z",
+            "randomSort": 0.8100441486525697,
+            "averageRating": 0,
+            "ratingCount": 0
+        },
+        {
+            "_id": "69d58bf6aaf28b4527e5afed",
+            "createdBy": {
+                "_id": "69d58baafc58bf9861a9e3ff",
+                "name": "Jihad",
+                "email": "jihad@gmail.com",
+                "profileImage": "/uploads/profile-images/profile-600621-8466.webp"
+            },
+            "createdAt": "2026-04-07T22:57:55.394Z",
+            "curriculum": "American",
+            "description": "yfufufc ufufuc ufufuc uguf ugufuc",
+            "language": "English",
+            "pricePerHour": 50,
+            "subjects": [
+                "Maths",
+                "Physics"
+            ],
+            "updatedAt": "2026-04-07T22:57:55.394Z",
+            "randomSort": 0.9862042676585697,
+            "averageRating": 0,
+            "ratingCount": 0
+        }
+    ],
+    "meta": {
+        "page": 1,
+        "limit": 10,
+        "total": 10,
+        "totalPages": 1
+    }
 }

@@ -6,6 +6,7 @@ import axios from "axios";
 import { cn } from "@/lib/utils";
 import { MessageCircle } from "lucide-react";
 import Link from "next/link";
+import ClassDetailModal from "./ClassDetailModal";
 
 interface ClassData {
     _id: string;
@@ -18,11 +19,13 @@ interface ClassData {
     description: string;
     classType: string;
     images: string[];
+    averageRating: number;
+    ratingCount: number;
 }
 
 const filterTabs = ["All Programs", "1-on-1 Sessions", "Group Classes"];
 
-const dropdowns = ["Subject", "Tutor Level"];
+const dropdowns = ["Subject"];
 
 const courses = [
     {
@@ -100,13 +103,32 @@ export default function Courses() {
     const [activeTab, setActiveTab] = useState("All Programs");
     const [classes, setClasses] = useState<ClassData[]>([]);
     const [loading, setLoading] = useState(true);
+    const [selectedClass, setSelectedClass] = useState<ClassData | null>(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchClasses = async () => {
+            setLoading(true);
             try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/classes?page=1&limit=3`);
+                // Fetch more items to ensure we find the top rated ones globally
+                let url = `${process.env.NEXT_PUBLIC_API_URL}/classes?page=1&limit=50`;
+
+                // Add classType filter
+                if (activeTab === "1-on-1 Sessions") {
+                    url += "&classType=ONE_TO_ONE";
+                } else if (activeTab === "Group Classes") {
+                    url += "&classType=GROUP";
+                }
+
+                const response = await axios.get(url);
                 if (response.data.success) {
-                    setClasses(response.data.data);
+                    // Sort by rating High to Low and pick top 3
+                    const sorted = response.data.data
+                        .sort((a: ClassData, b: ClassData) => 
+                            (b.averageRating || 0) - (a.averageRating || 0)
+                        )
+                        .slice(0, 3);
+                    setClasses(sorted);
                 }
             } catch (error) {
                 console.error("Error fetching courses:", error);
@@ -116,7 +138,7 @@ export default function Courses() {
         };
 
         fetchClasses();
-    }, []);
+    }, [activeTab]);
 
     const getImageUrl = (path: string) => {
         if (!path) return "/democourse.png";
@@ -126,6 +148,13 @@ export default function Courses() {
 
     return (
         <section className="w-full max-w-7xl mx-auto px-4 md:px-0 py-10 md:py-14">
+            {/* Detail Modal */}
+            <ClassDetailModal 
+                isOpen={isDetailModalOpen} 
+                onClose={() => setIsDetailModalOpen(false)} 
+                data={selectedClass} 
+            />
+
             {/* Header Row */}
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
                 {/* Title */}
@@ -178,7 +207,11 @@ export default function Courses() {
                     : classes.map((cls) => (
                         <div
                             key={cls._id}
-                            className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300"
+                            onClick={() => {
+                                setSelectedClass(cls);
+                                setIsDetailModalOpen(true);
+                            }}
+                            className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
                         >
                             {/* Image */}
                             <div className="relative w-full aspect-video overflow-hidden">
@@ -192,8 +225,8 @@ export default function Courses() {
                                 {/* Rating Badge */}
                                 <div className="absolute top-3 right-3 flex items-center gap-1 bg-white rounded-full px-2.5 py-1 text-xs font-bold text-[#0D1C35] font-sans">
                                     <StarIcon />
-                                    <span>4.9</span>
-                                    <span className="text-gray-400 font-normal">(125+)</span>
+                                    <span>{cls.averageRating || 0}</span>
+                                    <span className="text-gray-400 font-normal">({cls.ratingCount || 0})</span>
                                 </div>
                             </div>
 
@@ -209,6 +242,11 @@ export default function Courses() {
                                     {cls.subject}
                                 </h3>
 
+                                {/* Description Truncated to 3 words */}
+                                <p className="text-xs text-gray-500 font-sans leading-relaxed">
+                                    {cls.description.split(" ").slice(0, 3).join(" ")}...
+                                </p>
+
                                 {/* Tags */}
                                 <div className="flex items-center gap-3 text-xs text-gray-400 font-sans">
                                     <span className="flex items-center gap-1">
@@ -216,6 +254,9 @@ export default function Courses() {
                                     </span>
                                     <span className="flex items-center gap-1">
                                         <CertIcon /> {cls.language}
+                                    </span>
+                                    <span className="ml-auto font-extrabold text-[#0D1C35]">
+                                        ${cls.price}
                                     </span>
                                 </div>
 
