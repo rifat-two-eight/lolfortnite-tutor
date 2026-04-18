@@ -85,13 +85,17 @@ export default function Footer() {
                             Start learning with 67.1k <br /> students around the world.
                         </h2>
                         <div className="flex flex-wrap gap-3">
-                            <button className="flex items-center gap-2 px-5 py-2.5 bg-[#0A47C2] text-white text-sm font-bold rounded-lg font-sans hover:bg-[#083a9e] transition-all">
-                                Browse All Class
-                                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
-                            </button>
-                            <button className="flex items-center gap-2 px-5 py-2.5 border border-white/20 text-white text-sm font-bold rounded-lg font-sans hover:bg-white/5 transition-all">
-                                Browse All Tutor
-                            </button>
+                            <Link href="/classes">
+                                <button className="flex items-center gap-2 px-5 py-2.5 bg-[#0A47C2] text-white text-sm font-bold rounded-lg font-sans hover:bg-[#083a9e] transition-all">
+                                    Browse All Class
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                                </button>
+                            </Link>
+                            <Link href="/tutors">
+                                <button className="flex items-center gap-2 px-5 py-2.5 border border-white/20 text-white text-sm font-bold rounded-lg font-sans hover:bg-white/5 transition-all">
+                                    Browse All Tutor
+                                </button>
+                            </Link>
                         </div>
                     </div>
 

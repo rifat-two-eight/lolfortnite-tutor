@@ -39,9 +39,9 @@ export default function HourlyTutorDetailModal({ isOpen, onClose, data }: Hourly
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-6 sm:p-10">
+        <div className="fixed inset-0 z-100 flex items-center justify-center px-4 py-6 sm:p-10">
             {/* Backdrop */}
-            <div 
+            <div
                 className="absolute inset-0 bg-[#0D1C35]/30 backdrop-blur-sm animate-in fade-in duration-300"
                 onClick={onClose}
             />
@@ -49,7 +49,7 @@ export default function HourlyTutorDetailModal({ isOpen, onClose, data }: Hourly
             {/* Modal Content */}
             <div className="relative w-full max-w-4xl max-h-full bg-white rounded-none shadow-2xl overflow-y-auto animate-in zoom-in-95 duration-300">
                 {/* Close Button */}
-                <button 
+                <button
                     onClick={onClose}
                     className="absolute top-4 right-4 z-10 p-2 bg-white/90 hover:bg-white rounded-full text-[#0D1C35] transition-all shadow-md group"
                 >
@@ -59,7 +59,7 @@ export default function HourlyTutorDetailModal({ isOpen, onClose, data }: Hourly
                 <div className="grid grid-cols-1 lg:grid-cols-2">
                     {/* Left Side: Photo & Quick Info */}
                     <div className="space-y-4 p-6 lg:p-8 bg-gray-50 border-r border-gray-100">
-                        <div className="relative aspect-[3/4] bg-white rounded-xl overflow-hidden shadow-lg border border-gray-200">
+                        <div className="relative aspect-3/4 bg-white rounded-xl overflow-hidden shadow-lg border border-gray-200">
                             <Image
                                 src={getImageUrl(data.createdBy.profileImage || "")}
                                 alt={data.createdBy.name}
@@ -123,7 +123,7 @@ export default function HourlyTutorDetailModal({ isOpen, onClose, data }: Hourly
                                 </h4>
                                 <div className="flex flex-wrap gap-2">
                                     {data.subjects.map((subject, idx) => (
-                                        <span 
+                                        <span
                                             key={idx}
                                             className="px-4 py-2 bg-white border border-gray-200 rounded-full text-xs font-bold text-[#0A47C2] shadow-sm"
                                         >
