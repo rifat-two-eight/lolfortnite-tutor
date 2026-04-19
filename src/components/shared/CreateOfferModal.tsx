@@ -3,17 +3,17 @@
 import React, { useState, useEffect } from "react";
 import { X, Calendar as CalendarIcon, Clock, ChevronLeft, ChevronRight, Star, Loader2 } from "lucide-react";
 import Image from "next/image";
-import { 
-    format, 
-    addDays, 
-    startOfMonth, 
-    endOfMonth, 
-    eachDayOfInterval, 
-    isSameDay, 
-    isBefore, 
+import {
+    format,
+    addDays,
+    startOfMonth,
+    endOfMonth,
+    eachDayOfInterval,
+    isSameDay,
+    isBefore,
     startOfToday,
     addMonths,
-    subMonths 
+    subMonths
 } from "date-fns";
 import api from "@/lib/axios";
 import { cn } from "@/lib/utils";
@@ -37,16 +37,35 @@ interface CreateOfferModalProps {
     onClose: () => void;
     tutor: HourlyClassData | null;
     onSendOffer: (offerData: any) => void;
+    initialData?: any;
 }
 
-export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer }: CreateOfferModalProps) {
+export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer, initialData }: CreateOfferModalProps) {
     const [selectedDate, setSelectedDate] = useState<Date>(startOfToday());
     const [currentMonth, setCurrentMonth] = useState<Date>(startOfMonth(startOfToday()));
     const [availableSlots, setAvailableSlots] = useState<any[]>([]);
     const [selectedSlot, setSelectedSlot] = useState<any>(null);
-    const [selectedSubject, setSelectedSubject] = useState<string>(tutor?.subjects[0] || "");
+    const [selectedSubject, setSelectedSubject] = useState<string>("");
     const [loadingSlots, setLoadingSlots] = useState(false);
     const [sending, setSending] = useState(false);
+
+    // Initialize state from initialData when modal opens
+    useEffect(() => {
+        if (isOpen) {
+            if (initialData) {
+                const date = initialData.date ? new Date(initialData.date) : startOfToday();
+                setSelectedDate(date);
+                setCurrentMonth(startOfMonth(date));
+                setSelectedSlot(initialData.slots?.[0] || null);
+                setSelectedSubject(initialData.subject || tutor?.subjects[0] || "");
+            } else {
+                setSelectedDate(startOfToday());
+                setCurrentMonth(startOfMonth(startOfToday()));
+                setSelectedSlot(null);
+                setSelectedSubject(tutor?.subjects[0] || "");
+            }
+        }
+    }, [isOpen, initialData, tutor]);
 
     const getImageUrl = (path: string) => {
         if (!path) return "/demotutor.png";
@@ -115,7 +134,7 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer }
                 totalPrice,
                 subject: selectedSubject
             };
-            
+
             await onSendOffer(offerData);
             onClose();
         } catch (error) {
@@ -128,50 +147,48 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer }
 
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 md:p-10">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6 md:p-10">
             {/* Backdrop */}
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300" onClick={onClose} />
+            <div className="absolute inset-0 bg-black/20 backdrop-blur-sm animate-in fade-in duration-300" onClick={onClose} />
 
             {/* Modal Content */}
-            <div className="relative w-full max-w-lg bg-white rounded-[32px] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
-                
-                {/* Header: Tutor Info */}
-                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-blue-100 shadow-sm">
-                            <Image src={getImageUrl(tutor.createdBy.profileImage || "")} alt={tutor.createdBy.name} fill className="object-cover" />
+            <div className="relative w-full max-w-md bg-white rounded-[24px] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300 max-h-[85vh]">
+
+                {/* Header: Tutor Info (Fixed) */}
+                <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-white z-10">
+                    <div className="flex items-center gap-3">
+                        <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-blue-50 shadow-sm">
+                            <Image src={getImageUrl(tutor.createdBy.profileImage || "")} alt={tutor.createdBy.name} fill className="object-cover" unoptimized />
                         </div>
                         <div>
-                            <h3 className="text-lg font-bold text-[#0D1C35]">{tutor.createdBy.name}</h3>
-                            <div className="flex items-center gap-3">
+                            <h3 className="text-base font-bold text-[#0D1C35]">{tutor.createdBy.name}</h3>
+                            <div className="flex items-center gap-2">
                                 <span className="text-[10px] text-gray-400 font-bold tracking-wider">${tutor.pricePerHour}/hr</span>
-                            </div>
-                            <div className="flex items-center gap-1 mt-0.5">
-                                <Star size={10} className="text-amber-400 fill-amber-400" />
-                                <span className="text-[10px] font-bold text-[#0D1C35]">{tutor.averageRating || 0}</span>
-                                <span className="text-[10px] text-gray-400">({tutor.ratingCount || 0} reviews)</span>
+                                <div className="flex items-center gap-1">
+                                    <Star size={8} className="text-amber-400 fill-amber-400" />
+                                    <span className="text-[10px] font-bold text-[#0D1C35]">{tutor.averageRating || 0}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                        <X size={20} className="text-gray-400" />
+                    <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-full transition-colors">
+                        <X size={18} className="text-gray-400" />
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-6 space-y-8">
-                    
-                    {/* Subject Selection Section */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-thin scrollbar-thumb-gray-200">
+
                     <div>
-                        <h4 className="text-sm font-bold text-[#0D1C35] font-sans px-2 mb-4">Select Subject</h4>
-                        <div className="flex flex-wrap gap-2 px-1">
+                        <h4 className="text-xs font-bold text-[#0D1C35] font-sans mb-3">Select Subject</h4>
+                        <div className="flex flex-wrap gap-1.5">
                             {tutor.subjects.map((sub, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => setSelectedSubject(sub)}
                                     className={cn(
-                                        "px-4 py-2 rounded-xl border text-xs font-bold transition-all",
-                                        selectedSubject === sub 
-                                            ? "bg-[#0A47C2] text-white border-[#0A47C2] shadow-sm" 
+                                        "px-3 py-1.5 rounded-lg border text-[10px] font-bold transition-all",
+                                        selectedSubject === sub
+                                            ? "bg-[#0A47C2] text-white border-[#0A47C2] shadow-sm"
                                             : "bg-white text-gray-600 border-gray-100 hover:border-blue-200"
                                     )}
                                 >
@@ -180,29 +197,28 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer }
                             ))}
                         </div>
                     </div>
-                    
-                    {/* Calendar Section */}
-                    <div>
-                        <div className="flex items-center justify-between mb-4 px-2">
-                            <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
-                                <ChevronLeft size={18} className="text-gray-400" />
+
+                    {/* Calendar Section - Made Smaller */}
+                    <div className="bg-gray-50/50 p-3 rounded-2xl border border-gray-100">
+                        <div className="flex items-center justify-between mb-3 px-1">
+                            <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-1 hover:bg-gray-200 rounded-md transition-colors">
+                                <ChevronLeft size={16} className="text-gray-500" />
                             </button>
-                            <h4 className="text-sm font-bold text-[#0D1C35] font-sans">
+                            <h4 className="text-xs font-bold text-[#0D1C35] font-sans">
                                 {format(currentMonth, 'MMMM yyyy')}
                             </h4>
-                            <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
-                                <ChevronRight size={18} className="text-gray-400" />
+                            <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-1 hover:bg-gray-200 rounded-md transition-colors">
+                                <ChevronRight size={16} className="text-gray-500" />
                             </button>
                         </div>
 
-                        <div className="grid grid-cols-7 gap-1 text-center mb-2">
+                        <div className="grid grid-cols-7 gap-0.5 text-center mb-1">
                             {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => (
-                                <span key={d} className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{d}</span>
+                                <span key={d} className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{d}</span>
                             ))}
                         </div>
 
-                        <div className="grid grid-cols-7 gap-1">
-                            {/* Empty pads for first day of month */}
+                        <div className="grid grid-cols-7 gap-0.5">
                             {Array.from({ length: startOfMonth(currentMonth).getDay() }).map((_, i) => (
                                 <div key={i} />
                             ))}
@@ -213,14 +229,14 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer }
                                 const disabled = isPast || isTooFar;
 
                                 return (
-                                    <button 
+                                    <button
                                         key={day.toISOString()}
                                         disabled={disabled}
                                         onClick={() => setSelectedDate(day)}
                                         className={cn(
-                                            "aspect-square text-xs font-bold rounded-xl flex items-center justify-center transition-all",
-                                            isSelected ? "bg-[#0A47C2] text-white shadow-lg shadow-blue-100" : 
-                                            disabled ? "text-gray-200 cursor-not-allowed" : "text-gray-600 hover:bg-blue-50 hover:text-[#0A47C2]"
+                                            "h-7 w-full text-[10px] font-bold rounded-lg flex items-center justify-center transition-all",
+                                            isSelected ? "bg-[#0A47C2] text-white shadow-md shadow-blue-100" :
+                                                disabled ? "text-gray-200 cursor-not-allowed" : "text-gray-600 hover:bg-white hover:text-[#0A47C2] hover:shadow-sm"
                                         )}
                                     >
                                         {format(day, 'd')}
@@ -231,18 +247,18 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer }
                     </div>
 
                     {/* Time Slots Section */}
-                    <div className="space-y-4">
-                        <h4 className="text-sm font-bold text-[#0D1C35] font-sans px-2">Select Time Slot</h4>
+                    <div className="space-y-3">
+                        <h4 className="text-xs font-bold text-[#0D1C35] font-sans">Select Time Slot</h4>
                         {loadingSlots ? (
-                            <div className="flex justify-center py-8">
-                                <Loader2 className="animate-spin text-[#0A47C2]" />
+                            <div className="flex justify-center py-4">
+                                <Loader2 className="animate-spin text-[#0A47C2] size-5" />
                             </div>
                         ) : availableSlots.length === 0 ? (
-                            <div className="text-center py-8 px-4 bg-gray-50 rounded-2xl border border-gray-100">
-                                <p className="text-xs text-gray-500 font-medium">No slots available for this date.</p>
+                            <div className="text-center py-4 px-4 bg-gray-50 rounded-xl border border-gray-100">
+                                <p className="text-[10px] text-gray-500 font-medium">No slots available for this date.</p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-3 gap-2 px-1">
+                            <div className="grid grid-cols-3 gap-1.5">
                                 {availableSlots.map((slot, idx) => {
                                     const isSelected = selectedSlot?.startTime === slot.startTime;
                                     return (
@@ -250,13 +266,13 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer }
                                             key={idx}
                                             onClick={() => selectSlot(slot)}
                                             className={cn(
-                                                "py-3 rounded-2xl border text-[10px] font-bold transition-all",
-                                                isSelected 
-                                                    ? "bg-[#0A47C2] text-white border-[#0A47C2] shadow-md shadow-blue-100" 
-                                                    : "bg-blue-50/50 text-[#0A47C2] border-transparent hover:bg-blue-100"
+                                                "py-2 rounded-xl border text-[9px] font-bold transition-all",
+                                                isSelected
+                                                    ? "bg-[#0A47C2] text-white border-[#0A47C2] shadow-sm"
+                                                    : "bg-blue-50/30 text-[#0A47C2] border-transparent hover:bg-blue-100"
                                             )}
                                         >
-                                            {format(new Date(`${format(selectedDate, 'yyyy-MM-dd')}T${slot.startTime}`), 'hh:mm a')} – {format(new Date(`${format(selectedDate, 'yyyy-MM-dd')}T${slot.endTime}`), 'hh:mm a')}
+                                            {format(new Date(`${format(selectedDate, 'yyyy-MM-dd')}T${slot.startTime}`), 'hh:mm a')}
                                         </button>
                                     );
                                 })}
@@ -265,28 +281,28 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer }
                     </div>
                 </div>
 
-                {/* Footer: Price & Submit */}
-                <div className="p-6 border-t border-gray-100 bg-gray-50/30">
-                    <div className="flex items-center justify-between mb-6">
+                {/* Footer: Price & Submit (Fixed) */}
+                <div className="p-4 border-t border-gray-100 bg-white">
+                    <div className="flex items-center justify-between mb-4">
                         <div>
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Total amount</p>
-                            <p className="text-2xl font-bold text-[#0D1C35] leading-none">${tutor.pricePerHour.toFixed(2)}</p>
+                            <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Total amount</p>
+                            <p className="text-xl font-bold text-[#0D1C35] leading-none">${tutor.pricePerHour.toFixed(2)}</p>
                         </div>
                         <div className="flex flex-col items-end">
-                            <p className="text-xs font-bold text-[#0A47C2] text-right">
+                            <p className="text-[10px] font-bold text-[#0A47C2] text-right">
                                 {selectedSlot ? format(selectedDate, 'MMM dd, yyyy') : "Select a time"}
                             </p>
-                            <p className="text-[10px] text-gray-400 font-medium">{selectedSlot ? "1 hour session" : "No slot selected"}</p>
+                            <p className="text-[9px] text-gray-400 font-medium">{selectedSlot ? "1 hour session" : "No slot selected"}</p>
                         </div>
                     </div>
 
                     <button
                         onClick={handleSend}
                         disabled={sending || !selectedSlot}
-                        className="w-full py-4 bg-[#0A47C2] text-white font-bold rounded-2xl shadow-xl shadow-blue-100 hover:bg-[#083a9e] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full py-3 bg-[#0A47C2] text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-50 hover:bg-[#083a9e] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {sending ? <Loader2 size={18} className="animate-spin" /> : "Send Offer"}
-                        {!sending && <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />}
+                        {sending ? <Loader2 size={16} className="animate-spin" /> : "Send Offer"}
+                        {!sending && <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />}
                     </button>
                 </div>
             </div>

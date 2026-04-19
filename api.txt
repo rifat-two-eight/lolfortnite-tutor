@@ -1,25 +1,36 @@
-{
-    "success": true,
-    "message": "Teacher's hourly class retrieved successfully",
-    "data": {
-        "_id": "69d5958caaf28b4527e5b0a1",
-        "createdBy": {
-            "_id": "69d5955bd71fee4fa8cf7107",
-            "name": "Billal",
-            "email": "s@gmail.com",
-            "profileImage": "/uploads/profile-images/profile-451066-5982.webp"
-        },
-        "createdAt": "2026-04-07T23:38:49.772Z",
-        "curriculum": "British Curriculum (IGCSE)",
-        "description": "Experienced tutor specializing in high school Mathematics and Physics. I offer personalized sessions tailored to individual student needs.",
-        "language": "English",
-        "pricePerHour": 25,
-        "subjects": [
-            "Mathematics",
-            "Physics"
-        ],
-        "updatedAt": "2026-04-18T23:04:41.141Z",
-        "averageRating": 0,
-        "ratingCount": 0
-    }
-}
+Object { _id: "69e525b02dc8bdafa82145e4", conversationId: "69e525aa2dc8bdafa82145db", type: "MESSAGE", … }
+​
+1: Object { _id: "69e525c32dc8bdafa82145eb", conversationId: "69e525aa2dc8bdafa82145db", type: "REJECTED", … }
+​
+​
+_id: "69e525c32dc8bdafa82145eb"
+​
+​
+classId: "69e41bfeaaf28b4527e8329f"
+​
+​
+conversationId: "69e525aa2dc8bdafa82145db"
+​
+​
+createdAt: "2026-04-19T18:58:11.202Z"
+​
+​
+files: Array []
+​
+​
+isDeleted: false
+​
+​
+isEdited: false
+​
+​
+senderId: Object { _id: "69e525a02dc8bdafa82145da", name: "Eaton Hill", email: "nugikonovu@mailinator.com", … }
+​
+​
+text: 'OFFER:{"tutorId":"69e41bb9e030b114c94bb70a","hourlyClassId":"69e41bfeaaf28b4527e8329f","slotId":"69e41bfeaaf28b4527e832a6","date":"2026-04-22","slots":[{"_id":"69e41bfeaaf28b4527e832a6","date":"2026-04-22T18:00:00.000Z","startTime":"08:00","teacher":"69e41bb9e030b114c94bb70a","booking":null,"createdAt":"2026-04-19T00:04:11.981Z","endTime":"09:00","hours":1,"lockedBy":null,"lockedUntil":null,"status":"available","updatedAt":"2026-04-19T17:31:16.412Z","version":0}],"totalPrice":50,"subject":"Math"}'
+​
+​
+type: "REJECTED"
+​
+​
+updatedAt: "2026-04-19T18:58:22.868Z"

@@ -51,7 +51,7 @@ export default function Navbar() {
         <nav className="flex items-center justify-between px-4 sm:px-8 md:px-16 mt-0 md:-mt-10 mx-auto w-full relative">
             {/* Logo */}
             <Link href="/">
-                <Image src="/logo.svg" alt="Educate Logo" width={140} height={140} className="md:w-[180px] md:h-[180px]" />
+                <Image src="/logo.svg" alt="Educate Logo" width={140} height={140} className="md:w-[180px] md:h-[180px]" unoptimized />
             </Link>
 
             {/* Nav Links - Desktop */}
@@ -218,6 +218,7 @@ export default function Navbar() {
                                                 alt={user.name}
                                                 fill
                                                 className="object-cover"
+                                                unoptimized
                                             />
                                         </div>
                                         <div className="flex flex-col">

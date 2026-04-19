@@ -120,7 +120,7 @@ export default function Footer() {
                 {/* Brand */}
                 <div className="col-span-2 sm:col-span-3 lg:col-span-1 space-y-4">
                     <div className="flex items-center gap-2">
-                        <Image src="/logo1.svg" alt="Logo" width={160} height={160} />
+                        <Image src="/logo1.svg" alt="Logo" width={160} height={160} unoptimized />
                     </div>
                     <p className="text-gray-400 text-xs leading-relaxed font-sans max-w-[180px]">
                         Aliquam rhoncus ligula est, non pulvinar elit convallis nec. Donec mattis odio ut.
@@ -193,7 +193,7 @@ export default function Footer() {
                     <div className="flex flex-col gap-2.5">
                         {/* App Store */}
                         <Link href="#" className="flex items-center gap-2.5 bg-white/10 hover:bg-white/15 transition-all w-40 px-3 py-2.5">
-                            <Image src="/apple.svg" alt="Apple" width={18} height={18} />
+                            <Image src="/apple.svg" alt="Apple" width={18} height={18} unoptimized />
                             <div>
                                 <p className="text-gray-400 text-[9px] font-sans leading-none">Download on the</p>
                                 <p className="text-white text-xs font-bold font-sans">App Store</p>
@@ -201,7 +201,7 @@ export default function Footer() {
                         </Link>
                         {/* Play Store */}
                         <Link href="#" className="flex items-center gap-2.5 bg-white/10 hover:bg-white/15 transition-all w-40 px-3 py-2.5">
-                            <Image src="/play.svg" alt="Play" width={18} height={18} />
+                            <Image src="/play.svg" alt="Play" width={18} height={18} unoptimized />
                             <div>
                                 <p className="text-gray-400 text-[9px] font-sans leading-none">Get it on</p>
                                 <p className="text-white text-xs font-bold font-sans">Play Store</p>

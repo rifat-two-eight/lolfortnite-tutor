@@ -9,7 +9,8 @@ import {
     BookOpen,
     DollarSign,
     Settings,
-    LogOut
+    LogOut,
+    MessageSquare
 } from "lucide-react";
 import Image from "next/image";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -17,6 +18,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 const navItems = [
     { name: "Dashboard", href: "/teacher", icon: LayoutDashboard },
     { name: "My Class", href: "/teacher/classes", icon: BookOpen },
+    { name: "Messages", href: "/teacher/messages", icon: MessageSquare },
     { name: "Earning", href: "/teacher/earning", icon: DollarSign },
     { name: "Settings", href: "/teacher/settings", icon: Settings },
 ];
@@ -47,7 +49,7 @@ export default function TeacherSidebar({ isOpen, onClose }: { isOpen?: boolean; 
                 {/* Logo */}
                 <div className="px-6 flex items-center justify-between lg:justify-start gap-2">
                     <Link href="/" className="flex items-center gap-2">
-                        <Image src="/logo2.svg" alt="Logo" width={161} height={60} />
+                        <Image src="/logo2.svg" alt="Logo" width={161} height={60} unoptimized />
                     </Link>
                     {/* Mobile Close Button */}
                     <button onClick={onClose} className="lg:hidden text-gray-400 p-1">
