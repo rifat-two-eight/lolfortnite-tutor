@@ -9,7 +9,7 @@ import Link from "next/link";
 function PaymentErrorContent() {
     const searchParams = useSearchParams();
     const classPaymentId = searchParams.get("classPaymentId");
-    const paymentId = searchParams.get("paymentId"); // MyFatoorah might return paymentId
+    const paymentId = searchParams.get("paymentId");
 
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);

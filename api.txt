@@ -1,0 +1,25 @@
+{
+    "success": true,
+    "message": "Teacher's hourly class retrieved successfully",
+    "data": {
+        "_id": "69d5958caaf28b4527e5b0a1",
+        "createdBy": {
+            "_id": "69d5955bd71fee4fa8cf7107",
+            "name": "Billal",
+            "email": "s@gmail.com",
+            "profileImage": "/uploads/profile-images/profile-451066-5982.webp"
+        },
+        "createdAt": "2026-04-07T23:38:49.772Z",
+        "curriculum": "British Curriculum (IGCSE)",
+        "description": "Experienced tutor specializing in high school Mathematics and Physics. I offer personalized sessions tailored to individual student needs.",
+        "language": "English",
+        "pricePerHour": 25,
+        "subjects": [
+            "Mathematics",
+            "Physics"
+        ],
+        "updatedAt": "2026-04-18T23:04:41.141Z",
+        "averageRating": 0,
+        "ratingCount": 0
+    }
+}

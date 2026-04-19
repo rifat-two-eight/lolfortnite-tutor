@@ -62,7 +62,7 @@ function StarIcon() {
 const getImageUrl = (path: string) => {
     if (!path) return "/democourse.png";
     if (path.startsWith("http")) return path;
-    return `http://10.10.7.53:5010${path}`;
+    return `http://10.10.7.24:5010${path}`;
 };
 
 export default function AdminClassesPage() {

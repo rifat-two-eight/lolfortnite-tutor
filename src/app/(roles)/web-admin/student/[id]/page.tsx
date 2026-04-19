@@ -90,7 +90,7 @@ export default function StudentDetailsPage() {
     if (!student) {
         return (
             <div className="p-8">
-                <button 
+                <button
                     onClick={() => router.back()}
                     className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 mb-8 transition-colors font-sans"
                 >
@@ -108,7 +108,7 @@ export default function StudentDetailsPage() {
         return new Date(dateString).toLocaleDateString('en-GB', options);
     };
 
-    const imageUrl = student.profileImage 
+    const imageUrl = student.profileImage
         ? (student.profileImage.startsWith('http') ? student.profileImage : `${process.env.NEXT_PUBLIC_IMAGE_URL}${student.profileImage}`)
         : "https://ui-avatars.com/api/?name=" + encodeURIComponent(student.name) + "&background=E0EAFF&color=0A47C2";
 
@@ -116,25 +116,24 @@ export default function StudentDetailsPage() {
         <div className="px-4 md:px-8 py-8 space-y-8 font-sans max-w-6xl mx-auto">
             {/* Header & Breadcrumb */}
             <div className="flex items-center justify-between">
-                <button 
+                <button
                     onClick={() => router.back()}
                     className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-[#0A47C2] transition-colors"
                 >
                     <ArrowLeft size={16} /> Back to Directory
                 </button>
                 <div className="flex items-center gap-3">
-                     <button 
-                         onClick={handleToggleActive}
-                         className={`px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2 text-white ${
-                             student.isActive ? "bg-amber-500 hover:bg-amber-600" : "bg-[#22C55E] hover:bg-green-600"
-                         }`}
-                     >
-                         {student.isActive ? (
-                             <><Ban size={16} /> Deactivate</>
-                         ) : (
-                             <><RefreshCw size={16} /> Activate</>
-                         )}
-                     </button>
+                    <button
+                        onClick={handleToggleActive}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2 text-white ${student.isActive ? "bg-amber-500 hover:bg-amber-600" : "bg-[#22C55E] hover:bg-green-600"
+                            }`}
+                    >
+                        {student.isActive ? (
+                            <><Ban size={16} /> Deactivate</>
+                        ) : (
+                            <><RefreshCw size={16} /> Activate</>
+                        )}
+                    </button>
                 </div>
             </div>
 
@@ -144,11 +143,11 @@ export default function StudentDetailsPage() {
                 <div className="p-8 pt-16 relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8">
                     {/* Avatar */}
                     <div className="w-32 h-32 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white shrink-0 relative">
-                        <Image 
+                        <Image
                             unoptimized
                             width={128}
                             height={128}
-                            src={imageUrl} 
+                            src={imageUrl}
                             alt={student.name}
                             className="w-full h-full object-cover"
                             onError={(e) => { e.currentTarget.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(student.name) + "&background=E0EAFF&color=0A47C2" }}

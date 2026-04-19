@@ -54,6 +54,8 @@ import axios from "axios";
 import api from "@/lib/axios";
 import FilterModal from "./FilterModal";
 import ClassDetailModal from "./ClassDetailModal";
+import { toast } from "sonner";
+
 
 interface ClassData {
     _id: string;
@@ -120,9 +122,10 @@ export default function ClassesContent() {
             if (response.data.success && response.data.data.paymentUrl) {
                 window.location.href = response.data.data.paymentUrl;
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Payment initiation failed:", error);
-            alert("Failed to initiate payment. Please try again.");
+            const errorMsg = error.response?.data?.message || "Failed to initiate payment. Please try again.";
+            toast.error(errorMsg);
         } finally {
             setBookingClassId(null);
         }
@@ -132,7 +135,7 @@ export default function ClassesContent() {
         setLoading(true);
         try {
             let url = `${process.env.NEXT_PUBLIC_API_URL}/classes?page=${currentPage}&limit=9`;
-            
+
             if (searchTerm) {
                 url += `&searchTerm=${encodeURIComponent(searchTerm)}`;
             }
@@ -187,7 +190,7 @@ export default function ClassesContent() {
         if (!path) return "/democourse.png";
         if (path.startsWith("http")) return path;
         // Base URL from env or hardcoded as per next.config.ts
-        return `http://10.10.7.53:5010${path}`;
+        return `http://10.10.7.24:5010${path}`;
     };
 
     return (
@@ -207,30 +210,30 @@ export default function ClassesContent() {
                 {/* Left side dropdowns */}
                 <div className="flex items-center gap-2 relative">
                     <div className="relative">
-                        <button 
+                        <button
                             onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
                             className="flex items-center gap-2 px-4 py-1.5 bg-[#0A47C2] text-white font-bold rounded-md text-[13px] font-sans min-w-[130px] justify-between"
                         >
-                            {activeClassType === "all" ? "All Classes" : 
-                             activeClassType === "GROUP" ? "Group Class" : "1-on-1 Session"} 
+                            {activeClassType === "all" ? "All Classes" :
+                                activeClassType === "GROUP" ? "Group Class" : "1-on-1 Session"}
                             <ChevronDown size={14} className={cn("transition-transform", isTypeDropdownOpen && "rotate-180")} />
                         </button>
-                        
+
                         {isTypeDropdownOpen && (
                             <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl z-20 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                                <button 
+                                <button
                                     onClick={() => { setActiveClassType("all"); setIsTypeDropdownOpen(false); }}
                                     className={cn("w-full text-left px-4 py-2 text-sm font-bold font-sans hover:bg-gray-50", activeClassType === "all" ? "text-[#0A47C2]" : "text-gray-600")}
                                 >
                                     All Classes
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => { setActiveClassType("GROUP"); setIsTypeDropdownOpen(false); }}
                                     className={cn("w-full text-left px-4 py-2 text-sm font-bold font-sans hover:bg-gray-50", activeClassType === "GROUP" ? "text-[#0A47C2]" : "text-gray-600")}
                                 >
                                     Group Class
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => { setActiveClassType("ONE_TO_ONE"); setIsTypeDropdownOpen(false); }}
                                     className={cn("w-full text-left px-4 py-2 text-sm font-bold font-sans hover:bg-gray-50", activeClassType === "ONE_TO_ONE" ? "text-[#0A47C2]" : "text-gray-600")}
                                 >
@@ -335,7 +338,7 @@ export default function ClassesContent() {
 
                                 {/* CTA Row */}
                                 <div className="flex items-center gap-3 mt-auto">
-                                    <button 
+                                    <button
                                         onClick={(e) => handleBookNow(e, cls._id)}
                                         disabled={bookingClassId === cls._id}
                                         className="flex-1 py-2.5 bg-[#0A47C2] text-white text-center text-sm font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all disabled:opacity-70 disabled:cursor-not-allowed"

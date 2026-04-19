@@ -26,6 +26,8 @@ import {
 import { toast } from "sonner";
 import api from "@/lib/axios";
 import { cn } from "@/lib/utils";
+import Swal from "sweetalert2";
+
 
 // --- Types ---
 interface ClassData {
@@ -65,7 +67,7 @@ interface PaginationMeta {
 const getImageUrl = (path: string) => {
     if (!path) return "/democourse.png";
     if (path.startsWith("http")) return path;
-    return `http://10.10.7.53:5010${path}`;
+    return `http://10.10.7.24:5010${path}`;
 };
 
 // --- Helper Icons (Shared with Homepage) ---
@@ -156,18 +158,37 @@ export default function MyClassPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this class?")) return;
+        setOpenMenuId(null);
 
         try {
-            const response = await api.delete(`/classes/${id}`);
-            if (response.data.success) {
-                toast.success("Class deleted successfully");
-                fetchClasses(page);
+            const result = await Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this class deletion!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!"
+            });
+
+            if (result.isConfirmed) {
+                const response = await api.delete(`/classes/${id}`);
+                if (response.data.success) {
+                    Swal.fire(
+                        "Deleted!",
+                        "Your class has been deleted.",
+                        "success"
+                    );
+                    fetchClasses(page, statusFilter);
+                }
             }
         } catch (error) {
-            toast.error("Failed to delete class");
+            Swal.fire(
+                "Error!",
+                "Failed to delete the class.",
+                "error"
+            );
         }
-        setOpenMenuId(null);
     };
 
     return (
@@ -258,7 +279,7 @@ export default function MyClassPage() {
                                         </button>
 
                                         {openMenuId === cls._id && (
-                                            <div 
+                                            <div
                                                 style={{
                                                     position: 'fixed',
                                                     top: `${popoverPosition.top - 85}px`, // Opening above the button
@@ -622,7 +643,7 @@ function CreateClassModal({ onClose, onSuccess }: { onClose: () => void; onSucce
                         {/* Links */}
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-gray-500 font-sans uppercase tracking-wider ml-1 flex items-center gap-1.5">
-                                <Video size={14} className="text-red-500" /> Youtube Link (Optional)
+                                <Video size={14} className="text-red-500" /> Youtube Link
                             </label>
                             <input
                                 name="youtubeVideoLink" value={formData.youtubeVideoLink} onChange={handleChange}
@@ -632,7 +653,7 @@ function CreateClassModal({ onClose, onSuccess }: { onClose: () => void; onSucce
                         </div>
                         <div className="space-y-2">
                             <label className="text-xs font-semibold text-gray-500 font-sans uppercase tracking-wider ml-1 flex items-center gap-1.5">
-                                <MessageCircle size={14} className="text-green-500" /> WhatsApp Link (Optional)
+                                <MessageCircle size={14} className="text-green-500" /> WhatsApp Link
                             </label>
                             <input
                                 name="whatsappGroupLink" value={formData.whatsappGroupLink} onChange={handleChange}
@@ -746,7 +767,7 @@ function ClassDetailModal({ cls, onClose }: { cls: ClassData; onClose: () => voi
                                 )}
                                 {cls.whatsappGroupLink && (
                                     <a
-                                        href={cls.whatsappGroupLink} target="_blank" rel="noopener noreferrer"
+                                        href={cls.whatsappGroupLink.startsWith("http") ? cls.whatsappGroupLink : `https://${cls.whatsappGroupLink}`} target="_blank" rel="noopener noreferrer"
                                         className="flex items-center gap-3 p-4 bg-emerald-50 text-emerald-700 rounded-none hover:bg-emerald-100 transition-all group"
                                     >
                                         <div className="w-10 h-10 bg-white rounded-none flex items-center justify-center shadow-sm">

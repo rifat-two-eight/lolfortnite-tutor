@@ -5,6 +5,8 @@ import { X, Star, Users, Globe, BookOpen, Clock, Tag, MessageCircle, PlayCircle 
 import Image from "next/image";
 import api from "@/lib/axios";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+
 
 interface ClassData {
     classType: string;
@@ -51,9 +53,10 @@ export default function ClassDetailModal({ isOpen, onClose, data }: ClassDetailM
             if (response.data.success && response.data.data.paymentUrl) {
                 window.location.href = response.data.data.paymentUrl;
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Payment initiation failed:", error);
-            alert("Failed to initiate payment. Please try again.");
+            const errorMsg = error.response?.data?.message || "Failed to initiate payment. Please try again.";
+            toast.error(errorMsg);
         } finally {
             setIsBooking(false);
         }
@@ -62,7 +65,7 @@ export default function ClassDetailModal({ isOpen, onClose, data }: ClassDetailM
     const getImageUrl = (path: string) => {
         if (!path) return "/democourse.png";
         if (path.startsWith("http")) return path;
-        return `http://10.10.7.53:5010${path}`;
+        return `http://10.10.7.24:5010${path}`;
     };
 
     const getYouTubeId = (url: string) => {
@@ -116,7 +119,7 @@ export default function ClassDetailModal({ isOpen, onClose, data }: ClassDetailM
                         {/* WhatsApp Link below media */}
                         {data.whatsappGroupLink && (
                             <a
-                                href={data.whatsappGroupLink}
+                                href={data.whatsappGroupLink.startsWith("http") ? data.whatsappGroupLink : `https://${data.whatsappGroupLink}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="w-full py-3 bg-[#25D366] text-white font-bold rounded-xl text-center text-sm flex items-center justify-center gap-2 hover:bg-[#20bd5a] transition-all"
@@ -215,7 +218,7 @@ export default function ClassDetailModal({ isOpen, onClose, data }: ClassDetailM
 
                         {/* CTA Row */}
                         <div className="mt-10 flex items-center gap-4 pt-6 border-t border-gray-100">
-                            <button 
+                            <button
                                 onClick={handleBookSession}
                                 disabled={isBooking}
                                 className="flex-1 py-4 bg-[#0A47C2] text-white font-bold rounded-none text-sm font-sans hover:bg-[#083a9e] transition-all shadow-lg shadow-blue-100 disabled:opacity-70 disabled:cursor-not-allowed"

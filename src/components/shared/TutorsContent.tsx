@@ -3,7 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
+import api from "@/lib/axios";
+import { toast } from "sonner";
 import HourlyTutorDetailModal from "./HourlyTutorDetailModal";
 
 interface HourlyClassData {
@@ -47,6 +50,29 @@ export default function TutorsContent() {
     const [loading, setLoading] = useState(true);
     const [selectedTutor, setSelectedTutor] = useState<HourlyClassData | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const router = useRouter();
+    const [hiringId, setHiringId] = useState<string | null>(null);
+
+    const handleHire = async (e: React.MouseEvent, tutorId: string) => {
+        e.stopPropagation();
+        setHiringId(tutorId);
+        try {
+            const response = await api.post("/messages/conversations", {
+                participantIds: [tutorId]
+            });
+            if (response.data.success && response.data.data?._id) {
+                router.push(`/messages?conversationId=${response.data.data._id}`);
+            } else {
+                router.push("/messages");
+            }
+        } catch (error: any) {
+            console.error("Failed to create conversation:", error);
+            toast.error("Failed to initiate conversation with tutor.");
+            router.push("/messages");
+        } finally {
+            setHiringId(null);
+        }
+    };
 
     useEffect(() => {
         const fetchTutors = async () => {
@@ -69,16 +95,16 @@ export default function TutorsContent() {
     const getImageUrl = (path: string) => {
         if (!path) return "/demotutor.png";
         if (path.startsWith("http")) return path;
-        return `http://10.10.7.53:5010${path}`;
+        return `http://10.10.7.24:5010${path}`;
     };
 
     return (
         <section className="w-full max-w-7xl mx-auto px-4 sm:px-8 md:px-16 py-10">
             {/* Modal */}
-            <HourlyTutorDetailModal 
-                isOpen={isModalOpen} 
-                onClose={() => setIsModalOpen(false)} 
-                data={selectedTutor} 
+            <HourlyTutorDetailModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                data={selectedTutor}
             />
 
             {/* Header */}
@@ -170,8 +196,11 @@ export default function TutorsContent() {
                                 {/* Price / Static CTA */}
                                 <div className="sm:mt-auto flex flex-col items-end">
                                     <p className="text-sm font-extrabold text-[#0D1C35] mb-2 font-sans">${tutor.pricePerHour}<span className="text-[10px] font-normal text-gray-400">/hr</span></p>
-                                    <button className="px-6 py-2.5 bg-[#0A47C2] text-white text-xs font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all whitespace-nowrap shadow-lg shadow-blue-100">
-                                        Hire a tutor
+                                    <button 
+                                        onClick={(e) => handleHire(e, tutor.createdBy._id)}
+                                        disabled={hiringId === tutor.createdBy._id}
+                                        className="px-6 py-2.5 bg-[#0A47C2] text-white text-xs font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all whitespace-nowrap shadow-lg shadow-blue-100 disabled:opacity-70 disabled:cursor-not-allowed">
+                                        {hiringId === tutor.createdBy._id ? "Processing..." : "Hire"}
                                     </button>
                                 </div>
                             </div>

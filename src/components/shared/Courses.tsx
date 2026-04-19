@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 import { MessageCircle } from "lucide-react";
 import Link from "next/link";
 import ClassDetailModal from "./ClassDetailModal";
+import { toast } from "sonner";
+
 
 interface ClassData {
     _id: string;
@@ -119,9 +121,10 @@ export default function Courses() {
             if (response.data.success && response.data.data.paymentUrl) {
                 window.location.href = response.data.data.paymentUrl;
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Payment initiation failed:", error);
-            alert("Failed to initiate payment. Please try again.");
+            const errorMsg = error.response?.data?.message || "Failed to initiate payment. Please try again.";
+            toast.error(errorMsg);
         } finally {
             setBookingClassId(null);
         }
@@ -145,7 +148,7 @@ export default function Courses() {
                 if (response.data.success) {
                     // Sort by rating High to Low and pick top 3
                     const sorted = response.data.data
-                        .sort((a: ClassData, b: ClassData) => 
+                        .sort((a: ClassData, b: ClassData) =>
                             (b.averageRating || 0) - (a.averageRating || 0)
                         )
                         .slice(0, 3);
@@ -164,16 +167,16 @@ export default function Courses() {
     const getImageUrl = (path: string) => {
         if (!path) return "/democourse.png";
         if (path.startsWith("http")) return path;
-        return `http://10.10.7.53:5010${path}`;
+        return `http://10.10.7.24:5010${path}`;
     };
 
     return (
         <section className="w-full max-w-7xl mx-auto px-4 md:px-0 py-10 md:py-14">
             {/* Detail Modal */}
-            <ClassDetailModal 
-                isOpen={isDetailModalOpen} 
-                onClose={() => setIsDetailModalOpen(false)} 
-                data={selectedClass} 
+            <ClassDetailModal
+                isOpen={isDetailModalOpen}
+                onClose={() => setIsDetailModalOpen(false)}
+                data={selectedClass}
             />
 
             {/* Header Row */}
@@ -286,7 +289,7 @@ export default function Courses() {
 
                                 {/* CTA Row */}
                                 <div className="flex items-center gap-3 mt-auto">
-                                    <button 
+                                    <button
                                         onClick={(e) => handleBookNow(e, cls._id)}
                                         disabled={bookingClassId === cls._id}
                                         className="flex-1 py-2.5 bg-[#0A47C2] text-white text-center text-sm font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all disabled:opacity-70 disabled:cursor-not-allowed"

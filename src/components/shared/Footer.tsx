@@ -12,7 +12,11 @@ const stats = [
 
 const footerLinks = {
     HOME: ["What is educate", "How it work", "Benefits", "Client Says"],
-    ABOUT_US: ["Terms & Condition", "Privacy Policy", "FAQs"],
+    ABOUT_US: [
+        { label: "Terms & Condition", href: "/terms" },
+        { label: "Privacy Policy", href: "/privacy" },
+        { label: "FAQs", href: "/faq" },
+    ],
     CONTACT: [
         { icon: "email", text: "hello@email.com" },
         { icon: "phone", text: "+915678871056" },
@@ -155,9 +159,9 @@ export default function Footer() {
                     <p className="text-white text-xs font-bold tracking-widest uppercase font-sans">About Us</p>
                     <ul className="space-y-2.5">
                         {footerLinks.ABOUT_US.map((item) => (
-                            <li key={item}>
-                                <Link href="#" className="text-gray-400 text-xs hover:text-white transition-all font-sans">
-                                    {item}
+                            <li key={item.label}>
+                                <Link href={item.href} className="text-gray-400 text-xs hover:text-white transition-all font-sans">
+                                    {item.label}
                                 </Link>
                             </li>
                         ))}
