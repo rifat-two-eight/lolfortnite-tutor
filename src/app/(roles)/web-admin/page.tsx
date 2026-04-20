@@ -220,7 +220,7 @@ export default function AdminDashboard() {
                         <p className="text-xs text-gray-400 font-sans font-medium">Total Earning</p>
                     </div>
                     <div className="flex justify-between items-end mt-2">
-                        <p className="text-2xl font-bold text-[#0D1C35] font-sans">${stats?.totalEarning.toLocaleString() || 0}</p>
+                        <p className="text-2xl font-bold text-[#0D1C35] font-sans">{stats?.totalEarning.toLocaleString() || 0} KD</p>
                         <div className="p-2 bg-red-50 rounded-lg">
                             <CreditCard size={16} className="text-red-500" />
                         </div>
@@ -233,7 +233,7 @@ export default function AdminDashboard() {
                         <p className="text-xs text-gray-400 font-sans font-medium">Total Payout</p>
                     </div>
                     <div className="flex justify-between items-end mt-2">
-                        <p className="text-2xl font-bold text-[#0D1C35] font-sans">${stats?.totalPayout.toLocaleString() || 0}</p>
+                        <p className="text-2xl font-bold text-[#0D1C35] font-sans">{stats?.totalPayout.toLocaleString() || 0} KD</p>
                         <div className="p-2 bg-green-50 rounded-lg">
                             <ArrowUpRight size={16} className="text-green-500" />
                         </div>
@@ -246,7 +246,7 @@ export default function AdminDashboard() {
                         <p className="text-xs text-gray-400 font-sans font-medium">Total Revenue</p>
                     </div>
                     <div className="flex justify-between items-end mt-2">
-                        <p className="text-2xl font-bold text-[#0D1C35] font-sans">${stats?.totalRevenue.toLocaleString() || 0}</p>
+                        <p className="text-2xl font-bold text-[#0D1C35] font-sans">{stats?.totalRevenue.toLocaleString() || 0} KD</p>
                         <div className="p-2 bg-blue-50 rounded-lg">
                             <DollarSign size={16} className="text-blue-500" />
                         </div>

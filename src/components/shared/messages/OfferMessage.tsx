@@ -13,6 +13,8 @@ interface OfferMessageProps {
     onReschedule: (msg: any) => void;
 }
 
+import UserAvatar from "@/components/ui/UserAvatar";
+
 const OfferMessage: React.FC<OfferMessageProps> = ({
     msg,
     isMe,
@@ -42,9 +44,12 @@ const OfferMessage: React.FC<OfferMessageProps> = ({
     return (
         <div className={cn("flex items-start gap-3 max-w-2xl w-full mb-4", isMe && "flex-col items-end gap-1 ml-auto")}>
             {!isMe && (
-                <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 mt-1">
-                    <Image src={getImageUrl(recipient.profileImage)} alt={recipient.name} fill className="object-cover" unoptimized />
-                </div>
+                <UserAvatar 
+                    src={recipient.profileImage} 
+                    name={recipient.name} 
+                    size="w-8 h-8" 
+                    className="mt-1"
+                />
             )}
 
             <div className={cn("flex flex-col gap-1 w-full max-w-xs", isMe ? "items-end" : "items-start")}>
@@ -57,7 +62,7 @@ const OfferMessage: React.FC<OfferMessageProps> = ({
                     </div>
 
                     <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
-                        <p className="text-sm font-bold text-[#0D1C35]">${offerData.totalPrice || 0}</p>
+                        <p className="text-sm font-bold text-[#0D1C35]">{offerData.totalPrice || 0} KD</p>
                         <p className="text-[10px] font-bold text-gray-400 uppercase">{offerData.slots?.length || 0} Slots</p>
                     </div>
 

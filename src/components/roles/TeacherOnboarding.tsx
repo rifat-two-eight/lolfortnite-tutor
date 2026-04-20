@@ -50,7 +50,7 @@ export default function TeacherOnboarding({ onComplete }: TeacherOnboardingProps
     const [activeDay, setActiveDay] = useState(0);
     // daySlots[dayName] = Set of selected slot indices
     const [daySlots, setDaySlots] = useState<DaySlots>(() =>
-        Object.fromEntries(DAYS.map(d => [d, new Set<number>([2, 3])]))  // default: 08-09, 09-10 selected
+        Object.fromEntries(DAYS.map(d => [d, new Set<number>()]))
     );
 
     const toggleSubject = (sub: string) =>
@@ -170,10 +170,10 @@ export default function TeacherOnboarding({ onComplete }: TeacherOnboardingProps
                                     <DollarSign size={15} className="text-[#0A47C2]" /> Price Per Hour <span className="text-red-500">*</span>
                                 </label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">$</span>
                                     <input value={pricePerHour} onChange={e => setPricePerHour(e.target.value)}
                                         type="number" min="1" step="0.01" placeholder="e.g. 30" required
-                                        className="w-full pl-8 pr-4 border border-gray-200 rounded-xl py-3 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0A47C2]/20 focus:border-[#0A47C2]" />
+                                        className="w-full pl-4 pr-12 border border-gray-200 rounded-xl py-3 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0A47C2]/20 focus:border-[#0A47C2]" />
+                                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold font-sans">KD</span>
                                 </div>
                             </div>
 

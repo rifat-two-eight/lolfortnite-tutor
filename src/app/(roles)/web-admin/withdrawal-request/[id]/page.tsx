@@ -209,10 +209,10 @@ export default function WithdrawalDetailsPage() {
                     <div className="flex flex-col items-center md:items-end text-center md:text-right mt-4 md:mt-0">
                         <span className="text-sm font-bold text-gray-500 mb-1">Requested Amount</span>
                         <div className="text-4xl font-black text-[#0A47C2] tracking-tight">
-                            ${withdrawal.amount}
+                            {withdrawal.amount} KD
                         </div>
                         <span className="text-xs text-gray-400 font-medium mt-2">
-                            Current Balance: ${withdrawal.teacher.balance}
+                            Current Balance: {withdrawal.teacher.balance} KD
                         </span>
                     </div>
                 </div>

@@ -10,6 +10,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useEffect, useState as useMountedState } from "react";
 import { getImageUrl } from "@/lib/utils";
 import api from "@/lib/axios";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -74,9 +75,11 @@ export default function Navbar() {
 
             {/* Auth Buttons - Desktop */}
             <div className="hidden md:flex items-center gap-4">
-                <Link href="/messages" className="p-2 text-[#0A47C2] hover:bg-blue-50 rounded-full transition-all">
-                    <MessageSquare size={22} />
-                </Link>
+                {(!user || user.role === "STUDENT" || user.role === "TEACHER") && (
+                    <Link href="/messages" className="p-2 text-[#0A47C2] hover:bg-blue-50 rounded-full transition-all">
+                        <MessageSquare size={22} />
+                    </Link>
+                )}
 
                 {mounted && user ? (
                     <div className="flex items-center gap-4 relative">
@@ -84,15 +87,12 @@ export default function Navbar() {
                             onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                             className="flex items-center gap-2 group focus:outline-none"
                         >
-                            <div className="relative w-11 h-11 ring-2 ring-primary/20 rounded-full overflow-hidden transition-all group-hover:ring-primary/50 shadow-md">
-                                <Image
-                                    src={profileImageUrl}
-                                    alt={user.name}
-                                    fill
-                                    unoptimized
-                                    className="object-cover"
-                                />
-                            </div>
+                            <UserAvatar
+                                src={user.profileImage}
+                                name={user.name}
+                                size="w-11 h-11"
+                                className="ring-2 ring-primary/20 shadow-md group-hover:ring-primary/50 transition-all"
+                            />
 
                         </button>
 
@@ -120,16 +120,20 @@ export default function Navbar() {
                                             </div>
                                             <span>Home</span>
                                         </Link>
-                                        <Link
-                                            href={user.role === "TEACHER" ? "/teacher" : (user.role === "STUDENT" ? "/student/dashboard" : "/web-admin")}
-                                            onClick={() => setShowProfileDropdown(false)}
-                                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-[#0A47C2] rounded-xl transition-all group"
-                                        >
-                                            <div className="p-1.5 bg-gray-50 group-hover:bg-white rounded-lg transition-colors">
-                                                <LayoutDashboard size={16} />
-                                            </div>
-                                            <span>Dashboard</span>
-                                        </Link>
+
+                                        {user.role !== "STUDENT" && (
+                                            <Link
+                                                href={user.role === "TEACHER" ? "/teacher" : "/web-admin"}
+                                                onClick={() => setShowProfileDropdown(false)}
+                                                className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-[#0A47C2] rounded-xl transition-all group"
+                                            >
+                                                <div className="p-1.5 bg-gray-50 group-hover:bg-white rounded-lg transition-colors">
+                                                    <LayoutDashboard size={16} />
+                                                </div>
+                                                <span>Dashboard</span>
+                                            </Link>
+                                        )}
+
                                         <Link
                                             href={user.role === "TEACHER" ? "/teacher/profile" : (user.role === "STUDENT" ? "/student/profile" : "/web-admin/profile")}
                                             onClick={() => setShowProfileDropdown(false)}
@@ -212,15 +216,12 @@ export default function Navbar() {
                             <div className="flex flex-col gap-2 p-2 bg-blue-50 rounded-2xl">
                                 <div className="flex items-center justify-between px-2 py-1">
                                     <div className="flex items-center gap-3">
-                                        <div className="relative w-10 h-10 rounded-full overflow-hidden border border-primary/20 bg-white">
-                                            <Image
-                                                src={profileImageUrl}
-                                                alt={user.name}
-                                                fill
-                                                className="object-cover"
-                                                unoptimized
-                                            />
-                                        </div>
+                                        <UserAvatar
+                                            src={user.profileImage}
+                                            name={user.name}
+                                            size="w-10 h-10"
+                                            className="border border-primary/20"
+                                        />
                                         <div className="flex flex-col">
                                             <span className="font-bold text-[#0A47C2] text-sm leading-tight">{user.name}</span>
                                             <span className="text-[10px] text-gray-500">{user.role}</span>
@@ -230,15 +231,17 @@ export default function Navbar() {
                                         <LogOut size={20} />
                                     </button>
                                 </div>
-                                <div className="grid grid-cols-2 gap-2 pt-1">
-                                    <Link
-                                        href={user.role === "TEACHER" ? "/teacher" : (user.role === "STUDENT" ? "/student/dashboard" : "/web-admin")}
-                                        onClick={() => setMenuOpen(false)}
-                                        className="flex items-center justify-center gap-2 py-2 bg-white rounded-xl text-xs font-bold text-[#0A47C2] border border-blue-100"
-                                    >
-                                        <LayoutDashboard size={14} />
-                                        Dashboard
-                                    </Link>
+                                <div className={cn("grid gap-2 pt-1", user.role === "STUDENT" ? "grid-cols-1" : "grid-cols-2")}>
+                                    {user.role !== "STUDENT" && (
+                                        <Link
+                                            href={user.role === "TEACHER" ? "/teacher" : "/web-admin"}
+                                            onClick={() => setMenuOpen(false)}
+                                            className="flex items-center justify-center gap-2 py-2 bg-white rounded-xl text-xs font-bold text-[#0A47C2] border border-blue-100"
+                                        >
+                                            <LayoutDashboard size={14} />
+                                            Dashboard
+                                        </Link>
+                                    )}
                                     <Link
                                         href={user.role === "TEACHER" ? "/teacher/profile" : (user.role === "STUDENT" ? "/student/profile" : "/web-admin/profile")}
                                         onClick={() => setMenuOpen(false)}

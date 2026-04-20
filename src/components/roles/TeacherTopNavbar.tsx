@@ -6,9 +6,10 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useState } from "react";
-import { User, LogOut, Home, LayoutDashboard, ChevronDown } from "lucide-react";
+import { User, LogOut, Home, LayoutDashboard, ChevronDown, MessageSquare } from "lucide-react";
 import { getImageUrl, cn } from "@/lib/utils";
 import api from "@/lib/axios";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 export default function TeacherTopNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
     const pathname = usePathname();
@@ -60,25 +61,29 @@ export default function TeacherTopNavbar({ onMenuClick }: { onMenuClick?: () => 
             </div>
 
             <div className="flex items-center gap-4">
+                {/* Message Icon Link */}
+                <Link 
+                    href="/teacher/messages" 
+                    className={cn(
+                        "p-2.5 text-[#0A47C2] hover:bg-blue-50 rounded-full transition-all border border-transparent hover:border-blue-100",
+                        pathname === "/teacher/messages" && "bg-blue-50 border-blue-100"
+                    )}
+                >
+                    <MessageSquare size={22} />
+                </Link>
+
                 {/* Profile Dropdown */}
                 <div className="relative">
                     <button
                         onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                         className="flex items-center gap-2 p-1 hover:bg-gray-50 rounded-full transition-all border border-transparent hover:border-gray-100"
                     >
-                        <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm transition-all bg-gray-100 flex items-center justify-center">
-                            {mounted && user?.profileImage ? (
-                                <Image
-                                    src={getImageUrl(user.profileImage)}
-                                    unoptimized
-                                    alt="Profile"
-                                    fill
-                                    className="object-cover"
-                                />
-                            ) : (
-                                <User size={20} className="text-[#0A47C2]" />
-                            )}
-                        </div>
+                        <UserAvatar 
+                            src={user?.profileImage}
+                            name={user?.name}
+                            size="w-10 h-10"
+                            className="border-2 border-white shadow-sm"
+                        />
                         <ChevronDown size={14} className={cn("text-gray-400 transition-transform duration-200", showProfileDropdown && "rotate-180")} />
                     </button>
 

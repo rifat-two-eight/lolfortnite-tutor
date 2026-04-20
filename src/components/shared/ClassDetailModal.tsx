@@ -205,7 +205,7 @@ export default function ClassDetailModal({ isOpen, onClose, data }: ClassDetailM
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
                                     <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Price</p>
-                                    <p className="text-lg font-extrabold text-[#0D1C35]">${data.price}</p>
+                                    <p className="text-lg font-extrabold text-[#0D1C35]">{data.price} KD</p>
                                 </div>
                                 <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
                                     <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Class Type</p>

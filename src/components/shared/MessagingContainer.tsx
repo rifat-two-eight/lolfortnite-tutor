@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import api from "@/lib/axios";
 import { getImageUrl, cn } from "@/lib/utils";
 import CreateOfferModal from "@/components/shared/CreateOfferModal";
+import UserAvatar from "@/components/ui/UserAvatar";
 import MessageItem from "./messages/MessageItem";
 import { useAuthStore } from "@/store/useAuthStore";
 
@@ -149,7 +150,14 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
             try {
                 const response = await api.get("/messages/conversations?page=1&limit=50");
                 if (response.data.success) {
-                    setConversations(response.data.data);
+                    // Filter conversations to ensure lastMessage doesn't show deleted content
+                    const processedConvs = response.data.data.map((conv: any) => {
+                        if (conv.lastMessage && (conv.lastMessage.isDeleted || conv.lastMessage.status === "DELETED")) {
+                            return { ...conv, lastMessage: undefined };
+                        }
+                        return conv;
+                    });
+                    setConversations(processedConvs);
                     if (!selectedConvId && response.data.data.length > 0) {
                         setSelectedConvId(response.data.data[0]._id);
                     }
@@ -172,8 +180,11 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
         try {
             const response = await api.get(`/messages/conversations/${convId}/messages?page=1&limit=50`);
             if (response.data.success) {
-                setMessages(response.data.data);
-                console.log(response.data.data)
+                // Filter out soft-deleted messages
+                const activeMessages = response.data.data.filter((m: any) => 
+                    !m.isDeleted && m.status !== "DELETED"
+                );
+                setMessages(activeMessages);
             }
         } catch (error) {
             console.error("Failed to fetch messages:", error);
@@ -238,7 +249,9 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
             formData.append("text", originalText);
             selectedFiles.forEach(file => formData.append("files", file));
 
-            const response = await api.post("/messages/send", formData);
+            const response = await api.post("/messages/send", formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
             if (response.data.success) {
                 const realMsg = response.data.data;
                 setMessages(prev => prev.map(m => m._id === tempId ? realMsg : m));
@@ -292,7 +305,9 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
                 formData.append("slotId", offerData.slotId);
                 formData.append("subject", offerData.subject);
 
-                const response = await api.post("/messages/send", formData);
+                const response = await api.post("/messages/send", formData, {
+                    headers: { "Content-Type": "multipart/form-data" }
+                });
                 if (response.data.success) {
                     const newMessage = response.data.data;
                     setMessages(prev => [...prev, newMessage]);
@@ -433,7 +448,28 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
             try {
                 const response = await api.delete(`/messages/${id}`);
                 if (response.data.success) {
-                    setMessages(prev => prev.filter(m => m._id !== id));
+                    // 1. Calculate the new messages list first
+                    const updatedMessages = messages.filter(m => m._id !== id);
+                    
+                    // 2. Remove from current message list
+                    setMessages(updatedMessages);
+                    
+                    // 3. Update conversation list last message preview
+                    setConversations(prev => prev.map(conv => {
+                        if (conv._id === selectedConvId && conv.lastMessage?._id === id) {
+                            // Use the updated list we just calculated
+                            const newLastMessage = updatedMessages.length > 0 
+                                ? updatedMessages[updatedMessages.length - 1] 
+                                : undefined;
+                            
+                            return {
+                                ...conv,
+                                lastMessage: newLastMessage
+                            };
+                        }
+                        return conv;
+                    }));
+
                     toast.success("Message deleted successfully!");
                 }
             } catch (error) {
@@ -486,15 +522,11 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
                                     className={`px-6 py-4 flex items-center gap-3 cursor-pointer transition-colors relative ${selectedConvId === conv._id ? "bg-[#E0EAFF]" : "hover:bg-gray-50"
                                         }`}
                                 >
-                                    <div className="relative shrink-0 w-12 h-12 rounded-full overflow-hidden bg-gray-100">
-                                        <Image
-                                            src={getImageUrl(otherUser.profileImage)}
-                                            alt={otherUser.name}
-                                            fill
-                                            className="object-cover"
-                                            unoptimized
-                                        />
-                                    </div>
+                                    <UserAvatar
+                                        src={otherUser.profileImage}
+                                        name={otherUser.name}
+                                        size="w-12 h-12"
+                                    />
                                     <div className="flex-1 min-w-0">
                                         <div className="flex justify-between items-baseline mb-0.5">
                                             <h3 className="text-sm font-bold text-[#0D1C35] truncate font-sans">{otherUser.name}</h3>
@@ -532,9 +564,12 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
                         {/* Chat Header */}
                         <div className="h-20 border-b border-gray-100 flex items-center justify-between px-8 shrink-0 bg-white shadow-sm z-10">
                             <div className="flex items-center gap-4">
-                                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-100 border border-gray-100">
-                                    <Image src={getImageUrl(recipient.profileImage)} alt={recipient.name} unoptimized fill className="object-cover" />
-                                </div>
+                                <UserAvatar 
+                                    src={recipient.profileImage} 
+                                    name={recipient.name} 
+                                    size="w-12 h-12" 
+                                    className="border border-gray-100"
+                                />
                                 <div>
                                     <h2 className="text-lg font-bold text-[#0D1C35] font-sans">{recipient.name}</h2>
                                 </div>

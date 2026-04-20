@@ -34,7 +34,7 @@ const adminActivities = [
         status: "Completed",
         date: "OCT 13, 2023 - 2:30 PM",
         title: "Payout Processing",
-        description: "Quarterly teacher payout batch #542 processed and verified. Total $15,400.",
+        description: "Quarterly teacher payout batch #542 processed and verified. Total 15,400 KD.",
         category: "Finance",
         type: "Payout"
     },

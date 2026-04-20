@@ -262,10 +262,10 @@ export default function AdminWithdrawalPage() {
                                             {withdrawal.teacher.name}
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center font-bold text-[#0D1C35]">
-                                            ${withdrawal.teacher.balance}
+                                            {withdrawal.teacher.balance} KD
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center font-bold text-[#0D1C35]">
-                                            ${withdrawal.amount}
+                                            {withdrawal.amount} KD
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">
                                             {formatDate(withdrawal.createdAt)}
@@ -406,7 +406,7 @@ export default function AdminWithdrawalPage() {
                             <div className="flex-1 bg-gray-50 rounded-2xl p-6 border border-gray-100 flex flex-col justify-center items-center text-center">
                                 <span className="text-sm font-bold text-gray-500 mb-2">Requested Amount</span>
                                 <div className="text-4xl font-black text-[#0A47C2] tracking-tight mb-4">
-                                    ${selectedWithdrawal.amount}
+                                    {selectedWithdrawal.amount} KD
                                 </div>
                                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white border border-gray-100 shadow-sm">
                                     {selectedWithdrawal.status === "PAID" && <CheckCircle2 size={14} className="text-green-500" />}
@@ -438,7 +438,7 @@ export default function AdminWithdrawalPage() {
                                     </div>
                                 </div>
                                 <div className="mt-2 text-sm font-bold text-gray-600 bg-gray-50 px-4 py-1.5 rounded-full">
-                                    Available Balance: <span className="text-[#0D1C35]">${selectedWithdrawal.teacher.balance}</span>
+                                    Available Balance: <span className="text-[#0D1C35]">{selectedWithdrawal.teacher.balance} KD</span>
                                 </div>
                             </div>
                         </div>

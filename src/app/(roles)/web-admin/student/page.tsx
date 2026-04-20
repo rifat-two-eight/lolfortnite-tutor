@@ -232,7 +232,7 @@ export default function AdminStudentPage() {
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{student.phone || '-'}</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{student.email}</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 text-center font-sans">{student.totalPurchaseClass || 0}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">${(student.totalSpend || 0).toLocaleString()}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{(student.totalSpend || 0).toLocaleString()} KD</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{formatDate(student.createdAt)}</td>
                                         <td className="px-6 py-4 text-center">
                                             <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold ${student.isActive

@@ -217,7 +217,7 @@ export default function TeacherDetailsPage() {
                         </div>
                         <span className="text-sm font-bold text-gray-500">Total Earnings</span>
                     </div>
-                    <p className="text-3xl font-black text-[#0D1C35]">${(teacher.totalEarning || 0).toLocaleString()}</p>
+                    <p className="text-3xl font-black text-[#0D1C35]">{(teacher.totalEarning || 0).toLocaleString()} KD</p>
                 </div>
 
                 {/* Sell Class */}

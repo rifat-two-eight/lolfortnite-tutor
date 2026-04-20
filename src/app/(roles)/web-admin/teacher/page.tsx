@@ -257,7 +257,7 @@ export default function AdminTeacherPage() {
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{teacher.phone || '-'}</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{teacher.email}</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 text-center font-sans">{teacher.totalSellClass || 0}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">${teacher.totalEarning || 0}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{teacher.totalEarning || 0} KD</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{formatDate(teacher.createdAt)}</td>
                                         <td className="px-6 py-4 text-center">
                                             <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold ${teacher.teacherApprovalStatus === "APPROVED"

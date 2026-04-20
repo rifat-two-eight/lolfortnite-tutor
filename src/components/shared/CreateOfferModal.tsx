@@ -163,7 +163,7 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer, 
                         <div>
                             <h3 className="text-base font-bold text-[#0D1C35]">{tutor.createdBy.name}</h3>
                             <div className="flex items-center gap-2">
-                                <span className="text-[10px] text-gray-400 font-bold tracking-wider">${tutor.pricePerHour}/hr</span>
+                                <span className="text-[10px] text-gray-400 font-bold tracking-wider">{tutor.pricePerHour} KD/hr</span>
                                 <div className="flex items-center gap-1">
                                     <Star size={8} className="text-amber-400 fill-amber-400" />
                                     <span className="text-[10px] font-bold text-[#0D1C35]">{tutor.averageRating || 0}</span>
@@ -286,7 +286,7 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer, 
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Total amount</p>
-                            <p className="text-xl font-bold text-[#0D1C35] leading-none">${tutor.pricePerHour.toFixed(2)}</p>
+                            <p className="text-xl font-bold text-[#0D1C35] leading-none">{tutor.pricePerHour.toFixed(2)} KD</p>
                         </div>
                         <div className="flex flex-col items-end">
                             <p className="text-[10px] font-bold text-[#0A47C2] text-right">

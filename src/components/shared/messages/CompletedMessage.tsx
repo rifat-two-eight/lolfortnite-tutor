@@ -10,6 +10,8 @@ interface CompletedMessageProps {
     recipient: any;
 }
 
+import UserAvatar from "@/components/ui/UserAvatar";
+
 const CompletedMessage: React.FC<CompletedMessageProps> = ({ msg, isMe, recipient }) => {
     let offerData: any = {};
     if (msg.text?.startsWith("OFFER:")) {
@@ -30,9 +32,12 @@ const CompletedMessage: React.FC<CompletedMessageProps> = ({ msg, isMe, recipien
     return (
         <div className={cn("flex items-start gap-3 max-w-2xl w-full mb-4", isMe && "flex-col items-end gap-1 ml-auto")}>
             {!isMe && (
-                <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 mt-1">
-                    <Image src={getImageUrl(recipient.profileImage)} alt={recipient.name} fill className="object-cover" unoptimized />
-                </div>
+                <UserAvatar 
+                    src={recipient.profileImage} 
+                    name={recipient.name} 
+                    size="w-8 h-8" 
+                    className="mt-1"
+                />
             )}
             
             <div className={cn("flex flex-col gap-1 w-full max-w-xs", isMe ? "items-end" : "items-start")}>
@@ -51,7 +56,7 @@ const CompletedMessage: React.FC<CompletedMessageProps> = ({ msg, isMe, recipien
                     </div>
 
                     <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
-                        <p className="text-sm font-bold text-[#0D1C35]">${offerData.totalPrice || 0}</p>
+                        <p className="text-sm font-bold text-[#0D1C35]">{offerData.totalPrice || 0} KD</p>
                         <p className="text-[10px] font-bold text-gray-400 uppercase">{offerData.slots?.length || 0} Slots</p>
                     </div>
 

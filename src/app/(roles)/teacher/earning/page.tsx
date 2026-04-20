@@ -393,10 +393,10 @@ export default function TeacherEarningPage() {
             {/* Top Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { label: "Total Revenue", value: stats ? `$${stats.totalRevenue.toLocaleString()}` : "$0.00", icon: DollarSign, color: "bg-amber-50 text-amber-500" },
-                    { label: "Current Balance", value: stats ? `$${stats.currentBalance.toLocaleString()}` : "$0.00", icon: CreditCard, color: "bg-blue-50 text-blue-500" },
-                    { label: "Total Withdrawals", value: stats ? `$${stats.totalWithdrawals.toLocaleString()}` : "$0.00", icon: TrendingUp, color: "bg-red-50 text-red-500" },
-                    { label: "Today Revenue", value: stats ? `$${stats.todayRevenue.toLocaleString()}` : "$0.00", icon: ArrowUpRight, color: "bg-emerald-50 text-emerald-500" },
+                    { label: "Total Revenue", value: stats ? `${stats.totalRevenue.toLocaleString()} KD` : "0.00 KD", icon: DollarSign, color: "bg-amber-50 text-amber-500" },
+                    { label: "Current Balance", value: stats ? `${stats.currentBalance.toLocaleString()} KD` : "0.00 KD", icon: CreditCard, color: "bg-blue-50 text-blue-500" },
+                    { label: "Total Withdrawals", value: stats ? `${stats.totalWithdrawals.toLocaleString()} KD` : "0.00 KD", icon: TrendingUp, color: "bg-red-50 text-red-500" },
+                    { label: "Today Revenue", value: stats ? `${stats.todayRevenue.toLocaleString()} KD` : "0.00 KD", icon: ArrowUpRight, color: "bg-emerald-50 text-emerald-500" },
                 ].map((stat, i) => (
                     <div key={i} className="bg-white p-6 rounded-none border border-gray-100 shadow-sm flex items-center gap-4">
                         <div className={`p-3 rounded-lg ${stat.color}`}>
@@ -568,7 +568,7 @@ export default function TeacherEarningPage() {
                     <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
                         <div>
                             <p className="text-xl font-bold text-[#0D1C35]">
-                                {stats ? `$${stats.currentBalance.toLocaleString()}` : "$0.00"}
+                                {stats ? `${stats.currentBalance.toLocaleString()} KD` : "0.00 KD"}
                             </p>
                             <p className="text-xs text-gray-400 font-medium">Current Balance</p>
                         </div>
@@ -629,7 +629,7 @@ export default function TeacherEarningPage() {
                                                 })}
                                             </td>
                                             <td className="py-5 text-xs font-bold text-gray-400 font-sans">{row.bankDetails?.bankName || "—"}</td>
-                                            <td className="py-5 text-xs font-bold text-gray-400 font-sans">${row.amount.toLocaleString()}</td>
+                                            <td className="py-5 text-xs font-bold text-gray-400 font-sans">{row.amount.toLocaleString()} KD</td>
                                             <td className="py-5 text-right pr-12">
                                                 <span className={`text-[10px] uppercase font-bold px-2 py-1 rounded-sm ${row.status === "PENDING" ? "text-orange-400 bg-orange-50" :
                                                     row.status === "PAID" ? "text-emerald-500 bg-emerald-50" :
@@ -857,7 +857,7 @@ export default function TeacherEarningPage() {
                                 <div className="space-y-1.5">
                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Withdrawal Amount</label>
                                     <div className="relative">
-                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</div>
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">KD</div>
                                         <input
                                             type="number"
                                             required

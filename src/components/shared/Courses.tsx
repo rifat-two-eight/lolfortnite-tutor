@@ -280,7 +280,7 @@ export default function Courses() {
                                         <CertIcon /> {cls.language}
                                     </span>
                                     <span className="ml-auto font-extrabold text-[#0D1C35]">
-                                        ${cls.price}
+                                        {cls.price} KD
                                     </span>
                                 </div>
 

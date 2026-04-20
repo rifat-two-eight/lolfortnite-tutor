@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn, getImageUrl } from "@/lib/utils";
 import api from "@/lib/axios";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 export default function AdminTopNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
     const pathname = usePathname();
@@ -62,29 +63,18 @@ export default function AdminTopNavbar({ onMenuClick }: { onMenuClick?: () => vo
             </div>
 
             <div className="flex items-center gap-4">
-                <Link href="/web-admin/messages" className="p-2 text-gray-400 hover:text-[#0A47C2] hover:bg-blue-50 rounded-full transition-all">
-                    <MessageSquare size={20} />
-                </Link>
-
                 {/* Profile Dropdown */}
                 <div className="relative">
                     <button
                         onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                         className="flex items-center gap-2 p-1 hover:bg-gray-50 rounded-full transition-all border border-transparent hover:border-gray-100"
                     >
-                        <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm transition-all bg-gray-50 flex items-center justify-center">
-                            {mounted && user?.profileImage ? (
-                                <Image
-                                    src={getImageUrl(user.profileImage)}
-                                    alt="Admin"
-                                    unoptimized
-                                    fill
-                                    className="object-cover"
-                                />
-                            ) : (
-                                <User size={20} className="text-blue-200" />
-                            )}
-                        </div>
+                        <UserAvatar 
+                            src={user?.profileImage}
+                            name={user?.name}
+                            size="w-10 h-10"
+                            className="border-2 border-white shadow-sm"
+                        />
                         <ChevronDown size={14} className={cn("text-gray-400 transition-transform duration-200", showProfileDropdown && "rotate-180")} />
                     </button>
 

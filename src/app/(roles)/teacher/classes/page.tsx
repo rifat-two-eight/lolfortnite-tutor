@@ -338,7 +338,7 @@ export default function MyClassPage() {
                                             <CertIcon /> {cls.language}
                                         </span>
                                         <span className="flex items-center gap-1.5 ml-auto text-[#0A47C2] font-semibold italic">
-                                            ${cls.price}
+                                            {cls.price} KD
                                         </span>
                                     </div>
 
@@ -591,7 +591,7 @@ function CreateClassModal({ onClose, onSuccess }: { onClose: () => void; onSucce
 
                         {/* Pricing & Capacity */}
                         <div className="space-y-2">
-                            <label className="text-xs font-bold text-gray-500 font-sans uppercase tracking-wider ml-1">Price ($)</label>
+                            <label className="text-xs font-bold text-gray-500 font-sans uppercase tracking-wider ml-1">Price (KD)</label>
                             <input
                                 required type="number" name="price" value={formData.price} onChange={handleChange}
                                 placeholder="0.00"
@@ -721,7 +721,7 @@ function ClassDetailModal({ cls, onClose }: { cls: ClassData; onClose: () => voi
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <div className="bg-gray-50 p-4 rounded-none border border-gray-100/50">
                             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Price</p>
-                            <p className="text-lg font-black text-[#0A47C2]">${cls.price}</p>
+                            <p className="text-lg font-black text-[#0A47C2]">{cls.price} KD</p>
                         </div>
                         <div className="bg-gray-50 p-4 rounded-none border border-gray-100/50">
                             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Capacity</p>

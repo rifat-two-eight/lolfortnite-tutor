@@ -291,7 +291,7 @@ export default function AdminClassesPage() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-5 text-center">
-                                            <span className="text-sm font-semibold text-[#0A47C2]">${cls.price}</span>
+                                            <span className="text-sm font-semibold text-[#0A47C2]">{cls.price} KD</span>
                                         </td>
                                         <td className="px-6 py-5 text-center">
                                             <div className="flex items-center justify-center gap-1.5 font-sans">
@@ -464,7 +464,7 @@ export default function AdminClassesPage() {
                             <div className="bg-gray-50 p-8 space-y-8">
                                 <div className="space-y-4">
                                     <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Pricing</h4>
-                                    <div className="text-4xl font-bold text-[#0A47C2] italic">${selectedClass.price}</div>
+                                    <div className="text-4xl font-bold text-[#0A47C2] italic">{selectedClass.price} KD</div>
                                 </div>
 
                                 <div className="space-y-4">

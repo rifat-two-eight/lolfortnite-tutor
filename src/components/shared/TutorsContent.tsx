@@ -195,7 +195,7 @@ export default function TutorsContent() {
 
                                 {/* Price / Static CTA */}
                                 <div className="sm:mt-auto flex flex-col items-end">
-                                    <p className="text-sm font-extrabold text-[#0D1C35] mb-2 font-sans">${tutor.pricePerHour}<span className="text-[10px] font-normal text-gray-400">/hr</span></p>
+                                    <p className="text-sm font-extrabold text-[#0D1C35] mb-2 font-sans">{tutor.pricePerHour} KD<span className="text-[10px] font-normal text-gray-400">/hr</span></p>
                                     <button 
                                         onClick={(e) => handleHire(e, tutor.createdBy._id)}
                                         disabled={hiringId === tutor.createdBy._id}

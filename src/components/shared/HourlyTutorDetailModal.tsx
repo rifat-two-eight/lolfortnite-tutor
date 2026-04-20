@@ -1,9 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { X, Star, Globe, BookOpen, Clock, Tag, MessageCircle, DollarSign, GraduationCap } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import api from "@/lib/axios";
+import { toast } from "sonner";
 
 interface HourlyClassData {
     _id: string;
@@ -30,7 +33,30 @@ interface HourlyTutorDetailModalProps {
 }
 
 export default function HourlyTutorDetailModal({ isOpen, onClose, data }: HourlyTutorDetailModalProps) {
+    const router = useRouter();
+    const [loading, setLoading] = useState(false);
+
     if (!isOpen || !data) return null;
+
+    const handleHire = async () => {
+        setLoading(true);
+        try {
+            const response = await api.post("/messages/conversations", {
+                participantIds: [data.createdBy._id]
+            });
+            if (response.data.success && response.data.data?._id) {
+                router.push(`/messages?conversationId=${response.data.data._id}`);
+            } else {
+                router.push("/messages");
+            }
+        } catch (error: any) {
+            console.error("Failed to create conversation:", error);
+            toast.error("Failed to initiate conversation with instructor.");
+            router.push("/messages");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const getImageUrl = (path: string) => {
         if (!path) return "/demotutor.png";
@@ -138,20 +164,20 @@ export default function HourlyTutorDetailModal({ isOpen, onClose, data }: Hourly
                                 <div>
                                     <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest mb-0.5">Booking Fee</p>
                                     <p className="text-2xl font-extrabold font-sans">
-                                        ${data.pricePerHour}<span className="text-sm font-normal opacity-70">/hour</span>
+                                        {data.pricePerHour} KD<span className="text-sm font-normal opacity-70">/hour</span>
                                     </p>
                                 </div>
                                 <DollarSign size={32} className="opacity-20" />
                             </div>
                         </div>
 
-                        {/* CTA Row */}
                         <div className="mt-10 flex items-center gap-4 pt-6 border-t border-gray-100">
-                            <button className="flex-1 py-4 bg-[#0A47C2] text-white font-bold rounded-none text-sm font-sans hover:bg-[#083a9e] transition-all shadow-lg shadow-blue-100">
-                                Hire this Instructor
-                            </button>
-                            <button className="w-14 h-14 flex items-center justify-center border border-gray-200 rounded-none text-[#0D1C35] hover:bg-gray-50 transition-all">
-                                <MessageCircle size={24} />
+                            <button
+                                onClick={handleHire}
+                                disabled={loading}
+                                className="flex-1 py-4 bg-[#0A47C2] text-white font-bold rounded-none text-sm font-sans hover:bg-[#083a9e] transition-all shadow-lg shadow-blue-100 disabled:opacity-70 disabled:cursor-not-allowed"
+                            >
+                                {loading ? "Processing..." : "Hire this Instructor"}
                             </button>
                         </div>
                     </div>

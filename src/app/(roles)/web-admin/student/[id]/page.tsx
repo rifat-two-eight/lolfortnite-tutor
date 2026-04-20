@@ -199,7 +199,7 @@ export default function StudentDetailsPage() {
                         </div>
                         <span className="text-sm font-bold text-gray-500">Total Spend</span>
                     </div>
-                    <p className="text-3xl font-black text-[#0D1C35]">${(student.totalSpend || 0).toLocaleString()}</p>
+                    <p className="text-3xl font-black text-[#0D1C35]">{(student.totalSpend || 0).toLocaleString()} KD</p>
                 </div>
 
                 {/* Sell Class / Purchased Classes */}

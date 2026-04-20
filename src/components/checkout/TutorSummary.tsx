@@ -40,7 +40,7 @@ export default function TutorSummary() {
 
                 <div className="p-6 space-y-3">
                     <div className="space-y-1">
-                        <span className="text-[10px] font-bold tracking-widest text-[#F59E0B] uppercase">PER HOUR <span className="text-[#0D1C35]">$25</span></span>
+                        <span className="text-[10px] font-bold tracking-widest text-[#F59E0B] uppercase">PER HOUR <span className="text-[#0D1C35]">25 KD</span></span>
                         <h3 className="text-xl font-bold text-[#0D1C35]">Nohan.T</h3>
                     </div>
                     <p className="text-xs text-gray-500 leading-relaxed font-sans">
@@ -57,7 +57,7 @@ export default function TutorSummary() {
             <div className="space-y-6 pt-4">
                 <div className="flex items-center justify-between">
                     <span className="text-2xl font-extrabold text-[#0D1C35]">Total :</span>
-                    <span className="text-2xl font-extrabold text-[#0D1C35]">$75.00 USD</span>
+                    <span className="text-2xl font-extrabold text-[#0D1C35]">75.00 KD</span>
                 </div>
 
                 <button className="w-full py-4 bg-[#0A47C2] text-white font-bold rounded-2xl font-sans hover:bg-[#083a9e] transition-all shadow-lg flex items-center justify-center text-lg">

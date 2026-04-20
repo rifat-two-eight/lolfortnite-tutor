@@ -219,9 +219,9 @@ export default function AdminPaymentPage() {
                                         <td className="px-6 py-4 text-xs font-semibold text-gray-500 font-mono tracking-wider">{payment.invoiceId || '-'}</td>
                                         <td className="px-6 py-4 text-sm font-medium text-[#0D1C35] font-sans truncate max-w-[150px]">{payment.student.name}</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center truncate max-w-[150px]">{payment.teacher.name}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center font-bold text-[#0D1C35]">{payment.amount} {payment.currency}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{payment.commission} {payment.currency}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center font-bold text-[#0D1C35]">{payment.teacherFee} {payment.currency}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center font-bold text-[#0D1C35]">{payment.amount} KD</td>
+                                        <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{payment.commission} KD</td>
+                                        <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center font-bold text-[#0D1C35]">{payment.teacherFee} KD</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{formatDate(payment.createdAt)}</td>
                                         <td className="px-6 py-4 text-center">
                                             <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold ${payment.status === "PAID"
@@ -318,13 +318,13 @@ export default function AdminPaymentPage() {
                                 </div>
                                 <div className="mt-4 pt-4 border-t border-gray-50 flex justify-between items-center">
                                     <span className="text-xs font-semibold text-gray-500">Student Paid</span>
-                                    <span className="text-xs font-bold text-[#0D1C35]">{selectedPayment.amount} {selectedPayment.currency}</span>
+                                    <span className="text-xs font-bold text-[#0D1C35]">{selectedPayment.amount} KD</span>
                                 </div>
                             </div>
 
                             {/* Arrow Indicator */}
                             <div className="flex flex-col items-center justify-center text-green-500 rotate-90 md:rotate-0 py-2">
-                                <span className="text-[10px] uppercase font-bold text-gray-400 absolute -top-4 whitespace-nowrap">Commission: {selectedPayment.commission} {selectedPayment.currency}</span>
+                                <span className="text-[10px] uppercase font-bold text-gray-400 absolute -top-4 whitespace-nowrap">Commission: {selectedPayment.commission} KD</span>
                                 <ArrowRight size={24} className="mt-2" />
                             </div>
 
@@ -349,7 +349,7 @@ export default function AdminPaymentPage() {
                                 </div>
                                 <div className="mt-4 pt-4 border-t border-gray-50 flex justify-between items-center">
                                     <span className="text-xs font-semibold text-gray-500">Teacher Fee</span>
-                                    <span className="text-xs font-bold text-[#0A47C2]">{selectedPayment.teacherFee} {selectedPayment.currency}</span>
+                                    <span className="text-xs font-bold text-[#0A47C2]">{selectedPayment.teacherFee} KD</span>
                                 </div>
                             </div>
                         </div>
