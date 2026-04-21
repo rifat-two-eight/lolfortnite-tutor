@@ -12,7 +12,7 @@ api.interceptors.request.use(
     (config) => {
         if (typeof window !== "undefined") {
             // Try to get token from multiple common locations
-            let token = localStorage.getItem("accessToken");
+            let token = localStorage.getItem("accessToken") || localStorage.getItem("token");
 
             // If not found directly, try to get it from the Zustand auth-storage
             if (!token) {
@@ -20,7 +20,7 @@ api.interceptors.request.use(
                 if (authStorage) {
                     try {
                         const parsed = JSON.parse(authStorage);
-                        token = parsed.state?.accessToken || null;
+                        token = parsed.state?.accessToken || parsed.state?.token || null;
                     } catch (e) {
                         console.error("Error parsing auth-storage:", e);
                     }
@@ -29,9 +29,9 @@ api.interceptors.request.use(
 
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;
-                console.log("Axios interceptor: Token found and attached to request");
+                console.log(`[Axios] Sending request to ${config.url} with token: ${token.substring(0, 10)}...`);
             } else {
-                console.warn("Axios interceptor: No token found in localStorage");
+                console.warn(`[Axios] Sending request to ${config.url} WITHOUT token`);
             }
         }
         return config;

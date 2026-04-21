@@ -3,51 +3,6 @@
 import Image from "next/image";
 import { Search, ChevronDown, Settings2, ShieldCheck, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-function StarIcon() {
-    return (
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg">
-            <path d="M6 1L7.545 4.13L11 4.635L8.5 7.07L9.09 10.5L6 8.875L2.91 10.5L3.5 7.07L1 4.635L4.455 4.13L6 1Z" />
-        </svg>
-    );
-}
-
-function VerifiedIcon() {
-    return (
-        <ShieldCheck className="text-[#0A47C2]" size={14} />
-    );
-}
-
-const courses = [
-    {
-        id: 1,
-        image: "/democourse.png",
-        badge: "PHD LEVEL TUTOR",
-        title: "Advanced Mathematics",
-        rating: 4.9,
-        reviews: "125+",
-        tags: ["1-on-1 Sessions", "Certificate"],
-    },
-    {
-        id: 2,
-        image: "/democourse.png",
-        badge: "IVY LEAGUE EXPERT",
-        title: "Classical Literature",
-        rating: 5,
-        reviews: "185+",
-        tags: ["1-on-1 Sessions", "Certificate"],
-    },
-    {
-        id: 3,
-        image: "/democourse.png",
-        badge: "SENIOR RESEARCHER",
-        title: "Quantum Physics",
-        rating: 4.8,
-        reviews: "94+",
-        tags: ["1-on-1 Sessions", "Certificate"],
-    },
-];
-
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -56,6 +11,13 @@ import FilterModal from "./FilterModal";
 import ClassDetailModal from "./ClassDetailModal";
 import { toast } from "sonner";
 
+function StarIcon() {
+    return (
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="#F59E0B" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 1L7.545 4.13L11 4.635L8.5 7.07L9.09 10.5L6 8.875L2.91 10.5L3.5 7.07L1 4.635L4.455 4.13L6 1Z" />
+        </svg>
+    );
+}
 
 interface ClassData {
     _id: string;
@@ -145,7 +107,6 @@ export default function ClassesContent() {
 
             const response = await axios.get(url);
             if (response.data.success) {
-                // Sorting New to Old based on createdAt
                 const sorted = response.data.data.sort((a: ClassData, b: ClassData) =>
                     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                 );
@@ -159,12 +120,10 @@ export default function ClassesContent() {
         }
     };
 
-    // Effect for pagination
     useEffect(() => {
         fetchClasses(page);
     }, [page]);
 
-    // Effect for filters - reset to page 1
     useEffect(() => {
         if (page !== 1) {
             setPage(1);
@@ -173,7 +132,6 @@ export default function ClassesContent() {
         }
     }, [activeClassType]);
 
-    // Debounced search effect
     useEffect(() => {
         const handler = setTimeout(() => {
             if (page !== 1) {
@@ -189,26 +147,20 @@ export default function ClassesContent() {
     const getImageUrl = (path: string) => {
         if (!path) return "/democourse.png";
         if (path.startsWith("http")) return path;
-        // Base URL from env or hardcoded as per next.config.ts
         return `http://10.10.7.24:5010${path}`;
     };
 
     return (
         <section className="w-full max-w-7xl mb-10 mx-auto px-4 sm:px-8 md:px-16 py-6">
-            {/* Filter Modal */}
             <FilterModal isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} />
-
-            {/* Detail Modal */}
             <ClassDetailModal
                 isOpen={isDetailModalOpen}
                 onClose={() => setIsDetailModalOpen(false)}
                 data={selectedClass}
             />
 
-            {/* Top Bar Filters */}
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-10">
-                {/* Left side dropdowns */}
-                <div className="flex items-center gap-2 relative">
+                <div className="flex items-center gap-2 relative text-left">
                     <div className="relative">
                         <button
                             onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
@@ -244,12 +196,10 @@ export default function ClassesContent() {
                     </div>
                 </div>
 
-                {/* Center Title */}
                 <h1 className="text-3xl md:text-4xl font-bold text-[#0A47C2] font-sans text-center">
                     All Classes
                 </h1>
 
-                {/* Right side search + filter */}
                 <div className="flex items-center gap-2">
                     <div className="relative w-48 md:w-56">
                         <input
@@ -270,7 +220,6 @@ export default function ClassesContent() {
                 </div>
             </div>
 
-            {/* Class Cards */}
             {loading ? (
                 <div className="flex justify-center items-center h-64">
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0A47C2]"></div>
@@ -286,7 +235,6 @@ export default function ClassesContent() {
                             }}
                             className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
                         >
-                            {/* Image */}
                             <div className="relative w-full aspect-video overflow-hidden">
                                 <Image
                                     src={getImageUrl(cls.images[0])}
@@ -295,7 +243,6 @@ export default function ClassesContent() {
                                     unoptimized
                                     className="object-cover"
                                 />
-                                {/* Rating Badge */}
                                 <div className="absolute top-3 right-3 flex items-center gap-1 bg-white rounded-full px-2.5 py-1 text-xs font-bold text-[#0D1C35] font-sans">
                                     <StarIcon />
                                     <span>{cls.averageRating || 0}</span>
@@ -303,24 +250,19 @@ export default function ClassesContent() {
                                 </div>
                             </div>
 
-                            {/* Card Body */}
                             <div className="p-4 flex flex-col gap-3 flex-1">
-                                {/* Badge */}
-                                <p className="text-[10px] font-bold tracking-widest uppercase text-[#0A47C2] font-sans">
+                                <p className="text-[10px] font-bold tracking-widest uppercase text-[#0A47C2] font-sans text-left">
                                     {cls.level} • {cls.curriculum}
                                 </p>
 
-                                {/* Title */}
-                                <h3 className="text-lg font-extrabold text-[#0D1C35] font-sans leading-snug">
+                                <h3 className="text-lg font-extrabold text-[#0D1C35] font-sans leading-snug text-left">
                                     {cls.subject}
                                 </h3>
 
-                                {/* Description Truncated to 3 words */}
-                                <p className="text-xs text-gray-500 font-sans leading-relaxed">
+                                <p className="text-xs text-gray-500 font-sans leading-relaxed text-left">
                                     {cls.description?.split(" ").slice(0, 3).join(" ")}...
                                 </p>
 
-                                {/* Tags */}
                                 <div className="flex items-center gap-3 text-xs text-gray-400 font-sans">
                                     <span className="flex items-center gap-1">
                                         <UserIcon /> {cls.classType === "GROUP" ? "Group Class" : "1-on-1 Session"}
@@ -333,10 +275,8 @@ export default function ClassesContent() {
                                     </span>
                                 </div>
 
-                                {/* Divider */}
-                                <div className="w-full h-px border border-gray-300 mt-4" />
+                                <div className="w-full h-px border border-gray-100 mt-4" />
 
-                                {/* CTA Row */}
                                 <div className="flex items-center gap-3 mt-auto">
                                     <button
                                         onClick={(e) => handleBookNow(e, cls._id)}
@@ -345,9 +285,13 @@ export default function ClassesContent() {
                                     >
                                         {bookingClassId === cls._id ? "Booking..." : "Book Now"}
                                     </button>
-                                    <button className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-xl text-gray-400 hover:text-[#0A47C2] hover:border-[#0A47C2] transition-all">
-                                        <MessageCircle />
-                                    </button>
+                                    <Link 
+                                        href="/messages"
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-xl text-gray-400 hover:text-[#0A47C2] hover:border-[#0A47C2] transition-all"
+                                    >
+                                        <MessageCircle size={20} />
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -355,7 +299,6 @@ export default function ClassesContent() {
                 </div>
             )}
 
-            {/* Pagination */}
             {!loading && totalPages > 1 && (
                 <div className="flex justify-center items-center gap-4 mt-12">
                     <button

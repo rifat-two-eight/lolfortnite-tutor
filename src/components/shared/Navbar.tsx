@@ -43,8 +43,9 @@ export default function Navbar() {
 
     const isActive = (href: string) => {
         if (href === "/" && pathname === "/") return true;
+        if (href === "/classes") return pathname === "/classes"; // Exact match for classes browsing
         if (href === "/tutors") return pathname === "/tutors";
-        if (href !== "/" && pathname.startsWith(href)) return true;
+        if (href !== "/" && href !== "/classes" && pathname.startsWith(href)) return true;
         return false;
     };
 
@@ -121,6 +122,19 @@ export default function Navbar() {
                                             <span>Home</span>
                                         </Link>
 
+                                        {user.role === "STUDENT" && (
+                                            <Link
+                                                href="/classes/enrolled-classes"
+                                                onClick={() => setShowProfileDropdown(false)}
+                                                className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-[#0A47C2] rounded-xl transition-all group"
+                                            >
+                                                <div className="p-1.5 bg-gray-50 group-hover:bg-white rounded-lg transition-colors">
+                                                    <LayoutDashboard size={16} />
+                                                </div>
+                                                <span>My Enrolled</span>
+                                            </Link>
+                                        )}
+
                                         {user.role !== "STUDENT" && (
                                             <Link
                                                 href={user.role === "TEACHER" ? "/teacher" : "/web-admin"}
@@ -195,7 +209,7 @@ export default function Navbar() {
 
             {/* Mobile Dropdown Menu */}
             {menuOpen && (
-                <div className="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 z-50 px-4 py-4 flex flex-col gap-3">
+                <div className="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 z-50 px-4 py-4 flex flex-col gap-3 shadow-lg">
                     {navLinks.map((link) => (
                         <Link
                             key={link.name}
@@ -224,14 +238,32 @@ export default function Navbar() {
                                         />
                                         <div className="flex flex-col">
                                             <span className="font-bold text-[#0A47C2] text-sm leading-tight">{user.name}</span>
-                                            <span className="text-[10px] text-gray-500">{user.role}</span>
+                                            <span className="text-[10px] text-gray-500 capitalize">{user.role}</span>
                                         </div>
                                     </div>
                                     <button onClick={() => { logout(); setMenuOpen(false); }} className="text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors">
                                         <LogOut size={20} />
                                     </button>
                                 </div>
-                                <div className={cn("grid gap-2 pt-1", user.role === "STUDENT" ? "grid-cols-1" : "grid-cols-2")}>
+                                <div className="grid grid-cols-2 gap-2 pt-1">
+                                    <Link
+                                        href="/"
+                                        onClick={() => setMenuOpen(false)}
+                                        className="flex items-center justify-center gap-2 py-2 bg-white rounded-xl text-xs font-bold text-[#0A47C2] border border-blue-100"
+                                    >
+                                        <Home size={14} />
+                                        Home
+                                    </Link>
+                                    {user.role === "STUDENT" && (
+                                        <Link
+                                            href="/classes/enrolled-classes"
+                                            onClick={() => setMenuOpen(false)}
+                                            className="flex items-center justify-center gap-2 py-2 bg-white rounded-xl text-xs font-bold text-[#0A47C2] border border-blue-100"
+                                        >
+                                            <LayoutDashboard size={14} />
+                                            My Classes
+                                        </Link>
+                                    )}
                                     {user.role !== "STUDENT" && (
                                         <Link
                                             href={user.role === "TEACHER" ? "/teacher" : "/web-admin"}

@@ -1,36 +1,34 @@
-Object { _id: "69e525b02dc8bdafa82145e4", conversationId: "69e525aa2dc8bdafa82145db", type: "MESSAGE", … }
-​
-1: Object { _id: "69e525c32dc8bdafa82145eb", conversationId: "69e525aa2dc8bdafa82145db", type: "REJECTED", … }
-​
-​
-_id: "69e525c32dc8bdafa82145eb"
-​
-​
-classId: "69e41bfeaaf28b4527e8329f"
-​
-​
-conversationId: "69e525aa2dc8bdafa82145db"
-​
-​
-createdAt: "2026-04-19T18:58:11.202Z"
-​
-​
-files: Array []
-​
-​
-isDeleted: false
-​
-​
-isEdited: false
-​
-​
-senderId: Object { _id: "69e525a02dc8bdafa82145da", name: "Eaton Hill", email: "nugikonovu@mailinator.com", … }
-​
-​
-text: 'OFFER:{"tutorId":"69e41bb9e030b114c94bb70a","hourlyClassId":"69e41bfeaaf28b4527e8329f","slotId":"69e41bfeaaf28b4527e832a6","date":"2026-04-22","slots":[{"_id":"69e41bfeaaf28b4527e832a6","date":"2026-04-22T18:00:00.000Z","startTime":"08:00","teacher":"69e41bb9e030b114c94bb70a","booking":null,"createdAt":"2026-04-19T00:04:11.981Z","endTime":"09:00","hours":1,"lockedBy":null,"lockedUntil":null,"status":"available","updatedAt":"2026-04-19T17:31:16.412Z","version":0}],"totalPrice":50,"subject":"Math"}'
-​
-​
-type: "REJECTED"
-​
-​
-updatedAt: "2026-04-19T18:58:22.868Z"
+{
+    "success": true,
+    "message": "Class retrieved successfully",
+    "data": {
+        "_id": "69dabcb4fb2e855fe81ac833",
+        "subject": "Facilis laboris odit",
+        "level": "Quaerat culpa corru",
+        "language": "Eum repellendus Sit",
+        "curriculum": "Expedita et doloribu",
+        "price": 178,
+        "tutorGender": "MALE",
+        "maxStudents": 27,
+        "enrolledStudents": 2,
+        "whatsappGroupLink": "Eos nihil ea in temp",
+        "description": "Aperiam cum ut quibu",
+        "youtubeVideoLink": "https://www.youtube.com/watch?v=GBBSHdjEelA",
+        "classType": "GROUP",
+        "runningStatus": "RUNNING",
+        "images": [
+            "/uploads/class-images/class-836845-9059.webp"
+        ],
+        "status": "APPROVED",
+        "createdBy": {
+            "_id": "69da993e19df04063239da45",
+            "name": "Jocelyn Macias",
+            "email": "pojygi@mailinator.com"
+        },
+        "isDeleted": false,
+        "createdAt": "2026-04-11T21:27:16.968Z",
+        "updatedAt": "2026-04-20T22:18:23.940Z",
+        "averageRating": 5,
+        "ratingCount": 1
+    }
+}
