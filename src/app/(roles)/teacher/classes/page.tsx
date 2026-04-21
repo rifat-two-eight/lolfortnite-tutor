@@ -647,7 +647,7 @@ function CreateClassModal({ onClose, onSuccess }: { onClose: () => void; onSucce
                             </label>
                             <input
                                 name="youtubeVideoLink" value={formData.youtubeVideoLink} onChange={handleChange}
-                                placeholder="https://youtube.com/..."
+                                placeholder="Paste your video link here"
                                 className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-none focus:bg-white focus:border-[#0A47C2] transition-all text-[#0D1C35] font-sans text-sm outline-none"
                             />
                         </div>
@@ -657,7 +657,7 @@ function CreateClassModal({ onClose, onSuccess }: { onClose: () => void; onSucce
                             </label>
                             <input
                                 name="whatsappGroupLink" value={formData.whatsappGroupLink} onChange={handleChange}
-                                placeholder="https://chat.whatsapp.com/..."
+                                placeholder="Your Whatsapp Link"
                                 className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-none focus:bg-white focus:border-[#0A47C2] transition-all text-[#0D1C35] font-sans text-sm outline-none"
                             />
                         </div>

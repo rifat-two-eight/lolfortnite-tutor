@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useEffect, useState, use } from "react";
+import { FaGoogleDrive } from "react-icons/fa";
+
 import {
     X, Star, Users, Globe, BookOpen, Clock,
     PlayCircle, ChevronLeft, Calendar,
-    MessageCircle, ArrowLeft,
-    Loader2
+    MessageCircle, ArrowLeft, Video,
+    Loader2, Download, ExternalLink, MonitorPlay
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,11 +50,45 @@ interface ClassDetails {
     ratingCount?: number;
 }
 
+interface RecordingFile {
+    id: string;
+    meeting_id: string;
+    recording_start: string;
+    recording_end: string;
+    file_type: string;
+    file_size: number;
+    play_url: string;
+    download_url: string;
+    drive_web_link?: string;
+    status: string;
+    recording_type: string;
+    uploaded_to_drive?: boolean;
+    _id: string;
+}
+
+interface ZoomMeeting {
+    _id: string;
+    meetingId: number;
+    topic: string;
+    status: string;
+    start_time: string;
+    duration: number;
+    timezone: string;
+    agenda?: string;
+    join_url: string;
+    password?: string;
+    drive_upload_status: string;
+    recording_files: RecordingFile[];
+    createdAt: string;
+}
+
 export default function ClassDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const [classroom, setClassroom] = useState<ClassDetails | null>(null);
     const [loading, setLoading] = useState(true);
     const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+    const [meetings, setMeetings] = useState<ZoomMeeting[]>([]);
+    const [meetingsLoading, setMeetingsLoading] = useState(true);
 
     useEffect(() => {
         const fetchDetail = async () => {
@@ -71,8 +107,23 @@ export default function ClassDetailPage({ params }: { params: Promise<{ id: stri
             }
         };
 
+        const fetchMeetings = async () => {
+            try {
+                const response = await api.get(`/zoom/class-meetings/${id}`);
+                if (response.data.success) {
+                    setMeetings(response.data.data || []);
+                }
+            } catch (error) {
+                console.error("Error fetching meetings:", error);
+                // Silently fail — meetings section just won't show
+            } finally {
+                setMeetingsLoading(false);
+            }
+        };
+
         if (id) {
             fetchDetail();
+            fetchMeetings();
         }
     }, [id]);
 
@@ -80,6 +131,37 @@ export default function ClassDetailPage({ params }: { params: Promise<{ id: stri
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
         return (match && match[2].length === 11) ? match[2] : null;
+    };
+
+    const formatMeetingDate = (isoDate: string) => {
+        const d = new Date(isoDate);
+        return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+    };
+
+    const formatMeetingTime = (isoDate: string) => {
+        const d = new Date(isoDate);
+        return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+    };
+
+    const formatRecordingDuration = (start: string, end: string) => {
+        const diff = (new Date(end).getTime() - new Date(start).getTime()) / 1000;
+        const mins = Math.floor(diff / 60);
+        const secs = Math.floor(diff % 60);
+        return `${mins}m ${secs}s`;
+    };
+
+    const formatFileSize = (bytes: number) => {
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    };
+
+    const getMeetingStatusStyle = (status: string) => {
+        switch (status.toLowerCase()) {
+            case "started": return "bg-green-50 text-green-600 border-green-100";
+            case "waiting": return "bg-amber-50 text-amber-600 border-amber-100";
+            case "ended": return "bg-slate-100 text-slate-500 border-slate-200";
+            default: return "bg-blue-50 text-blue-600 border-blue-100";
+        }
     };
 
     if (loading) {
@@ -171,13 +253,13 @@ export default function ClassDetailPage({ params }: { params: Promise<{ id: stri
             </div>
 
             {/* Main Content Area */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-16 py-12 flex-grow w-full text-left">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-16 py-10 flex-grow w-full overflow-x-hidden">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-                    {/* Left Column: Media & Description (Col Span 8) */}
-                    <div className="lg:col-span-8 space-y-10">
-                        {/* Premium Media Slider (Compact Size) */}
-                        <div className="space-y-6 max-w-[640px]">
+                    {/* Left Column: Media, Description & Meetings (Col Span 8) */}
+                    <div className="lg:col-span-8 space-y-8 min-w-0">
+                        {/* Premium Media Slider */}
+                        <div className="space-y-4 w-full">
                             <div className="bg-white rounded-xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
                                 <div className="relative aspect-video w-full bg-slate-900 overflow-hidden text-left">
                                     {mediaItems.length > 0 ? (
@@ -275,7 +357,7 @@ export default function ClassDetailPage({ params }: { params: Promise<{ id: stri
                         </div>
 
                         {/* Description Section */}
-                        <div className="bg-white rounded-xl p-8 md:p-12 shadow-sm border border-slate-100 space-y-8 max-w-[640px]">
+                        <div className="bg-white rounded-xl p-8 shadow-sm border border-slate-100 space-y-6 w-full">
                             <div className="flex items-center gap-3 border-b border-slate-50 pb-6 text-left">
                                 <div className="p-2.5 bg-blue-50 rounded-xl text-[#0A47C2]">
                                     <BookOpen size={24} />
@@ -287,6 +369,165 @@ export default function ClassDetailPage({ params }: { params: Promise<{ id: stri
                                     {classroom.description}
                                 </p>
                             </div>
+                        </div>
+
+                        {/* Zoom Meetings Section */}
+                        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100 space-y-5 w-full">
+                            <div className="flex items-center gap-3 border-b border-slate-50 pb-6">
+                                <div className="p-2.5 bg-blue-50 rounded-xl text-[#0A47C2]">
+                                    <Video size={22} />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-black text-[#0D1C35] font-sans">Class Sessions</h2>
+                                    <p className="text-xs text-slate-400 font-bold mt-0.5">Scheduled Zoom meetings & recordings</p>
+                                </div>
+                            </div>
+
+                            {meetingsLoading ? (
+                                <div className="flex items-center justify-center py-10 gap-3 text-slate-400">
+                                    <Loader2 size={20} className="animate-spin text-[#0A47C2]" />
+                                    <span className="text-sm font-bold font-sans">Loading sessions...</span>
+                                </div>
+                            ) : meetings.length === 0 ? (
+                                <div className="text-center py-10">
+                                    <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-300">
+                                        <MonitorPlay size={28} />
+                                    </div>
+                                    <p className="text-sm font-bold text-slate-400 font-sans">No sessions scheduled yet</p>
+                                    <p className="text-xs text-slate-300 mt-1 font-sans">Sessions will appear here once your teacher creates them.</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {meetings.map((meeting, idx) => (
+                                        <div
+                                            key={meeting._id}
+                                            className="border border-slate-100 rounded-xl overflow-hidden bg-slate-50/50"
+                                        >
+                                            {/* Meeting Header */}
+                                            <div className="p-5 flex items-start justify-between gap-4">
+                                                <div className="flex items-start gap-4">
+                                                    <div className="w-10 h-10 rounded-xl bg-[#0A47C2]/10 flex items-center justify-center text-[#0A47C2] shrink-0 font-black text-sm font-sans">
+                                                        {idx + 1}
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <p className="font-black text-[#0D1C35] font-sans text-sm">{meeting.topic}</p>
+
+                                                        <div className="flex items-center gap-3 text-xs text-slate-400 font-bold font-sans flex-wrap">
+                                                            <span className="flex items-center gap-1">
+                                                                <Calendar size={12} />
+                                                                {formatMeetingDate(meeting.start_time)}
+                                                            </span>
+                                                            <span className="flex items-center gap-1">
+                                                                <Clock size={12} />
+                                                                {formatMeetingTime(meeting.start_time)}
+                                                            </span>
+                                                            <span className="flex items-center gap-1">
+                                                                <Video size={12} />
+                                                                {meeting.duration} min
+                                                            </span>
+                                                        </div>
+                                                        {meeting.agenda && (
+                                                            <p className="text-xs text-slate-400 font-sans mt-1 italic">
+                                                                {meeting.agenda}
+                                                            </p>
+                                                        )}
+                                                        <div className="flex items-center gap-2 mt-2 flex-wrap">
+                                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 rounded-lg text-[11px] font-black text-slate-600 font-sans">
+                                                                <span className="text-slate-400 font-bold">ID:</span>
+                                                                {meeting.meetingId}
+                                                            </span>
+                                                            {meeting.password && (
+                                                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 rounded-lg text-[11px] font-black text-slate-600 font-sans">
+                                                                    <span className="text-slate-400 font-bold">Pass:</span>
+                                                                    {meeting.password}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col items-end gap-2 shrink-0">
+                                                    <span className={cn(
+                                                        "px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border font-sans",
+                                                        getMeetingStatusStyle(meeting.status)
+                                                    )}>
+                                                        {meeting.status}
+                                                    </span>
+                                                    <a
+                                                        href={meeting.join_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0A47C2] text-white text-xs font-black rounded-lg hover:bg-[#083a9e] transition-all font-sans shadow-sm shadow-blue-100"
+                                                    >
+                                                        <ExternalLink size={12} />
+                                                        Join
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            {/* Recordings */}
+                                            {meeting.recording_files && meeting.recording_files.length > 0 && (
+                                                <div className="border-t border-slate-100 px-5 py-4 space-y-3">
+                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                                        Session Recordings ({meeting.recording_files.length})
+                                                    </p>
+                                                    {meeting.recording_files.map((rec) => (
+                                                        <div
+                                                            key={rec._id}
+                                                            className="flex items-center justify-between gap-3 bg-white rounded-xl p-3.5 border border-slate-100"
+                                                        >
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center text-red-500 shrink-0">
+                                                                    <PlayCircle size={18} />
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-black text-[#0D1C35] font-sans capitalize">
+                                                                        {/* {rec.recording_type.replace(/_/g, " ")} */}
+                                                                        {meeting?.topic}
+                                                                    </p>
+                                                                    <p className="text-[10px] text-slate-400 font-sans font-bold">
+                                                                        {formatRecordingDuration(rec.recording_start, rec.recording_end)} &nbsp;·&nbsp; {formatFileSize(rec.file_size)} &nbsp;·&nbsp; {rec.file_type}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex items-center gap-2 shrink-0">
+                                                                {rec.drive_web_link && (
+                                                                    <a
+                                                                        href={rec.drive_web_link}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="w-8 h-8 rounded-lg bg-blue-50  flex items-center justify-center hover:bg-blue-100 transition-all"
+                                                                        title="Watch on Google Drive"
+                                                                    >
+                                                                        <FaGoogleDrive size={14} />
+                                                                    </a>
+                                                                )}
+                                                                <a
+                                                                    href={rec.play_url}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="w-8 h-8 rounded-lg bg-blue-50 text-slate-600 flex items-center justify-center hover:bg-slate-200 transition-all"
+                                                                    title="Watch recording"
+                                                                >
+                                                                    <PlayCircle size={14} />
+                                                                </a>
+                                                                <a
+                                                                    href={rec.download_url}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="w-8 h-8 rounded-lg bg-blue-50 text-slate-600 flex items-center justify-center hover:bg-slate-200 transition-all"
+                                                                    title="Download recording"
+                                                                >
+                                                                    <Download size={14} />
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -324,8 +565,6 @@ export default function ClassDetailPage({ params }: { params: Promise<{ id: stri
                                     Link Pending
                                 </div>
                             )}
-
-
                         </div>
 
                         {/* Specifications Card */}
@@ -360,6 +599,29 @@ export default function ClassDetailPage({ params }: { params: Promise<{ id: stri
                             </div>
                         </div>
 
+                        {/* Sessions Quick Summary Card */}
+                        {!meetingsLoading && meetings.length > 0 && (
+                            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100 space-y-4">
+                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 pb-4">Sessions Summary</h4>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-slate-500 font-sans">Total Sessions</span>
+                                    <span className="text-sm font-black text-[#0A47C2] font-sans">{meetings.length}</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-slate-500 font-sans">With Recordings</span>
+                                    <span className="text-sm font-black text-[#0D1C35] font-sans">
+                                        {meetings.filter(m => m.recording_files?.length > 0).length}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-slate-500 font-sans">Total Duration</span>
+                                    <span className="text-sm font-black text-[#0D1C35] font-sans">
+                                        {meetings.reduce((acc, m) => acc + m.duration, 0)} min
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+
                     </div>
                 </div>
             </div>
@@ -368,3 +630,4 @@ export default function ClassDetailPage({ params }: { params: Promise<{ id: stri
         </main>
     );
 }
+

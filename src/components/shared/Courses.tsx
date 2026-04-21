@@ -296,9 +296,7 @@ export default function Courses() {
                                     >
                                         {bookingClassId === cls._id ? "Booking..." : "Book Now"}
                                     </button>
-                                    <button className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-xl text-gray-400 hover:text-[#0A47C2] hover:border-[#0A47C2] transition-all">
-                                        <MessageCircle />
-                                    </button>
+
                                 </div>
                             </div>
                         </div>

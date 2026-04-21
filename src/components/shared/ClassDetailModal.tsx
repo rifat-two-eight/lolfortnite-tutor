@@ -225,9 +225,6 @@ export default function ClassDetailModal({ isOpen, onClose, data }: ClassDetailM
                             >
                                 {isBooking ? "Redirecting..." : "Book This Session"}
                             </button>
-                            <button className="w-14 h-14 flex items-center justify-center border border-gray-200 rounded-none text-[#0D1C35] hover:bg-gray-50 transition-all">
-                                <MessageCircle size={24} />
-                            </button>
                         </div>
                     </div>
                 </div>

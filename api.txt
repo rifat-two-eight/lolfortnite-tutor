@@ -2,33 +2,34 @@
     "success": true,
     "message": "Class retrieved successfully",
     "data": {
-        "_id": "69dabcb4fb2e855fe81ac833",
-        "subject": "Facilis laboris odit",
-        "level": "Quaerat culpa corru",
-        "language": "Eum repellendus Sit",
-        "curriculum": "Expedita et doloribu",
-        "price": 178,
-        "tutorGender": "MALE",
-        "maxStudents": 27,
-        "enrolledStudents": 2,
-        "whatsappGroupLink": "Eos nihil ea in temp",
-        "description": "Aperiam cum ut quibu",
-        "youtubeVideoLink": "https://www.youtube.com/watch?v=GBBSHdjEelA",
-        "classType": "GROUP",
+        "_id": "69e69847bd3300313530df1e",
+        "subject": "Minima excepturi ear",
+        "level": "Nulla sint enim nul",
+        "language": "Quis aut nisi occaec",
+        "curriculum": "Ut voluptatem exerci",
+        "price": 635,
+        "tutorGender": "FEMALE",
+        "maxStudents": 1,
+        "enrolledStudents": 1,
+        "whatsappGroupLink": "https://web.whatsapp.com/",
+        "description": "Dolore cupiditate ha",
+        "youtubeVideoLink": "https://youtu.be/JFNUVJtlQDU?si=qH-GPU-4VEg-PnXu",
+        "classType": "ONE_TO_ONE",
         "runningStatus": "RUNNING",
         "images": [
-            "/uploads/class-images/class-836845-9059.webp"
+            "/uploads/class-images/class-943215-2109.webp"
         ],
         "status": "APPROVED",
         "createdBy": {
-            "_id": "69da993e19df04063239da45",
-            "name": "Jocelyn Macias",
-            "email": "pojygi@mailinator.com"
+            "_id": "69e41bb9e030b114c94bb70a",
+            "name": "Daphne Mcguire",
+            "email": "gekujicevi@mailinator.com",
+            "profileImage": "/uploads/profile-images/profile-985608-5307.webp"
         },
         "isDeleted": false,
-        "createdAt": "2026-04-11T21:27:16.968Z",
-        "updatedAt": "2026-04-20T22:18:23.940Z",
-        "averageRating": 5,
-        "ratingCount": 1
+        "createdAt": "2026-04-20T21:19:03.355Z",
+        "updatedAt": "2026-04-20T21:20:13.968Z",
+        "averageRating": 0,
+        "ratingCount": 0
     }
 }

@@ -7,6 +7,7 @@ import {
     LayoutDashboard,
     PlusCircle,
     BookOpen,
+    GraduationCap,
     DollarSign,
     Settings,
     LogOut
@@ -16,7 +17,8 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 const navItems = [
     { name: "Dashboard", href: "/teacher", icon: LayoutDashboard },
-    { name: "My Class", href: "/teacher/classes", icon: BookOpen },
+    { name: "My Classes", href: "/teacher/classes", icon: BookOpen },
+    { name: "Enrolled Classes", href: "/teacher/enrolled-classes", icon: GraduationCap },
     { name: "Earning", href: "/teacher/earning", icon: DollarSign },
     { name: "Settings", href: "/teacher/settings", icon: Settings },
 ];
@@ -61,7 +63,9 @@ export default function TeacherSidebar({ isOpen, onClose }: { isOpen?: boolean; 
                 {/* Nav Items */}
                 <nav className="flex-1 py-4 space-y-1 overflow-y-auto">
                     {navItems.map((item) => {
-                        const isActive = pathname === item.href;
+                        const isActive = item.href === "/teacher"
+                            ? pathname === item.href
+                            : pathname === item.href || pathname.startsWith(item.href + "/");
                         return (
                             <Link
                                 key={item.href}
