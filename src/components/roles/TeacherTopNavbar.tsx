@@ -33,9 +33,10 @@ export default function TeacherTopNavbar({ onMenuClick }: { onMenuClick?: () => 
     const getTitle = () => {
         if (pathname === "/teacher/create") return "create a new class";
         if (pathname === "/teacher/profile") return "Teacher Profile";
-        if (pathname === "/teacher/classes") return "My Class";
+        if (pathname === "/teacher/classes") return "My Classes";
         if (pathname === "/teacher/settings") return "Settings";
         if (pathname === "/teacher/earning") return "Earning";
+        if (pathname === "/teacher/enrolled-classes") return "Enrolled Classes";
         return "Dashboard";
     };
 
@@ -55,15 +56,14 @@ export default function TeacherTopNavbar({ onMenuClick }: { onMenuClick?: () => 
                 </button>
 
                 <div>
-                    <p className="text-gray-500 text-[10px] md:text-xs font-medium font-sans">Good Morning</p>
                     <h1 className="text-lg md:text-xl font-bold text-[#0D1C35] font-sans capitalize">{getTitle()}</h1>
                 </div>
             </div>
 
             <div className="flex items-center gap-4">
                 {/* Message Icon Link */}
-                <Link 
-                    href="/teacher/messages" 
+                <Link
+                    href="/teacher/messages"
                     className={cn(
                         "p-2.5 text-[#0A47C2] hover:bg-blue-50 rounded-full transition-all border border-transparent hover:border-blue-100",
                         pathname === "/teacher/messages" && "bg-blue-50 border-blue-100"
@@ -78,7 +78,7 @@ export default function TeacherTopNavbar({ onMenuClick }: { onMenuClick?: () => 
                         onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                         className="flex items-center gap-2 p-1 hover:bg-gray-50 rounded-full transition-all border border-transparent hover:border-gray-100"
                     >
-                        <UserAvatar 
+                        <UserAvatar
                             src={user?.profileImage}
                             name={user?.name}
                             size="w-10 h-10"

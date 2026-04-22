@@ -35,9 +35,12 @@ export default function AdminTopNavbar({ onMenuClick }: { onMenuClick?: () => vo
         if (pathname === "/web-admin/teacher") return "Teacher";
         if (pathname === "/web-admin/student") return "Student";
         if (pathname === "/web-admin/payment") return "Payment";
+        if (pathname === "/web-admin/classes") return "Classes";
         if (pathname === "/web-admin/withdrawer-request" || pathname === "/web-admin/withdrawal-request") return "Withdrawal Request";
         if (pathname === "/web-admin/settings") return "Settings";
         if (pathname === "/web-admin/profile") return "Admin Profile";
+        if (pathname === "/web-admin/privacy") return "Privacy Policy";
+        if (pathname === "/web-admin/terms") return "Terms & Conditions";
         return "Dashboard";
     };
 
@@ -69,7 +72,7 @@ export default function AdminTopNavbar({ onMenuClick }: { onMenuClick?: () => vo
                         onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                         className="flex items-center gap-2 p-1 hover:bg-gray-50 rounded-full transition-all border border-transparent hover:border-gray-100"
                     >
-                        <UserAvatar 
+                        <UserAvatar
                             src={user?.profileImage}
                             name={user?.name}
                             size="w-10 h-10"

@@ -181,7 +181,7 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
             const response = await api.get(`/messages/conversations/${convId}/messages?page=1&limit=50`);
             if (response.data.success) {
                 // Filter out soft-deleted messages
-                const activeMessages = response.data.data.filter((m: any) => 
+                const activeMessages = response.data.data.filter((m: any) =>
                     !m.isDeleted && m.status !== "DELETED"
                 );
                 setMessages(activeMessages);
@@ -291,7 +291,8 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
                     conversationId: selectedConvId,
                     type: "OFFER",
                     slotId: offerData.slotId,
-                    subject: offerData.subject
+                    subject: offerData.subject,
+                    text: `OFFER:${JSON.stringify(offerData)}`
                 });
                 if (response.data.success) {
                     const updatedMsg = response.data.data;
@@ -304,6 +305,7 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
                 formData.append("type", "OFFER");
                 formData.append("slotId", offerData.slotId);
                 formData.append("subject", offerData.subject);
+                formData.append("text", `OFFER:${JSON.stringify(offerData)}`);
 
                 const response = await api.post("/messages/send", formData, {
                     headers: { "Content-Type": "multipart/form-data" }
@@ -450,18 +452,18 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
                 if (response.data.success) {
                     // 1. Calculate the new messages list first
                     const updatedMessages = messages.filter(m => m._id !== id);
-                    
+
                     // 2. Remove from current message list
                     setMessages(updatedMessages);
-                    
+
                     // 3. Update conversation list last message preview
                     setConversations(prev => prev.map(conv => {
                         if (conv._id === selectedConvId && conv.lastMessage?._id === id) {
                             // Use the updated list we just calculated
-                            const newLastMessage = updatedMessages.length > 0 
-                                ? updatedMessages[updatedMessages.length - 1] 
+                            const newLastMessage = updatedMessages.length > 0
+                                ? updatedMessages[updatedMessages.length - 1]
                                 : undefined;
-                            
+
                             return {
                                 ...conv,
                                 lastMessage: newLastMessage
@@ -564,10 +566,10 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
                         {/* Chat Header */}
                         <div className="h-20 border-b border-gray-100 flex items-center justify-between px-8 shrink-0 bg-white shadow-sm z-10">
                             <div className="flex items-center gap-4">
-                                <UserAvatar 
-                                    src={recipient.profileImage} 
-                                    name={recipient.name} 
-                                    size="w-12 h-12" 
+                                <UserAvatar
+                                    src={recipient.profileImage}
+                                    name={recipient.name}
+                                    size="w-12 h-12"
                                     className="border border-gray-100"
                                 />
                                 <div>

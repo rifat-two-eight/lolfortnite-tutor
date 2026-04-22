@@ -3,15 +3,17 @@
 import { Facebook, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-const stats = [
-    { value: "6.3k", label: "Students" },
-    { value: "26k", label: "Tutors" },
-    { value: "99.9%", label: "Sucess Rate" },
-];
+// Remove static stats array
 
 const footerLinks = {
-    HOME: ["What is educate", "How it work", "Benefits", "Client Says"],
+    HOME: [
+        { label: "Home", href: "/" },
+        { label: "Classes", href: "/classes" },
+        { label: "Tutors", href: "/tutors" },
+    ],
     ABOUT_US: [
         { label: "Terms & Condition", href: "/terms" },
         { label: "Privacy Policy", href: "/privacy" },
@@ -78,6 +80,28 @@ function ContactIcon({ type }: { type: string }) {
 }
 
 export default function Footer() {
+    const [dynamicStats, setDynamicStats] = useState([
+        { value: "6.3k", label: "Students" },
+        { value: "2.6k", label: "Tutors" },
+    ]);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/admin-stats`);
+                if (response.data.success) {
+                    const data = response.data.data;
+                    setDynamicStats([
+                        { value: (data.totalStudents || 0).toLocaleString(), label: "Students" },
+                        { value: (data.totalTeachers || 0).toLocaleString(), label: "Tutors" },
+                    ]);
+                }
+            } catch (error) {
+                console.error("Error fetching footer stats:", error);
+            }
+        };
+        fetchStats();
+    }, []);
     return (
         <footer className="w-full bg-[#1E1E1E]">
             {/* CTA Banner */}
@@ -86,7 +110,7 @@ export default function Footer() {
                     {/* Left */}
                     <div className="space-y-5">
                         <h2 className="text-2xl sm:text-3xl font-extrabold text-white font-sans leading-snug">
-                            Start learning with 67.1k <br /> students around the world.
+                            Connect, learn, and grow <br /> with a worldwide community.
                         </h2>
                         <div className="flex flex-wrap gap-3">
                             <Link href="/classes">
@@ -105,7 +129,7 @@ export default function Footer() {
 
                     {/* Stats */}
                     <div className="flex gap-8 sm:gap-12">
-                        {stats.map((stat) => (
+                        {dynamicStats.map((stat) => (
                             <div key={stat.label} className="text-center">
                                 <p className="text-2xl sm:text-3xl font-extrabold text-white font-sans">{stat.value}</p>
                                 <p className="text-gray-400 text-xs sm:text-sm font-sans mt-0.5">{stat.label}</p>
@@ -123,7 +147,7 @@ export default function Footer() {
                         <Image src="/logo1.svg" alt="Logo" width={160} height={160} unoptimized />
                     </div>
                     <p className="text-gray-400 text-xs leading-relaxed font-sans max-w-[180px]">
-                        Aliquam rhoncus ligula est, non pulvinar elit convallis nec. Donec mattis odio ut.
+                        Empowering learners worldwide with skills, knowledge, and confidence for a better future.
                     </p>
                     {/* Socials */}
                     <div className="flex gap-2 flex-wrap">
@@ -142,12 +166,12 @@ export default function Footer() {
 
                 {/* Home Links */}
                 <div className="space-y-3">
-                    <p className="text-white text-xs font-bold tracking-widest uppercase font-sans">Home</p>
+                    <p className="text-white text-xs font-bold tracking-widest uppercase font-sans">Navigation</p>
                     <ul className="space-y-2.5">
                         {footerLinks.HOME.map((item) => (
-                            <li key={item}>
-                                <Link href="#" className="text-gray-400 text-xs hover:text-white transition-all font-sans">
-                                    {item}
+                            <li key={item.label}>
+                                <Link href={item.href} className="text-gray-400 text-xs hover:text-white transition-all font-sans">
+                                    {item.label}
                                 </Link>
                             </li>
                         ))}
@@ -188,8 +212,8 @@ export default function Footer() {
                 </div>
 
                 {/* App Download */}
-                <div className="space-y-3">
-                    <p className="text-white text-xs font-bold tracking-widest uppercase font-sans">Download Our App</p>
+                <div className="space-y-3 flex justify-self-end">
+                    {/* <p className="text-white text-xs font-bold tracking-widest uppercase font-sans">Download Our App</p> */}
                     <div className="flex flex-col gap-2.5">
                         {/* App Store */}
                         <Link href="#" className="flex items-center gap-2.5 bg-white/10 hover:bg-white/15 transition-all w-40 px-3 py-2.5">

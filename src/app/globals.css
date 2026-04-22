@@ -20,3 +20,54 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+/* Reset Tailwind's preflight inside Jodit */
+
+.rich-text-content * {
+  all: revert !important;
+}
+
+.jodit-wysiwyg {
+  font-family: revert;
+  font-size: revert;
+  line-height: revert;
+  color: revert;
+  margin: revert;
+  padding: revert;
+}
+
+.jodit-wysiwyg ol,
+.jodit-wysiwyg ul {
+  list-style: revert;
+  margin: revert;
+  padding: revert;
+  padding-left: 2rem;
+}
+
+.jodit-wysiwyg li {
+  margin: revert;
+  padding: revert;
+  list-style: revert;
+}
+
+.jodit-wysiwyg h1,
+.jodit-wysiwyg h2,
+.jodit-wysiwyg h3,
+.jodit-wysiwyg h4,
+.jodit-wysiwyg h5,
+.jodit-wysiwyg h6 {
+  font-size: revert;
+  font-weight: revert;
+  margin: revert;
+}
+
+.jodit-wysiwyg table {
+  border-collapse: revert;
+  border-spacing: revert;
+}
+
+.jodit-wysiwyg a {
+  color: revert;
+  text-decoration: revert;
+}

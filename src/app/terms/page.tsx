@@ -80,7 +80,7 @@ export default function TermsPage() {
                 ) : policy ? (
                     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 sm:p-12">
                         <div
-                            className="prose prose-blue max-w-none text-gray-600 leading-relaxed font-sans text-sm sm:text-base"
+                            className="prose prose-blue max-w-none text-gray-600 leading-relaxed font-sans text-sm sm:text-base rich-text-content"
                             dangerouslySetInnerHTML={{ __html: policy.content }}
                         />
                     </div>

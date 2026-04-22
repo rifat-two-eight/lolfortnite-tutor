@@ -8,6 +8,7 @@ import axios from "axios";
 import api from "@/lib/axios";
 import { toast } from "sonner";
 import HourlyTutorDetailModal from "./HourlyTutorDetailModal";
+import { ChevronLeft } from "lucide-react";
 
 interface HourlyClassData {
     _id: string;
@@ -53,6 +54,10 @@ export default function TutorsContent() {
     const router = useRouter();
     const [hiringId, setHiringId] = useState<string | null>(null);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [meta, setMeta] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 });
+    const ITEMS_PER_PAGE = 10;
+
     const handleHire = async (e: React.MouseEvent, tutorId: string) => {
         e.stopPropagation();
         setHiringId(tutorId);
@@ -78,9 +83,18 @@ export default function TutorsContent() {
         const fetchTutors = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/hourly-classes`);
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/hourly-classes`, {
+                    params: {
+                        page: currentPage,
+                        limit: ITEMS_PER_PAGE,
+                        sort: "-createdAt"
+                    }
+                });
                 if (response.data.success) {
                     setHourlyClasses(response.data.data);
+                    if (response.data.meta) {
+                        setMeta(response.data.meta);
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching tutors:", error);
@@ -90,7 +104,7 @@ export default function TutorsContent() {
         };
 
         fetchTutors();
-    }, []);
+    }, [currentPage]);
 
     const getImageUrl = (path: string) => {
         if (!path) return "/demotutor.png";
@@ -120,10 +134,11 @@ export default function TutorsContent() {
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0A47C2]"></div>
                 </div>
             ) : (
-                <div className="flex flex-col gap-6">
-                    {hourlyClasses.map((tutor) => (
-                        <div
-                            key={tutor._id}
+                <>
+                    <div className="flex flex-col gap-6">
+                        {hourlyClasses.map((tutor) => (
+                            <div
+                                key={tutor._id}
                             className="border border-[#0A47C2] rounded-2xl p-4 flex flex-col sm:flex-row gap-5 bg-white shadow-sm hover:shadow-md transition-shadow"
                         >
                             {/* Photo */}
@@ -205,8 +220,56 @@ export default function TutorsContent() {
                                 </div>
                             </div>
                         </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+
+                    {/* Pagination Controls */}
+                    {hourlyClasses.length > 0 && (
+                        <div className="flex justify-center items-center mt-12 gap-2">
+                            <button
+                                onClick={() => {
+                                    setCurrentPage(p => Math.max(1, p - 1));
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                                disabled={currentPage === 1}
+                                className="p-2 border border-slate-200 rounded-lg disabled:opacity-50 hover:bg-slate-50 transition-colors text-slate-600 focus:outline-none"
+                            >
+                                <ChevronLeft size={20} />
+                            </button>
+                            
+                            {[...Array(Math.max(1, meta.totalPages))].map((_, idx) => {
+                                const page = idx + 1;
+                                return (
+                                    <button
+                                        key={page}
+                                        onClick={() => {
+                                            setCurrentPage(page);
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className={`w-10 h-10 rounded-lg text-sm font-bold transition-all focus:outline-none ${
+                                            currentPage === page 
+                                            ? "bg-[#0A47C2] text-white shadow-md shadow-blue-100" 
+                                            : "border border-slate-200 text-slate-600 hover:bg-slate-50"
+                                        }`}
+                                    >
+                                        {page}
+                                    </button>
+                                );
+                            })}
+
+                            <button
+                                onClick={() => {
+                                    setCurrentPage(p => Math.min(meta.totalPages, p + 1));
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                                disabled={currentPage === Math.max(1, meta.totalPages)}
+                                className="p-2 border border-slate-200 rounded-lg disabled:opacity-50 hover:bg-slate-50 transition-colors text-slate-600 focus:outline-none"
+                            >
+                                <ChevronLeft size={20} className="rotate-180" />
+                            </button>
+                        </div>
+                    )}
+                </>
             )}
         </section>
     );
