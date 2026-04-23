@@ -108,7 +108,7 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
     // Setup Socket
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://10.10.7.24:5010';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || '${process.env.NEXT_PUBLIC_IMAGE_URL}';
 
         const socket = io(baseUrl, {
             auth: { token },

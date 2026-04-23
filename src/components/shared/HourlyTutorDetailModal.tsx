@@ -61,7 +61,7 @@ export default function HourlyTutorDetailModal({ isOpen, onClose, data }: Hourly
     const getImageUrl = (path: string) => {
         if (!path) return "/demotutor.png";
         if (path.startsWith("http")) return path;
-        return `http://10.10.7.24:5010${path}`;
+        return `${process.env.NEXT_PUBLIC_IMAGE_URL}${path}`;
     };
 
     return (

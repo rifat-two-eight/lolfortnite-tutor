@@ -99,7 +99,7 @@ export default function TopTutors() {
     const getImageUrl = (path: string) => {
         if (!path) return "/demotutor.png";
         if (path.startsWith("http")) return path;
-        return `http://10.10.7.24:5010${path}`;
+        return `${process.env.NEXT_PUBLIC_IMAGE_URL}${path}`;
     };
 
     return (
@@ -204,7 +204,7 @@ export default function TopTutors() {
                                     {/* Price / Static CTA */}
                                     <div className="sm:mt-auto flex flex-col items-end">
                                         <p className="text-sm font-extrabold text-[#0D1C35] mb-2 font-sans">{tutor.pricePerHour} KD<span className="text-[10px] font-normal text-gray-400">/hr</span></p>
-                                        <button 
+                                        <button
                                             onClick={(e) => handleHire(e, tutor.createdBy._id)}
                                             disabled={hiringId === tutor.createdBy._id}
                                             className="px-6 py-2.5 bg-[#0A47C2] text-white text-xs font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all whitespace-nowrap shadow-lg shadow-blue-100 disabled:opacity-70 disabled:cursor-not-allowed">

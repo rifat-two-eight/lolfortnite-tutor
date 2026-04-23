@@ -109,7 +109,7 @@ export default function TutorsContent() {
     const getImageUrl = (path: string) => {
         if (!path) return "/demotutor.png";
         if (path.startsWith("http")) return path;
-        return `http://10.10.7.24:5010${path}`;
+        return `${process.env.NEXT_PUBLIC_IMAGE_URL}${path}`;
     };
 
     return (
@@ -139,87 +139,87 @@ export default function TutorsContent() {
                         {hourlyClasses.map((tutor) => (
                             <div
                                 key={tutor._id}
-                            className="border border-[#0A47C2] rounded-2xl p-4 flex flex-col sm:flex-row gap-5 bg-white shadow-sm hover:shadow-md transition-shadow"
-                        >
-                            {/* Photo */}
-                            <div className="relative w-full sm:w-28 md:w-60 h-80 md:h-60 shrink-0 rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
-                                <Image
-                                    src={getImageUrl(tutor.createdBy.profileImage || "")}
-                                    alt={tutor.createdBy.name}
-                                    fill
-                                    unoptimized
-                                    className="object-cover object-top"
-                                />
-                            </div>
+                                className="border border-[#0A47C2] rounded-2xl p-4 flex flex-col sm:flex-row gap-5 bg-white shadow-sm hover:shadow-md transition-shadow"
+                            >
+                                {/* Photo */}
+                                <div className="relative w-full sm:w-28 md:w-60 h-80 md:h-60 shrink-0 rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
+                                    <Image
+                                        src={getImageUrl(tutor.createdBy.profileImage || "")}
+                                        alt={tutor.createdBy.name}
+                                        fill
+                                        unoptimized
+                                        className="object-cover object-top"
+                                    />
+                                </div>
 
-                            {/* Main Info */}
-                            <div className="flex-1 flex flex-col gap-2.5 min-w-0 py-2">
-                                {/* Name + Rating */}
-                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                                    <h3 className="text-lg font-extrabold text-[#0D1C35] font-sans leading-none">
-                                        {tutor.createdBy.name}
-                                    </h3>
-                                    <div className="flex items-center gap-1.5 bg-amber-50 px-2 py-0.5 rounded-full">
-                                        <StarIcon />
-                                        <span className="text-xs font-bold text-[#D97706] font-sans">{tutor.averageRating || 0}</span>
-                                        <span className="text-xs text-amber-600/70 font-sans">({tutor.ratingCount || 0})</span>
+                                {/* Main Info */}
+                                <div className="flex-1 flex flex-col gap-2.5 min-w-0 py-2">
+                                    {/* Name + Rating */}
+                                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                                        <h3 className="text-lg font-extrabold text-[#0D1C35] font-sans leading-none">
+                                            {tutor.createdBy.name}
+                                        </h3>
+                                        <div className="flex items-center gap-1.5 bg-amber-50 px-2 py-0.5 rounded-full">
+                                            <StarIcon />
+                                            <span className="text-xs font-bold text-[#D97706] font-sans">{tutor.averageRating || 0}</span>
+                                            <span className="text-xs text-amber-600/70 font-sans">({tutor.ratingCount || 0})</span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                {/* Quick Credential / Medium */}
-                                <div className="flex items-center gap-1.5 text-xs text-gray-500 font-bold uppercase tracking-wider">
-                                    <VerifiedIcon />
-                                    <span>{tutor.curriculum} • {tutor.language}</span>
-                                </div>
+                                    {/* Quick Credential / Medium */}
+                                    <div className="flex items-center gap-1.5 text-xs text-gray-500 font-bold uppercase tracking-wider">
+                                        <VerifiedIcon />
+                                        <span>{tutor.curriculum} • {tutor.language}</span>
+                                    </div>
 
-                                {/* Bio Snippet */}
-                                <p className="text-gray-500 text-sm leading-relaxed font-sans line-clamp-2 max-w-2xl mt-2">
-                                    {tutor.description}
-                                </p>
-
-                                {/* View Details Trigger */}
-                                <button
-                                    onClick={() => {
-                                        setSelectedTutor(tutor);
-                                        setIsModalOpen(true);
-                                    }}
-                                    className="text-[#0A47C2] text-xs font-bold font-sans text-left hover:underline w-fit mt-auto pt-4"
-                                >
-                                    View Details
-                                </button>
-                            </div>
-
-                            {/* Right — Highlights + Price */}
-                            <div className="flex sm:flex-col items-start sm:items-end justify-between sm:justify-start gap-6 sm:min-w-[160px] py-2">
-                                {/* Teaches */}
-                                <div className="text-right hidden sm:block">
-                                    <p className="text-[10px] font-bold tracking-widest uppercase text-gray-400 font-sans mb-2">
-                                        Expertise
+                                    {/* Bio Snippet */}
+                                    <p className="text-gray-500 text-sm leading-relaxed font-sans line-clamp-2 max-w-2xl mt-2">
+                                        {tutor.description}
                                     </p>
-                                    <div className="flex flex-col gap-1 items-end">
-                                        {tutor.subjects.slice(0, 3).map((subject) => (
-                                            <span
-                                                key={subject}
-                                                className="text-xs font-bold text-[#0D1C35] bg-gray-50 px-2.5 py-1 rounded-lg border border-gray-100 font-sans"
-                                            >
-                                                {subject}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
 
-                                {/* Price / Static CTA */}
-                                <div className="sm:mt-auto flex flex-col items-end">
-                                    <p className="text-sm font-extrabold text-[#0D1C35] mb-2 font-sans">{tutor.pricePerHour} KD<span className="text-[10px] font-normal text-gray-400">/hr</span></p>
-                                    <button 
-                                        onClick={(e) => handleHire(e, tutor.createdBy._id)}
-                                        disabled={hiringId === tutor.createdBy._id}
-                                        className="px-6 py-2.5 bg-[#0A47C2] text-white text-xs font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all whitespace-nowrap shadow-lg shadow-blue-100 disabled:opacity-70 disabled:cursor-not-allowed">
-                                        {hiringId === tutor.createdBy._id ? "Processing..." : "Hire"}
+                                    {/* View Details Trigger */}
+                                    <button
+                                        onClick={() => {
+                                            setSelectedTutor(tutor);
+                                            setIsModalOpen(true);
+                                        }}
+                                        className="text-[#0A47C2] text-xs font-bold font-sans text-left hover:underline w-fit mt-auto pt-4"
+                                    >
+                                        View Details
                                     </button>
                                 </div>
+
+                                {/* Right — Highlights + Price */}
+                                <div className="flex sm:flex-col items-start sm:items-end justify-between sm:justify-start gap-6 sm:min-w-[160px] py-2">
+                                    {/* Teaches */}
+                                    <div className="text-right hidden sm:block">
+                                        <p className="text-[10px] font-bold tracking-widest uppercase text-gray-400 font-sans mb-2">
+                                            Expertise
+                                        </p>
+                                        <div className="flex flex-col gap-1 items-end">
+                                            {tutor.subjects.slice(0, 3).map((subject) => (
+                                                <span
+                                                    key={subject}
+                                                    className="text-xs font-bold text-[#0D1C35] bg-gray-50 px-2.5 py-1 rounded-lg border border-gray-100 font-sans"
+                                                >
+                                                    {subject}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Price / Static CTA */}
+                                    <div className="sm:mt-auto flex flex-col items-end">
+                                        <p className="text-sm font-extrabold text-[#0D1C35] mb-2 font-sans">{tutor.pricePerHour} KD<span className="text-[10px] font-normal text-gray-400">/hr</span></p>
+                                        <button
+                                            onClick={(e) => handleHire(e, tutor.createdBy._id)}
+                                            disabled={hiringId === tutor.createdBy._id}
+                                            className="px-6 py-2.5 bg-[#0A47C2] text-white text-xs font-bold rounded-xl font-sans hover:bg-[#083a9e] transition-all whitespace-nowrap shadow-lg shadow-blue-100 disabled:opacity-70 disabled:cursor-not-allowed">
+                                            {hiringId === tutor.createdBy._id ? "Processing..." : "Hire"}
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
                         ))}
                     </div>
 
@@ -236,7 +236,7 @@ export default function TutorsContent() {
                             >
                                 <ChevronLeft size={20} />
                             </button>
-                            
+
                             {[...Array(Math.max(1, meta.totalPages))].map((_, idx) => {
                                 const page = idx + 1;
                                 return (
@@ -246,11 +246,10 @@ export default function TutorsContent() {
                                             setCurrentPage(page);
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
-                                        className={`w-10 h-10 rounded-lg text-sm font-bold transition-all focus:outline-none ${
-                                            currentPage === page 
-                                            ? "bg-[#0A47C2] text-white shadow-md shadow-blue-100" 
-                                            : "border border-slate-200 text-slate-600 hover:bg-slate-50"
-                                        }`}
+                                        className={`w-10 h-10 rounded-lg text-sm font-bold transition-all focus:outline-none ${currentPage === page
+                                                ? "bg-[#0A47C2] text-white shadow-md shadow-blue-100"
+                                                : "border border-slate-200 text-slate-600 hover:bg-slate-50"
+                                            }`}
                                     >
                                         {page}
                                     </button>

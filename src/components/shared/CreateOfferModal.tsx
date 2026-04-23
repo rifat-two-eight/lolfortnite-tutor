@@ -70,7 +70,7 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer, 
     const getImageUrl = (path: string) => {
         if (!path) return "/demotutor.png";
         if (path.startsWith("http")) return path;
-        return `http://10.10.7.24:5010${path}`;
+        return `${process.env.NEXT_PUBLIC_IMAGE_URL}${path}`;
     };
 
     // Fetch availability when date changes
