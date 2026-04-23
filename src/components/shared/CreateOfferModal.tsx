@@ -157,8 +157,14 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer, 
                 {/* Header: Tutor Info (Fixed) */}
                 <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-white z-10">
                     <div className="flex items-center gap-3">
-                        <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-blue-50 shadow-sm">
-                            <Image src={getImageUrl(tutor.createdBy.profileImage || "")} alt={tutor.createdBy.name} fill className="object-cover" unoptimized />
+                        <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-blue-50 shadow-sm flex items-center justify-center">
+                            {tutor.createdBy.profileImage ? (
+                                <Image src={getImageUrl(tutor.createdBy.profileImage)} alt={tutor.createdBy.name} fill className="object-cover" unoptimized />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0A47C2] to-[#4F46E5] text-white text-lg font-bold font-sans">
+                                    {tutor.createdBy.name.charAt(0).toUpperCase()}
+                                </div>
+                            )}
                         </div>
                         <div>
                             <h3 className="text-base font-bold text-[#0D1C35]">{tutor.createdBy.name}</h3>

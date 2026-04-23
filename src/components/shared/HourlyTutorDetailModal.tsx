@@ -86,13 +86,19 @@ export default function HourlyTutorDetailModal({ isOpen, onClose, data }: Hourly
                     {/* Left Side: Photo & Quick Info */}
                     <div className="space-y-4 p-6 lg:p-8 bg-gray-50 border-r border-gray-100">
                         <div className="relative aspect-3/4 bg-white rounded-xl overflow-hidden shadow-lg border border-gray-200">
-                            <Image
-                                src={getImageUrl(data.createdBy.profileImage || "")}
-                                alt={data.createdBy.name}
-                                fill
-                                unoptimized
-                                className="object-cover object-top"
-                            />
+                            {data.createdBy.profileImage ? (
+                                <Image
+                                    src={getImageUrl(data.createdBy.profileImage)}
+                                    alt={data.createdBy.name}
+                                    fill
+                                    unoptimized
+                                    className="object-cover object-top"
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0A47C2] to-[#4F46E5] text-white text-7xl font-bold font-sans">
+                                    {data.createdBy.name.charAt(0).toUpperCase()}
+                                </div>
+                            )}
                         </div>
 
                         {/* Stats Grid */}
