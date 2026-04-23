@@ -10,6 +10,18 @@ const nextConfig: NextConfig = {
         port: "5010",
         pathname: "/uploads/**",
       },
+      {
+        protocol: "http",
+        hostname: "lolfortnite.apponislam.top",
+        // port: "5010",
+        pathname: "/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "lolfortnite.apponislam.top",
+        // port: "5010",
+        pathname: "/uploads/**",
+      },
     ],
   },
 };
