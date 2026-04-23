@@ -1,0 +1,3 @@
+{
+  "/(roles)/teacher/page": "app/(roles)/teacher/page.js"
+}

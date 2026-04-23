@@ -10,7 +10,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 interface ProfileForm {
     name: string;
-    phone: number;
+    phone: string;
     language: string;
     location: { lat: number | string; lng: number | string };
     address: {

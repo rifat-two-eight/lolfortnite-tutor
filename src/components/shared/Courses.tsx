@@ -19,6 +19,7 @@ interface ClassData {
     curriculum: string;
     price: number;
     tutorGender: string;
+    maxStudents: number;
     description: string;
     classType: string;
     images: string[];

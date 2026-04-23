@@ -460,9 +460,8 @@ export default function TeacherClassDetailPage({ params }: { params: Promise<{ i
                                             <div key={student._id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors">
                                                 <div className="flex items-center gap-4">
                                                     <UserAvatar
-                                                        src={getImageUrl(student.profileImage)}
-                                                        alt={student.name}
-                                                        fallback={student.name.charAt(0)}
+                                                        src={student.profileImage}
+                                                        name={student.name}
                                                     />
                                                     <div className="flex flex-col items-start">
                                                         <h4 className="text-sm font-black text-[#0D1C35] font-sans">{student.name}</h4>

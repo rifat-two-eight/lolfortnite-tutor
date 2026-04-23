@@ -67,7 +67,7 @@ function formatDisplayDate(iso: string): string {
 interface WithdrawRequest {
     _id: string;
     amount: number;
-    status: "PENDING" | "APPROVED" | "CANCELLED" | "PAID";
+    status: "PENDING" | "APPROVED" | "CANCELLED" | "PAID" | "REJECTED";
     adminComment: string;
     bankDetails: {
         bankName: string;
@@ -635,7 +635,7 @@ export default function TeacherEarningPage() {
                                                     row.status === "PAID" ? "text-emerald-500 bg-emerald-50" :
                                                         row.status === "APPROVED" ? "text-blue-500 bg-blue-50" : "text-red-400 bg-red-50"
                                                     }`}>
-                                                    {row.status === "REJECTED" ? "CANCELLED" : row.status}
+                                                    {row?.status === "REJECTED" ? "CANCELLED" : row.status}
                                                 </span>
                                             </td>
                                             <td className="py-5 text-right relative">

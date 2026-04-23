@@ -12,7 +12,11 @@ import { getImageUrl } from "@/lib/utils";
 import api from "@/lib/axios";
 import UserAvatar from "@/components/ui/UserAvatar";
 
-export default function Navbar() {
+interface NavbarProps {
+    compact?: boolean;
+}
+
+export default function Navbar({ compact }: NavbarProps) {
     const pathname = usePathname();
     const [menuOpen, setMenuOpen] = useState(false);
     const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -50,7 +54,10 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="flex items-center justify-between px-4 sm:px-8 md:px-16 mt-0 md:-mt-10 mx-auto w-full relative">
+        <nav className={cn(
+            "flex items-center justify-between px-4 sm:px-8 md:px-16 mx-auto w-full relative transition-all duration-300",
+            !compact ? "mt-0 md:-mt-10" : "py-2"
+        )}>
             {/* Logo */}
             <Link href="/">
                 <Image src="/logo.svg" alt="Educate Logo" width={140} height={140} className="md:w-[180px] md:h-[180px]" unoptimized />

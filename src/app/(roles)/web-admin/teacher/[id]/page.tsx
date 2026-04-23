@@ -129,9 +129,6 @@ export default function TeacherDetailsPage() {
         ? (teacher.profileImage.startsWith('http') ? teacher.profileImage : `${process.env.NEXT_PUBLIC_IMAGE_URL}${teacher.profileImage}`)
         : "https://ui-avatars.com/api/?name=" + encodeURIComponent(teacher.name) + "&background=E0EAFF&color=0A47C2";
 
-    console.log(imageUrl)
-
-
     return (
         <div className="px-4 md:px-8 py-8 space-y-8 font-sans max-w-6xl mx-auto">
             {/* Header & Breadcrumb */}

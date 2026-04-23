@@ -1,0 +1,3 @@
+{
+  "/(roles)/web-admin/settings/page": "app/(roles)/web-admin/settings/page.js"
+}

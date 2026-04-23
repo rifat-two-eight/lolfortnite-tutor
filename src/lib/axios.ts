@@ -29,9 +29,6 @@ api.interceptors.request.use(
 
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;
-                console.log(`[Axios] Sending request to ${config.url} with token: ${token.substring(0, 10)}...`);
-            } else {
-                console.warn(`[Axios] Sending request to ${config.url} WITHOUT token`);
             }
         }
         return config;
