@@ -138,7 +138,7 @@ export default function Navbar({ compact }: NavbarProps) {
                                                 <div className="p-1.5 bg-gray-50 group-hover:bg-white rounded-lg transition-colors">
                                                     <LayoutDashboard size={16} />
                                                 </div>
-                                                <span>My Enrolled</span>
+                                                <span>My Classes</span>
                                             </Link>
                                         )}
 

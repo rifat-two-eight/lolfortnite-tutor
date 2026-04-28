@@ -124,7 +124,7 @@ export default function TutorsContent() {
             {/* Header */}
             <div className="text-center mb-12">
                 <h1 className="text-3xl md:text-4xl font-bold text-[#0A47C2] font-sans">
-                    All Tutor
+                    All Tutors
                 </h1>
             </div>
 
@@ -143,19 +143,19 @@ export default function TutorsContent() {
                             >
                                 {/* Photo */}
                                 <div className="relative w-full sm:w-28 md:w-60 h-80 md:h-60 shrink-0 rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
-                                {tutor.createdBy.profileImage ? (
-                                    <Image
-                                        src={getImageUrl(tutor.createdBy.profileImage)}
-                                        alt={tutor.createdBy.name}
-                                        fill
-                                        unoptimized
-                                        className="object-cover object-top"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0A47C2] to-[#4F46E5] text-white text-5xl font-bold font-sans">
-                                        {tutor.createdBy.name.charAt(0).toUpperCase()}
-                                    </div>
-                                )}
+                                    {tutor.createdBy.profileImage ? (
+                                        <Image
+                                            src={getImageUrl(tutor.createdBy.profileImage)}
+                                            alt={tutor.createdBy.name}
+                                            fill
+                                            unoptimized
+                                            className="object-cover object-top"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0A47C2] to-[#4F46E5] text-white text-5xl font-bold font-sans">
+                                            {tutor.createdBy.name.charAt(0).toUpperCase()}
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Main Info */}
@@ -253,8 +253,8 @@ export default function TutorsContent() {
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
                                         className={`w-10 h-10 rounded-lg text-sm font-bold transition-all focus:outline-none ${currentPage === page
-                                                ? "bg-[#0A47C2] text-white shadow-md shadow-blue-100"
-                                                : "border border-slate-200 text-slate-600 hover:bg-slate-50"
+                                            ? "bg-[#0A47C2] text-white shadow-md shadow-blue-100"
+                                            : "border border-slate-200 text-slate-600 hover:bg-slate-50"
                                             }`}
                                     >
                                         {page}

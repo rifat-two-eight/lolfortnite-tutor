@@ -80,28 +80,28 @@ function ContactIcon({ type }: { type: string }) {
 }
 
 export default function Footer() {
-    const [dynamicStats, setDynamicStats] = useState([
-        { value: "6.3k", label: "Students" },
-        { value: "2.6k", label: "Tutors" },
-    ]);
+    // const [dynamicStats, setDynamicStats] = useState([
+    //     { value: "6.3k", label: "Students" },
+    //     { value: "2.6k", label: "Tutors" },
+    // ]);
 
-    useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/admin-stats`);
-                if (response.data.success) {
-                    const data = response.data.data;
-                    setDynamicStats([
-                        { value: (data.totalStudents || 0).toLocaleString(), label: "Students" },
-                        { value: (data.totalTeachers || 0).toLocaleString(), label: "Tutors" },
-                    ]);
-                }
-            } catch (error) {
-                console.error("Error fetching footer stats:", error);
-            }
-        };
-        fetchStats();
-    }, []);
+    // useEffect(() => {
+    //     const fetchStats = async () => {
+    //         try {
+    //             const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/admin-stats`);
+    //             if (response.data.success) {
+    //                 const data = response.data.data;
+    //                 setDynamicStats([
+    //                     { value: (data.totalStudents || 0).toLocaleString(), label: "Students" },
+    //                     { value: (data.totalTeachers || 0).toLocaleString(), label: "Tutors" },
+    //                 ]);
+    //             }
+    //         } catch (error) {
+    //             console.error("Error fetching footer stats:", error);
+    //         }
+    //     };
+    //     fetchStats();
+    // }, []);
     return (
         <footer className="w-full bg-[#1E1E1E]">
             {/* CTA Banner */}
@@ -128,14 +128,14 @@ export default function Footer() {
                     </div>
 
                     {/* Stats */}
-                    <div className="flex gap-8 sm:gap-12">
+                    {/* <div className="flex gap-8 sm:gap-12">
                         {dynamicStats.map((stat) => (
                             <div key={stat.label} className="text-center">
                                 <p className="text-2xl sm:text-3xl font-extrabold text-white font-sans">{stat.value}</p>
                                 <p className="text-gray-400 text-xs sm:text-sm font-sans mt-0.5">{stat.label}</p>
                             </div>
                         ))}
-                    </div>
+                    </div> */}
                 </div>
             </div>
 

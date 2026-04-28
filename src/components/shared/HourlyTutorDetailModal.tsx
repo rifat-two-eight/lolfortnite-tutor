@@ -95,7 +95,7 @@ export default function HourlyTutorDetailModal({ isOpen, onClose, data }: Hourly
                                     className="object-cover object-top"
                                 />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0A47C2] to-[#4F46E5] text-white text-7xl font-bold font-sans">
+                                <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-[#0A47C2] to-[#4F46E5] text-white text-7xl font-bold font-sans">
                                     {data.createdBy.name.charAt(0).toUpperCase()}
                                 </div>
                             )}

@@ -128,7 +128,7 @@ export default function ClassDetailPage({ params }: { params: Promise<{ classId:
                             className="inline-flex items-center gap-2 text-slate-400 hover:text-[#0A47C2] transition-colors text-sm font-bold font-sans group"
                         >
                             <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-                            My Enrolled
+                            My Classes
                         </Link>
                         <span className="text-slate-200">/</span>
                         <span className="text-slate-400 text-sm font-bold font-sans">Class Details</span>
