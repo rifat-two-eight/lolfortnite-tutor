@@ -16,6 +16,7 @@ import { cn, getImageUrl } from "@/lib/utils";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
 import UserAvatar from "@/components/ui/UserAvatar";
+import GoogleDriveVideoModal from "@/components/shared/GoogleDriveVideoModal";
 import { toast } from "sonner";
 
 interface TeacherInfo {
@@ -89,6 +90,11 @@ export default function ClassDetailPage({ params }: { params: Promise<{ id: stri
     const [activeMediaIndex, setActiveMediaIndex] = useState(0);
     const [meetings, setMeetings] = useState<ZoomMeeting[]>([]);
     const [meetingsLoading, setMeetingsLoading] = useState(true);
+
+    // Drive Video Modal State
+    const [isDriveModalOpen, setIsDriveModalOpen] = useState(false);
+    const [selectedDriveLink, setSelectedDriveLink] = useState("");
+    const [selectedVideoTitle, setSelectedVideoTitle] = useState("");
 
     useEffect(() => {
         const fetchDetail = async () => {
@@ -491,17 +497,28 @@ export default function ClassDetailPage({ params }: { params: Promise<{ id: stri
                                                             </div>
                                                             <div className="flex items-center gap-2 shrink-0">
                                                                 {rec.drive_web_link && (
-                                                                    <a
-                                                                        href={rec.drive_web_link}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
+                                                                    // <a
+                                                                    //     href={rec.drive_web_link}
+                                                                    //     target="_blank"
+                                                                    //     rel="noopener noreferrer"
+                                                                    //     className="w-8 h-8 rounded-lg bg-blue-50  flex items-center justify-center hover:bg-blue-100 transition-all"
+                                                                    //     title="Watch on Google Drive"
+                                                                    // >
+                                                                    //     <FaGoogleDrive size={14} />
+                                                                    // </a>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setSelectedDriveLink(rec.drive_web_link!);
+                                                                            setSelectedVideoTitle(meeting.topic);
+                                                                            setIsDriveModalOpen(true);
+                                                                        }}
                                                                         className="w-8 h-8 rounded-lg bg-blue-50  flex items-center justify-center hover:bg-blue-100 transition-all"
                                                                         title="Watch on Google Drive"
                                                                     >
                                                                         <FaGoogleDrive size={14} />
-                                                                    </a>
+                                                                    </button>
                                                                 )}
-                                                                <a
+                                                                {/* <a
                                                                     href={rec.play_url}
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
@@ -509,8 +526,8 @@ export default function ClassDetailPage({ params }: { params: Promise<{ id: stri
                                                                     title="Watch recording"
                                                                 >
                                                                     <PlayCircle size={14} />
-                                                                </a>
-                                                                <a
+                                                                </a> */}
+                                                                {/* <a
                                                                     href={rec.download_url}
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
@@ -518,7 +535,7 @@ export default function ClassDetailPage({ params }: { params: Promise<{ id: stri
                                                                     title="Download recording"
                                                                 >
                                                                     <Download size={14} />
-                                                                </a>
+                                                                </a> */}
                                                             </div>
                                                         </div>
                                                     ))}
@@ -627,6 +644,13 @@ export default function ClassDetailPage({ params }: { params: Promise<{ id: stri
             </div>
 
             <Footer />
+
+            <GoogleDriveVideoModal
+                isOpen={isDriveModalOpen}
+                onClose={() => setIsDriveModalOpen(false)}
+                driveLink={selectedDriveLink}
+                title={selectedVideoTitle}
+            />
         </main>
     );
 }

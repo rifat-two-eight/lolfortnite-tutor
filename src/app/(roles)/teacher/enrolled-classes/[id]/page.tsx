@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, use } from "react";
 import { FaGoogleDrive } from "react-icons/fa";
+import GoogleDriveVideoModal from "@/components/shared/GoogleDriveVideoModal";
 import {
     X, Star, Users, Globe, BookOpen, Clock,
     PlayCircle, ChevronLeft, Calendar,
@@ -110,6 +111,11 @@ export default function TeacherClassDetailPage({ params }: { params: Promise<{ i
     const [creatingZoom, setCreatingZoom] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
+    // Drive Video Modal State
+    const [isDriveModalOpen, setIsDriveModalOpen] = useState(false);
+    const [selectedDriveLink, setSelectedDriveLink] = useState("");
+    const [selectedVideoTitle, setSelectedVideoTitle] = useState("");
+
     useEffect(() => {
         const fetchDetail = async () => {
             try {
@@ -196,7 +202,7 @@ export default function TeacherClassDetailPage({ params }: { params: Promise<{ i
             toast.error("An error occurred while creating zoom meeting.");
         } finally {
             setCreatingZoom(false);
-            setMeetingsLoading(false); // Make sure to unset loading if the refresh fails or succeeds
+            setMeetingsLoading(false);
         }
     };
 
@@ -607,17 +613,19 @@ export default function TeacherClassDetailPage({ params }: { params: Promise<{ i
                                                                 </div>
                                                                 <div className="flex items-center gap-2 shrink-0">
                                                                     {rec.drive_web_link && (
-                                                                        <a
-                                                                            href={rec.drive_web_link}
-                                                                            target="_blank"
-                                                                            rel="noopener noreferrer"
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                setSelectedDriveLink(rec.drive_web_link!);
+                                                                                setSelectedVideoTitle(meeting.topic);
+                                                                                setIsDriveModalOpen(true);
+                                                                            }}
                                                                             className="w-8 h-8 rounded-lg bg-blue-50  flex items-center justify-center hover:bg-blue-100 transition-all"
                                                                             title="Watch on Google Drive"
                                                                         >
                                                                             <FaGoogleDrive size={14} />
-                                                                        </a>
+                                                                        </button>
                                                                     )}
-                                                                    <a
+                                                                    {/* <a
                                                                         href={rec.play_url}
                                                                         target="_blank"
                                                                         rel="noopener noreferrer"
@@ -625,8 +633,8 @@ export default function TeacherClassDetailPage({ params }: { params: Promise<{ i
                                                                         title="Watch recording"
                                                                     >
                                                                         <PlayCircle size={14} />
-                                                                    </a>
-                                                                    <a
+                                                                    </a> */}
+                                                                    {/* <a
                                                                         href={rec.download_url}
                                                                         target="_blank"
                                                                         rel="noopener noreferrer"
@@ -634,7 +642,7 @@ export default function TeacherClassDetailPage({ params }: { params: Promise<{ i
                                                                         title="Download recording"
                                                                     >
                                                                         <Download size={14} />
-                                                                    </a>
+                                                                    </a> */}
                                                                 </div>
                                                             </div>
                                                         ))}
@@ -798,23 +806,23 @@ export default function TeacherClassDetailPage({ params }: { params: Promise<{ i
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Meeting Password</label>
-                                <div className="relative">
-                                    <input
+                                {/* <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Meeting Password</label>
+                                <div className="relative"> */}
+                                {/* <input
                                         type={showPassword ? "text" : "password"}
                                         value={zoomForm.password}
                                         onChange={(e) => setZoomForm({ ...zoomForm, password: e.target.value })}
                                         className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#0A47C2]/20 focus:border-[#0A47C2] outline-none transition-all placeholder:text-slate-400 text-[#0D1C35] pr-12"
                                         placeholder="Leave blank for a random secure password"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
-                                    >
-                                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                    </button>
-                                </div>
+                                    /> */}
+                                {/* <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
+                                >
+                                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
+                            </div> */}
                             </div>
 
                             <div className="pt-4 flex gap-3">
@@ -835,8 +843,16 @@ export default function TeacherClassDetailPage({ params }: { params: Promise<{ i
                             </div>
                         </form>
                     </div>
-                </div>
-            )}
-        </div>
+                </div >
+            )
+            }
+
+            <GoogleDriveVideoModal
+                isOpen={isDriveModalOpen}
+                onClose={() => setIsDriveModalOpen(false)}
+                driveLink={selectedDriveLink}
+                title={selectedVideoTitle}
+            />
+        </div >
     );
 }
