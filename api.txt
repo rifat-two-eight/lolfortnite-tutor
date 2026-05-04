@@ -1,29 +1,40 @@
 {
     "success": true,
-    "message": "Students retrieved successfully",
-    "data": [
-        {
-            "_id": "69e3fcefd45e8d249e688417",
-            "name": "Carter Park",
-            "email": "zegamoveh@mailinator.com",
-            "phone": "+1 (199) 397-2264",
-            "profileImage": "/uploads/profile-images/profile-067903-4969.webp"
+    "message": "All catalog items retrieved successfully",
+    "data": {
+        "data": [
+            {
+                "_id": "69f8f68c23a79206cbec262a",
+                "type": "subject",
+                "name": "Mathematics",
+                "status": "active",
+                "isDeleted": false,
+                "createdAt": "2026-05-04T19:42:04.515Z",
+                "updatedAt": "2026-05-04T19:42:04.515Z"
+            }
+        ],
+        "meta": {
+            "page": 1,
+            "limit": 10,
+            "total": 1,
+            "totalPages": 1
         }
-    ],
-    "meta": {
-        "page": 1,
-        "limit": 10,
-        "total": 1,
-        "totalPages": 1
     }
 }
 
 
-modal body
+
+
 {
-    "classId": "69b8627cf6f7af560386f818",
-    "topic": "Advanced Mathematics Session",
-    "start_time": "2026-10-10T10:00:00Z",
-    "agenda": "Discussion about quadratic equations and project updates",
-    "password": "optional_password_here"
+    "success": true,
+    "message": "Catalog item created successfully",
+    "data": {
+        "type": "subject",
+        "name": "Mathematics",
+        "status": "active",
+        "isDeleted": false,
+        "_id": "69f8f68c23a79206cbec262a",
+        "createdAt": "2026-05-04T19:42:04.515Z",
+        "updatedAt": "2026-05-04T19:42:04.515Z"
+    }
 }

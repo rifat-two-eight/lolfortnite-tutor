@@ -11,13 +11,15 @@ import {
     X,
     Clock,
     Eye,
-    Loader2
+    Loader2,
+    Percent
 } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/lib/axios";
 import { useRouter } from "next/navigation";
 
 interface Teacher {
+    percentage: number;
     _id: string;
     name: string;
     email: string;
@@ -26,6 +28,7 @@ interface Teacher {
     createdAt: string;
     totalSellClass: number;
     totalEarning: number;
+    commissionPercentage: number;
 }
 
 interface Meta {
@@ -48,6 +51,9 @@ export default function AdminTeacherPage() {
     const [activePopoverId, setActivePopoverId] = useState<string | null>(null);
     const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
     const [isApproveSubMenuOpen, setIsApproveSubMenuOpen] = useState(false);
+    const [showCommissionModal, setShowCommissionModal] = useState(false);
+    const [commissionValue, setCommissionValue] = useState("");
+    const [targetTeacherId, setTargetTeacherId] = useState<string | null>(null);
     const popoverRef = useRef<HTMLDivElement>(null);
 
     // Debounce search
@@ -162,6 +168,31 @@ export default function AdminTeacherPage() {
         }
     };
 
+    const handleCommissionUpdate = async () => {
+        if (!targetTeacherId || !commissionValue) return;
+
+        try {
+            setLoading(true);
+            const response = await api.patch(`/users/commission/${targetTeacherId}`, {
+                percentage: Number(commissionValue)
+            });
+
+            if (response.data.success) {
+                toast.success("Commission updated successfully");
+                setTeachers(current => current.map(t =>
+                    t._id === targetTeacherId ? { ...t, percentage: Number(commissionValue) } : t
+                ));
+                setShowCommissionModal(false);
+                setCommissionValue("");
+                setTargetTeacherId(null);
+            }
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Failed to update commission");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const filteredTeachers = teachers.filter((teacher) => {
         const matchesSearch =
             (teacher.name || "").toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
@@ -227,7 +258,7 @@ export default function AdminTeacherPage() {
                     <table className="w-full text-left border-collapse min-w-[1000px]">
                         <thead>
                             <tr className="border-b border-gray-100 bg-gray-50/50">
-                                {["Name", "Phone", "Email", "Total Sell Class", "Total Earning", "Date", "Status", "Actions"].map((header) => (
+                                {["Name", "Phone", "Email", "Total Sell Class", "Total Earning", "Commission (%)", "Join Date", "Status", "Actions"].map((header) => (
                                     <th key={header} className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-wider font-sans text-center first:text-left">
                                         {header}
                                     </th>
@@ -237,7 +268,7 @@ export default function AdminTeacherPage() {
                         <tbody className="divide-y divide-gray-50">
                             {loading && teachers.length === 0 ? (
                                 <tr>
-                                    <td colSpan={8} className="px-6 py-12 text-center">
+                                    <td colSpan={9} className="px-6 py-12 text-center">
                                         <div className="flex justify-center items-center gap-2 text-gray-500">
                                             <Loader2 className="animate-spin" size={20} />
                                             <span className="font-sans text-sm">Loading teachers...</span>
@@ -246,7 +277,7 @@ export default function AdminTeacherPage() {
                                 </tr>
                             ) : filteredTeachers.length === 0 ? (
                                 <tr>
-                                    <td colSpan={8} className="px-6 py-12 text-center font-sans text-sm text-gray-500">
+                                    <td colSpan={9} className="px-6 py-12 text-center font-sans text-sm text-gray-500">
                                         No teachers found matching your filters.
                                     </td>
                                 </tr>
@@ -258,6 +289,7 @@ export default function AdminTeacherPage() {
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{teacher.email}</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 text-center font-sans">{teacher.totalSellClass || 0}</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{teacher.totalEarning || 0} KD</td>
+                                        <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{teacher.percentage || 0}%</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 font-sans text-center">{formatDate(teacher.createdAt)}</td>
                                         <td className="px-6 py-4 text-center">
                                             <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold ${teacher.teacherApprovalStatus === "APPROVED"
@@ -317,6 +349,19 @@ export default function AdminTeacherPage() {
                                                     </button>
 
                                                     <button
+                                                        onClick={() => {
+                                                            setTargetTeacherId(teacher._id);
+                                                            setCommissionValue(teacher.percentage?.toString() || "");
+                                                            setShowCommissionModal(true);
+                                                            setActivePopoverId(null);
+                                                        }}
+                                                        className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors"
+                                                    >
+                                                        <Percent size={14} className="text-purple-500" />
+                                                        Update Commission
+                                                    </button>
+
+                                                    <button
                                                         onClick={() => router.push(`/web-admin/teacher/${teacher._id}`)}
                                                         className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors"
                                                     >
@@ -365,6 +410,44 @@ export default function AdminTeacherPage() {
                     >
                         <ChevronRight size={20} />
                     </button>
+                </div>
+            )}
+            {/* Commission Modal */}
+            {showCommissionModal && (
+                <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
+                    <div
+                        className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200"
+                        onClick={() => setShowCommissionModal(false)}
+                    />
+                    <div className="relative bg-white rounded-none shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-8 space-y-6">
+                            <div className="flex justify-between items-center border-b border-gray-50 pb-4">
+                                <h2 className="text-xl font-bold text-[#0D1C35] font-sans uppercase tracking-tight">Update Commission</h2>
+                                <button onClick={() => setShowCommissionModal(false)} className="text-gray-400 hover:text-gray-600">
+                                    <X size={20} />
+                                </button>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Percentage (%)</label>
+                                <input
+                                    type="number"
+                                    value={commissionValue}
+                                    onChange={(e) => setCommissionValue(e.target.value)}
+                                    placeholder="e.g. 25"
+                                    className="w-full h-12 px-4 rounded-none border border-gray-100 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-100 font-sans"
+                                />
+                            </div>
+                            <div className="pt-2">
+                                <button
+                                    onClick={handleCommissionUpdate}
+                                    disabled={loading}
+                                    className="w-full h-12 bg-[#0A47C2] text-white rounded-none font-bold font-sans shadow-lg shadow-blue-100 hover:bg-[#083691] disabled:opacity-70 transition-all flex items-center justify-center gap-2"
+                                >
+                                    {loading ? <Loader2 size={18} className="animate-spin" /> : "Save Changes"}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

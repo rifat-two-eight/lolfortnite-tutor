@@ -35,6 +35,7 @@ export default function AdminTopNavbar({ onMenuClick }: { onMenuClick?: () => vo
         if (pathname === "/web-admin/teacher") return "Teacher";
         if (pathname === "/web-admin/student") return "Student";
         if (pathname === "/web-admin/payment") return "Payment";
+        if (pathname === "/web-admin/academic-setup") return "Academic Setup";
         if (pathname === "/web-admin/classes") return "Classes";
         if (pathname === "/web-admin/withdrawer-request" || pathname === "/web-admin/withdrawal-request") return "Withdrawal Request";
         if (pathname === "/web-admin/settings") return "Settings";

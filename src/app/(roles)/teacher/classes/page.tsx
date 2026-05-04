@@ -459,7 +459,19 @@ function CreateClassModal({ onClose, onSuccess }: { onClose: () => void; onSucce
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        
+        if (name === "maxStudents") {
+            const count = Number(value);
+            setFormData(prev => ({
+                ...prev,
+                maxStudents: value,
+                classType: count === 1 ? "ONE_TO_ONE" : count > 1 ? "GROUP" : prev.classType,
+                whatsappGroupLink: count === 1 ? "" : prev.whatsappGroupLink
+            }));
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -485,7 +497,7 @@ function CreateClassModal({ onClose, onSuccess }: { onClose: () => void; onSucce
             price: Number(formData.price),
             tutorGender: formData.tutorGender,
             maxStudents: Number(formData.maxStudents),
-            classType: formData.classType === "GROUP" ? "GROUP" : "ONE_TO_ONE",
+            classType: formData.classType,
             description: formData.description,
             youtubeVideoLink: formData.youtubeVideoLink || "",
             whatsappGroupLink: formData.whatsappGroupLink || ""
@@ -621,8 +633,8 @@ function CreateClassModal({ onClose, onSuccess }: { onClose: () => void; onSucce
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-gray-500 font-sans uppercase tracking-wider ml-1">Class Type</label>
                             <select
-                                name="classType" value={formData.classType} onChange={handleChange}
-                                className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-none focus:bg-white focus:border-[#0A47C2] transition-all text-[#0D1C35] font-sans text-sm outline-none appearance-none"
+                                name="classType" value={formData.classType} disabled
+                                className="w-full px-5 py-3.5 bg-gray-200 border border-transparent rounded-none text-[#0D1C35] font-sans text-sm outline-none appearance-none cursor-not-allowed opacity-70"
                             >
                                 <option value="GROUP">Group Class</option>
                                 <option value="ONE_TO_ONE">1-on-1 Session</option>
@@ -657,8 +669,14 @@ function CreateClassModal({ onClose, onSuccess }: { onClose: () => void; onSucce
                             </label>
                             <input
                                 name="whatsappGroupLink" value={formData.whatsappGroupLink} onChange={handleChange}
-                                placeholder="Your Whatsapp Link"
-                                className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-none focus:bg-white focus:border-[#0A47C2] transition-all text-[#0D1C35] font-sans text-sm outline-none"
+                                disabled={Number(formData.maxStudents) === 1}
+                                placeholder={Number(formData.maxStudents) === 1 ? "Not available for 1-on-1" : "Your Whatsapp Link"}
+                                className={cn(
+                                    "w-full px-5 py-3.5 border border-transparent rounded-none transition-all text-[#0D1C35] font-sans text-sm outline-none",
+                                    Number(formData.maxStudents) === 1 
+                                        ? "bg-gray-200 cursor-not-allowed opacity-70" 
+                                        : "bg-gray-50 focus:bg-white focus:border-[#0A47C2]"
+                                )}
                             />
                         </div>
 

@@ -13,7 +13,8 @@ import {
     Settings,
     LogOut,
     ShieldCheck,
-    FileText
+    FileText,
+    BookMarked
 } from "lucide-react";
 import Image from "next/image";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -23,6 +24,7 @@ const navItems = [
     { name: "Teacher", href: "/web-admin/teacher", icon: Users },
     { name: "Classes", href: "/web-admin/classes", icon: BookOpen },
     { name: "Student", href: "/web-admin/student", icon: GraduationCap },
+    { name: "Academic Setup", href: "/web-admin/academic-setup", icon: BookMarked },
     { name: "Payment", href: "/web-admin/payment", icon: CreditCard },
     { name: "Withdrawal Request", href: "/web-admin/withdrawal-request", icon: ArrowUpRight },
     { name: "Privacy Policy", href: "/web-admin/privacy", icon: ShieldCheck },
