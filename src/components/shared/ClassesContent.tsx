@@ -73,6 +73,16 @@ export default function ClassesContent() {
     const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
     const [bookingClassId, setBookingClassId] = useState<string | null>(null);
 
+    const [filters, setFilters] = useState({
+        subject: "",
+        level: "",
+        language: "",
+        curriculum: "",
+        minPrice: "",
+        maxPrice: "",
+        tutorGender: ""
+    });
+
     const handleBookNow = async (e: React.MouseEvent, classId: string) => {
         e.stopPropagation();
         setBookingClassId(classId);
@@ -105,6 +115,15 @@ export default function ClassesContent() {
                 url += `&classType=${activeClassType}`;
             }
 
+            // Advanced Filters
+            if (filters.subject) url += `&subject=${encodeURIComponent(filters.subject)}`;
+            if (filters.level) url += `&level=${encodeURIComponent(filters.level)}`;
+            if (filters.language) url += `&language=${encodeURIComponent(filters.language)}`;
+            if (filters.curriculum) url += `&curriculum=${encodeURIComponent(filters.curriculum)}`;
+            if (filters.minPrice) url += `&minPrice=${filters.minPrice}`;
+            if (filters.maxPrice) url += `&maxPrice=${filters.maxPrice}`;
+            if (filters.tutorGender) url += `&tutorGender=${filters.tutorGender}`;
+
             const response = await axios.get(url);
             if (response.data.success) {
                 const sorted = response.data.data.sort((a: ClassData, b: ClassData) =>
@@ -130,7 +149,7 @@ export default function ClassesContent() {
         } else {
             fetchClasses(1);
         }
-    }, [activeClassType]);
+    }, [activeClassType, filters]);
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -152,7 +171,12 @@ export default function ClassesContent() {
 
     return (
         <section className="w-full max-w-7xl mb-10 mx-auto px-4 sm:px-8 md:px-16 py-6">
-            <FilterModal isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} />
+            <FilterModal 
+                isOpen={isFilterModalOpen} 
+                onClose={() => setIsFilterModalOpen(false)} 
+                onApply={(newFilters) => setFilters(newFilters)}
+                initialFilters={filters}
+            />
             <ClassDetailModal
                 isOpen={isDetailModalOpen}
                 onClose={() => setIsDetailModalOpen(false)}

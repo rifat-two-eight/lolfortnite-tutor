@@ -2,7 +2,8 @@
 
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import api from "@/lib/axios";
 
 interface FilterSectionProps {
     title: string;
@@ -48,11 +49,21 @@ function FilterSection({ title, options, selectedOptions, onToggle }: FilterSect
     );
 }
 
-export default function FilterModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export default function FilterModal({ 
+    isOpen, 
+    onClose, 
+    onApply,
+    initialFilters 
+}: { 
+    isOpen: boolean; 
+    onClose: () => void;
+    onApply: (filters: any) => void;
+    initialFilters?: any;
+}) {
     // State for each section
     const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({
         "Subject": [],
-        "Session / Set": [],
+        "Level": [],
         "Curriculum": [],
         "Teacher Gender": [],
         "Class language": [],
@@ -60,20 +71,67 @@ export default function FilterModal({ isOpen, onClose }: { isOpen: boolean; onCl
 
     const [priceRange, setPriceRange] = useState({ min: "", max: "" });
 
+    // Sync with initial filters when modal opens
+    useEffect(() => {
+        if (isOpen && initialFilters) {
+            setSelectedFilters({
+                "Subject": initialFilters.subject ? initialFilters.subject.split(",") : [],
+                "Level": initialFilters.level ? initialFilters.level.split(",") : [],
+                "Curriculum": initialFilters.curriculum ? initialFilters.curriculum.split(",") : [],
+                "Teacher Gender": initialFilters.tutorGender ? initialFilters.tutorGender.split(",") : [],
+                "Class language": initialFilters.language ? initialFilters.language.split(",") : [],
+            });
+            setPriceRange({
+                min: initialFilters.minPrice || "",
+                max: initialFilters.maxPrice || ""
+            });
+        }
+    }, [isOpen, initialFilters]);
+
+    const [catalogOptions, setCatalogOptions] = useState<Record<string, string[]>>({
+        "Subject": [],
+        "Level": [],
+        "Curriculum": [],
+    });
+
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                const [subjects, levels, curriculums] = await Promise.all([
+                    api.get("/catalogs/type/subject"),
+                    api.get("/catalogs/type/level"),
+                    api.get("/catalogs/type/curriculum")
+                ]);
+
+                setCatalogOptions({
+                    "Subject": subjects.data.data.map((i: any) => i.name),
+                    "Level": levels.data.data.map((i: any) => i.name),
+                    "Curriculum": curriculums.data.data.map((i: any) => i.name),
+                });
+            } catch (error) {
+                console.error("Failed to fetch filter options:", error);
+            }
+        };
+
+        if (isOpen) {
+            fetchOptions();
+        }
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     const sections = [
         {
             title: "Subject",
-            options: ["Math", "Physics", "IELTS", "English"],
+            options: catalogOptions["Subject"].length > 0 ? catalogOptions["Subject"] : ["Math", "Physics", "IELTS", "English"],
         },
         {
-            title: "Session / Set",
-            options: ["Beginner", "Intermediate", "Advanced"],
+            title: "Level",
+            options: catalogOptions["Level"].length > 0 ? catalogOptions["Level"] : ["Beginner", "Intermediate", "Advanced"],
         },
         {
             title: "Curriculum",
-            options: ["British", "American", "GCSE", "AP", "IB", "IELTS"],
+            options: catalogOptions["Curriculum"].length > 0 ? catalogOptions["Curriculum"] : ["British", "American", "GCSE", "AP", "IB", "IELTS"],
         },
         {
             title: "Teacher Gender",
@@ -96,14 +154,38 @@ export default function FilterModal({ isOpen, onClose }: { isOpen: boolean; onCl
     };
 
     const handleReset = () => {
-        setSelectedFilters({
+        const cleared = {
             "Subject": [],
-            "Session / Set": [],
+            "Level": [],
             "Curriculum": [],
             "Teacher Gender": [],
             "Class language": [],
-        });
+        };
+        setSelectedFilters(cleared);
         setPriceRange({ min: "", max: "" });
+        onApply({
+            subject: "",
+            level: "",
+            curriculum: "",
+            tutorGender: "",
+            language: "",
+            minPrice: "",
+            maxPrice: ""
+        });
+    };
+
+    const handleApply = () => {
+        const filters = {
+            subject: selectedFilters["Subject"].join(","),
+            level: selectedFilters["Level"].join(","),
+            curriculum: selectedFilters["Curriculum"].join(","),
+            tutorGender: selectedFilters["Teacher Gender"].join(",").toUpperCase(),
+            language: selectedFilters["Class language"].join(","),
+            minPrice: priceRange.min,
+            maxPrice: priceRange.max
+        };
+        onApply(filters);
+        onClose();
     };
 
     return (
@@ -165,7 +247,7 @@ export default function FilterModal({ isOpen, onClose }: { isOpen: boolean; onCl
                         Reset
                     </button>
                     <button
-                        onClick={onClose}
+                        onClick={handleApply}
                         className="w-full py-3 bg-[#0A47C2] text-white font-bold rounded-xl text-sm font-sans hover:bg-[#083a9e] transition-colors shadow-lg"
                     >
                         Apply
