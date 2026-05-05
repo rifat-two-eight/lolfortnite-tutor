@@ -98,6 +98,8 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
         selectedConvRef.current = selectedConvId;
         if (selectedConvId) {
             fetchMessages(selectedConvId);
+            // Mark conversation as read
+            api.post(`/messages/conversations/${selectedConvId}/read`).catch(console.error);
         }
     }, [selectedConvId]);
 
@@ -138,7 +140,7 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
                 });
                 
                 // Mark as read immediately if active
-                api.patch(`/messages/${msg._id}/read`).catch(console.error);
+                api.post(`/messages/conversations/${msg.conversationId}/read`).catch(console.error);
             }
 
             // Update conversation preview and unread count in sidebar
@@ -650,12 +652,13 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
                                     className="border border-gray-100"
                                 />
                                 <div>
-                                    <h2 className="text-lg font-bold text-[#0D1C35] font-sans">{recipient.name}</h2>
+                                    <h2 className="text-lg font-bold text-[#0D1C35] font-sans leading-none">{recipient.name}</h2>
+                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-1">{recipient.role}</p>
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-4">
-                                {user?.role === "STUDENT" && hourlyClass && (
+                                {hourlyClass && (
                                     <button
                                         onClick={() => {
                                             setEditingOfferId(null);

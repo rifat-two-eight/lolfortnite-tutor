@@ -46,6 +46,7 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer, 
     const [availableSlots, setAvailableSlots] = useState<any[]>([]);
     const [selectedSlot, setSelectedSlot] = useState<any>(null);
     const [selectedSubject, setSelectedSubject] = useState<string>("");
+    const [price, setPrice] = useState<string>("0");
     const [loadingSlots, setLoadingSlots] = useState(false);
     const [sending, setSending] = useState(false);
 
@@ -58,11 +59,13 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer, 
                 setCurrentMonth(startOfMonth(date));
                 setSelectedSlot(initialData.slots?.[0] || null);
                 setSelectedSubject(initialData.subject || tutor?.subjects[0] || "");
+                setPrice(initialData.totalPrice?.toString() || tutor?.pricePerHour.toString() || "0");
             } else {
                 setSelectedDate(startOfToday());
                 setCurrentMonth(startOfMonth(startOfToday()));
                 setSelectedSlot(null);
                 setSelectedSubject(tutor?.subjects[0] || "");
+                setPrice(tutor?.pricePerHour.toString() || "0");
             }
         }
     }, [isOpen, initialData, tutor]);
@@ -122,16 +125,21 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer, 
             return;
         }
 
+        const numericPrice = parseFloat(price);
+        if (isNaN(numericPrice) || numericPrice < 0) {
+            toast.error("Please enter a valid price");
+            return;
+        }
+
         setSending(true);
         try {
-            const totalPrice = tutor.pricePerHour; // Only one slot allowed now
             const offerData = {
                 tutorId: tutor.createdBy._id,
                 hourlyClassId: tutor._id,
                 slotId: selectedSlot._id,
                 date: format(selectedDate, 'yyyy-MM-dd'),
                 slots: [selectedSlot], // Keeping as array for backward compat in UI if needed, but only contains 1
-                totalPrice,
+                totalPrice: numericPrice,
                 subject: selectedSubject
             };
 
@@ -287,14 +295,23 @@ export default function CreateOfferModal({ isOpen, onClose, tutor, onSendOffer, 
                     </div>
                 </div>
 
-                {/* Footer: Price & Submit (Fixed) */}
                 <div className="p-4 border-t border-gray-100 bg-white">
                     <div className="flex items-center justify-between mb-4">
-                        <div>
-                            <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Total amount</p>
-                            <p className="text-xl font-bold text-[#0D1C35] leading-none">{tutor.pricePerHour.toFixed(2)} KD</p>
+                        <div className="flex-1 mr-4">
+                            <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-1">Set Offer Price (KD)</p>
+                            <div className="relative">
+                                <input
+                                    type="number"
+                                    step="0.5"
+                                    min="0"
+                                    value={price}
+                                    onChange={(e) => setPrice(e.target.value)}
+                                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-2 text-lg font-bold text-[#0D1C35] focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all"
+                                />
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">KD</span>
+                            </div>
                         </div>
-                        <div className="flex flex-col items-end">
+                        <div className="flex flex-col items-end shrink-0">
                             <p className="text-[10px] font-bold text-[#0A47C2] text-right">
                                 {selectedSlot ? format(selectedDate, 'MMM dd, yyyy') : "Select a time"}
                             </p>

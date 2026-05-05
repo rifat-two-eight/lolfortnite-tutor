@@ -79,17 +79,9 @@ const AcceptedMessage: React.FC<AcceptedMessageProps> = ({ msg, isMe, recipient,
                     </div>
 
                     <div className="pt-2">
-                        <div className="grid grid-cols-2 gap-2">
-                            <div className="py-3 bg-green-50 text-green-600 font-bold text-[10px] rounded-2xl text-center uppercase tracking-widest border border-green-100 flex items-center justify-center gap-2">
-                                <CheckCircle size={14} />
-                                Offer Accepted
-                            </div>
-                            <button
-                                onClick={() => onReschedule?.(msg)}
-                                className="py-3 border border-blue-100 text-[#0A47C2] font-bold text-[10px] rounded-2xl hover:bg-blue-50 transition-all uppercase tracking-widest flex items-center justify-center gap-2"
-                            >
-                                Reschedule
-                            </button>
+                        <div className="w-full py-3 bg-green-50 text-green-600 font-bold text-[10px] rounded-2xl text-center uppercase tracking-widest border border-green-100 flex items-center justify-center gap-2">
+                            <CheckCircle size={14} />
+                            Offer Accepted
                         </div>
                         {isMe && (
                             <button
