@@ -19,7 +19,7 @@ const types = ["subject", "level", "curriculum"] as const;
 export default function AcademicSetupPage() {
     const [items, setItems] = useState<CatalogItem[]>([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<typeof types[number] | "all">("all");
+    const [activeTab, setActiveTab] = useState<typeof types[number]>("subject");
     const [searchQuery, setSearchQuery] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -33,9 +33,9 @@ export default function AcademicSetupPage() {
     const fetchItems = async () => {
         try {
             setLoading(true);
-            const response = await api.get("/catalogs/admin");
+            const response = await api.get(`/catalogs/type/${activeTab}`);
             if (response.data.success) {
-                setItems(response.data.data.data);
+                setItems(response.data.data);
             }
         } catch (error: any) {
             toast.error(error.response?.data?.message || "Failed to fetch catalog items");
@@ -46,7 +46,7 @@ export default function AcademicSetupPage() {
 
     useEffect(() => {
         fetchItems();
-    }, []);
+    }, [activeTab]);
 
     const openCreateModal = () => {
         setIsEditMode(false);
@@ -108,9 +108,8 @@ export default function AcademicSetupPage() {
     };
 
     const filteredItems = items.filter((item) => {
-        const matchesTab = activeTab === "all" || item.type === activeTab;
         const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesTab && matchesSearch;
+        return matchesSearch;
     });
 
     return (
@@ -133,15 +132,6 @@ export default function AcademicSetupPage() {
             {/* Filters & Search */}
             <div className="bg-white p-4 rounded-none shadow-sm border border-gray-50 flex flex-col md:flex-row gap-4 items-center">
                 <div className="flex bg-gray-50 p-1.5 rounded-none overflow-hidden shrink-0 border border-gray-100 w-full md:w-auto overflow-x-auto no-scrollbar">
-                    <button
-                        onClick={() => setActiveTab("all")}
-                        className={cn(
-                            "px-6 py-2.5 rounded-none text-sm font-bold transition-all font-sans whitespace-nowrap",
-                            activeTab === "all" ? "bg-white text-[#0A47C2] shadow-sm" : "text-gray-400 hover:text-gray-600"
-                        )}
-                    >
-                        All Items
-                    </button>
                     {types.map((t) => (
                         <button
                             key={t}
@@ -200,7 +190,7 @@ export default function AcademicSetupPage() {
                                         <td className="px-8 py-6">
                                             <div className="flex justify-center">
                                                 <span className={cn(
-                                                    "px-3 py-1 rounded-none text-[10px] font-black uppercase tracking-wider border",
+                                                    "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border",
                                                     item.type === "subject" ? "bg-amber-50 text-amber-600 border-amber-100" :
                                                         item.type === "level" ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-purple-50 text-purple-600 border-purple-100"
                                                 )}>
@@ -210,7 +200,7 @@ export default function AcademicSetupPage() {
                                         </td>
                                         <td className="px-8 py-6">
                                             <div className="flex justify-center">
-                                                <div className="flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-none border border-green-100 text-[10px] font-bold">
+                                                <div className="flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-full border border-green-100 text-[10px] font-bold">
                                                     <CheckCircle2 size={12} />
                                                     Active
                                                 </div>

@@ -107,43 +107,120 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
 
     // Setup Socket
     useEffect(() => {
+        if (!user?._id) return;
+
         const token = localStorage.getItem("accessToken");
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || '${process.env.NEXT_PUBLIC_IMAGE_URL}';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || process.env.NEXT_PUBLIC_IMAGE_URL || '';
 
         const socket = io(baseUrl, {
-            auth: { token },
+            auth: { 
+                token,
+                _id: user._id 
+            },
             query: { token }
         });
 
-        socket.on("newMessage", (data: any) => {
-            const msg = data.message || data.data || data;
+        // 1. New Conversation Event
+        socket.on("conversation", (newConversation: any) => {
+            setConversations(prev => {
+                if (prev.some(c => c._id === newConversation._id)) return prev;
+                return [newConversation, ...prev];
+            });
+        });
 
+        // 2. New Message Event
+        socket.on("message", (msg: any) => {
+            // Update messages list if it's the current conversation
             if (msg.conversationId === selectedConvRef.current) {
                 setMessages(prev => {
                     if (prev.some(m => m._id === msg._id)) return prev;
                     return [...prev, msg];
                 });
+                
+                // Mark as read immediately if active
+                api.patch(`/messages/${msg._id}/read`).catch(console.error);
             }
 
+            // Update conversation preview and unread count in sidebar
             setConversations(prev => {
-                const targetConv = prev.find(c => c._id === msg.conversationId);
-                if (targetConv) {
-                    const updatedConv = {
-                        ...targetConv,
-                        lastMessage: msg,
-                        updatedAt: msg.createdAt || new Date().toISOString()
-                    };
-                    const remaining = prev.filter(c => c._id !== msg.conversationId);
-                    return [updatedConv, ...remaining];
-                }
-                return prev;
+                return prev.map(c => {
+                    if (c._id === msg.conversationId) {
+                        return {
+                            ...c,
+                            lastMessage: msg,
+                            updatedAt: msg.createdAt,
+                            unreadCount: msg.conversationId === selectedConvRef.current ? c.unreadCount : (c.unreadCount || 0) + 1
+                        };
+                    }
+                    return c;
+                }).sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
             });
+        });
+
+        // 3. Notification Event
+        socket.on("notification", (data: any) => {
+            const { conversationId, message } = data;
+            if (conversationId !== selectedConvRef.current) {
+                toast.info(`New message from ${message.senderId?.name || 'User'}`, {
+                    description: message.text?.substring(0, 50) + (message.text?.length > 50 ? '...' : ''),
+                    action: {
+                        label: "View",
+                        onClick: () => setSelectedConvId(conversationId)
+                    }
+                });
+            }
+        });
+
+        // 4. Update Message Event (Offer status changes)
+        socket.on("update", (updatedMessage: any) => {
+            if (updatedMessage.conversationId === selectedConvRef.current) {
+                setMessages(prev => prev.map(m => m._id === updatedMessage._id ? { ...m, ...updatedMessage } : m));
+            }
+            
+            setConversations(prev => prev.map(c => {
+                if (c._id === updatedMessage.conversationId && c.lastMessage?._id === updatedMessage._id) {
+                    return { ...c, lastMessage: updatedMessage };
+                }
+                return c;
+            }));
+        });
+
+        // 5. Read Receipt Event
+        socket.on("read", (data: any) => {
+            const { conversationId, userId } = data;
+            if (conversationId === selectedConvRef.current) {
+                // If the other user read our messages, we could show read indicators
+                // For now, let's just update the local status if needed
+            }
+            
+            if (userId === user._id) {
+                setConversations(prev => prev.map(c => 
+                    c._id === conversationId ? { ...c, unreadCount: 0 } : c
+                ));
+            }
+        });
+
+        // 6. Delete Message Event
+        socket.on("delete", (data: any) => {
+            const { messageId, conversationId } = data;
+            if (conversationId === selectedConvRef.current) {
+                setMessages(prev => prev.filter(m => m._id !== messageId));
+            }
+            
+            setConversations(prev => prev.map(c => {
+                if (c._id === conversationId && c.lastMessage?._id === messageId) {
+                    // This is tricky as we don't know the previous message without fetching
+                    // For now, let's just clear the last message preview
+                    return { ...c, lastMessage: undefined };
+                }
+                return c;
+            }));
         });
 
         return () => {
             socket.disconnect();
         };
-    }, []);
+    }, [user?._id]);
 
     useEffect(() => {
         const fetchConversations = async () => {

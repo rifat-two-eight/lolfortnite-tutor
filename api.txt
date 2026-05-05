@@ -1,40 +1,55 @@
-{
-    "success": true,
-    "message": "All catalog items retrieved successfully",
-    "data": {
-        "data": [
-            {
-                "_id": "69f8f68c23a79206cbec262a",
-                "type": "subject",
-                "name": "Mathematics",
-                "status": "active",
-                "isDeleted": false,
-                "createdAt": "2026-05-04T19:42:04.515Z",
-                "updatedAt": "2026-05-04T19:42:04.515Z"
-            }
-        ],
-        "meta": {
-            "page": 1,
-            "limit": 10,
-            "total": 1,
-            "totalPages": 1
-        }
-    }
-}
+1. Connection Setup
+Initialize the socket connection by passing the logged-in user's ID in the auth object. The server uses this to automatically join the user to their private room (user_{userId}).
+JavaScriptimport { io } from "socket.io-client";const socket = io("https://your-api-url.com", {    auth: {        _id: "CURRENT_USER_ID"     }});
+2. Event Reference Table
+The following events are emitted by the backend to keep your UI in sync:
+Event Name	Room Scope	Payload Description	Triggered When...
 
+conversation
+	
+user_{userId}
+	New Conversation Object	A student starts a new chat with a teacher.
 
+message
+	
+user_{userId} &conversation_{id}
+	New Message Object	A new text or offer message is sent.
 
+notification
+	
+user_{userId}
+	
+{ conversationId, message }
+	A message is received (useful for badges/toasts).
 
-{
-    "success": true,
-    "message": "Catalog item created successfully",
-    "data": {
-        "type": "subject",
-        "name": "Mathematics",
-        "status": "active",
-        "isDeleted": false,
-        "_id": "69f8f68c23a79206cbec262a",
-        "createdAt": "2026-05-04T19:42:04.515Z",
-        "updatedAt": "2026-05-04T19:42:04.515Z"
-    }
-}
+update
+	
+user_{userId} &conversation_{id}
+	Updated Message Object	An offer is accepted, rejected, or rescheduled.
+
+read
+	
+user_{userId} &conversation_{id}
+	
+{ conversationId, userId }
+	Someone opens the chat or marks messages as read.
+
+delete
+	
+user_{userId} &conversation_{id}
+	
+{ messageId, conversationId }
+	A user deletes a message.
+3. Implementing Real-Time Features
+Handling New Conversations
+Listen for this to update your conversation list immediately when someone starts a new chat with you.
+JavaScriptsocket.on("conversation", (newConversation) => {    // Add newConversation to the     top of your chat list});
+Handling Messages & Offers
+Listen for message to update the chat bubble list, and update to change the status of an offer (e.g., changing "Pending" to "Accepted").
+JavaScriptsocket.on("message", (message) => {    // Append message to your     current active chat list});socket.on("update", (updatedMessage) => {    // Find the message by ID and     update its type/status/price});
+Read Receipts
+When you receive a read event, you can show the "double check" or "Read" text in the UI for that specific user.
+JavaScriptsocket.on("read", ({ conversationId, userId }) => {    // If user is currently viewing     this conversationId,     // mark all of their sent     messages as "Read".});
+4. Best Practices
+Room Management: You don't need to manually "join" conversation rooms from the client; the backend emits to both individual user rooms and conversation rooms.
+REST + Socket: Use REST APIs (POST /messages/send, PATCH /messages/accept) to perform actions, and use Socket events only to update the UI when those actions occur.
