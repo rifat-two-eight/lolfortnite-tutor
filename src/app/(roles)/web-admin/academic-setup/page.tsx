@@ -5,6 +5,7 @@ import { Plus, Search, Trash2, BookMarked, CheckCircle2, Clock, X, Edit3 } from 
 import api from "@/lib/axios";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import Swal from "sweetalert2";
 
 interface CatalogItem {
     _id: string;
@@ -94,16 +95,37 @@ export default function AcademicSetupPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!window.confirm("Are you sure you want to delete this item?")) return;
-
-        try {
-            const response = await api.delete(`/catalogs/delete/${id}`);
-            if (response.data.success) {
-                toast.success("Catalog item deleted successfully");
-                fetchItems();
+        const result = await Swal.fire({
+            title: "Are you sure?",
+            text: "This item will be permanently removed from the academic setup!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#EF4444",
+            cancelButtonColor: "#0A47C2",
+            confirmButtonText: "Yes, delete it!",
+            customClass: {
+                popup: 'rounded-[32px]',
+                confirmButton: 'rounded-xl px-6 py-3 font-bold',
+                cancelButton: 'rounded-xl px-6 py-3 font-bold'
             }
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || "Failed to delete catalog item");
+        });
+
+        if (result.isConfirmed) {
+            try {
+                const response = await api.delete(`/catalogs/delete/${id}`);
+                if (response.data.success) {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Item has been removed.",
+                        icon: "success",
+                        confirmButtonColor: "#0A47C2",
+                        customClass: { popup: 'rounded-[32px]' }
+                    });
+                    fetchItems();
+                }
+            } catch (error: any) {
+                toast.error(error.response?.data?.message || "Failed to delete catalog item");
+            }
         }
     };
 

@@ -12,6 +12,11 @@ import { cn, getImageUrl } from "@/lib/utils";
 import UserAvatar from "@/components/ui/UserAvatar";
 
 
+import { useAuthStore } from "@/store/useAuthStore";
+import RatingModal from "@/components/shared/RatingModal";
+import { Star as LucideStar } from "lucide-react";
+
+
 interface ClassDetails {
     _id: string;
     subject: string;
@@ -49,6 +54,7 @@ interface PaymentData {
     currency: string;
     status: string;
     classDetails: ClassDetails;
+    ratingSend?: boolean;
 }
 
 function StarIcon() {
@@ -80,6 +86,9 @@ function UserIcon() {
 export default function MyEnrolledClasses() {
     const [enrollments, setEnrollments] = useState<PaymentData[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+    const [selectedEnrollment, setSelectedEnrollment] = useState<PaymentData | null>(null);
+    const user = useAuthStore(state => state.user);
 
     useEffect(() => {
         const fetchEnrolledClasses = async () => {
@@ -104,6 +113,17 @@ export default function MyEnrolledClasses() {
     return (
         <main className="min-h-screen bg-white">
             <Navbar />
+
+            {selectedEnrollment && user && (
+                <RatingModal
+                    isOpen={isRatingModalOpen}
+                    onClose={() => setIsRatingModalOpen(false)}
+                    tutorId={selectedEnrollment.teacher._id}
+                    classId={selectedEnrollment.classId}
+                    studentId={user._id}
+                    tutorName={selectedEnrollment.teacher.name}
+                />
+            )}
 
             <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-16 py-12">
                 <div className="mb-10 text-center">
@@ -223,6 +243,22 @@ export default function MyEnrolledClasses() {
                                                 >
                                                     View Details
                                                 </Link>
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedEnrollment(item);
+                                                        setIsRatingModalOpen(true);
+                                                    }}
+                                                    disabled={item.ratingSend}
+                                                    className={cn(
+                                                        "px-4 py-2.5 border text-sm font-bold rounded-xl transition-all flex items-center gap-2",
+                                                        item.ratingSend 
+                                                            ? "border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed" 
+                                                            : "border-[#0A47C2] text-[#0A47C2] hover:bg-blue-50"
+                                                    )}
+                                                >
+                                                    <LucideStar size={16} fill={item.ratingSend ? "currentColor" : "none"} />
+                                                    {item.ratingSend ? "Rated" : "Rate"}
+                                                </button>
                                             </div>
                                         </div>
 

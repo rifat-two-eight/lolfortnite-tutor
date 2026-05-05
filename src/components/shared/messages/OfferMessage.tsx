@@ -84,7 +84,19 @@ const OfferMessage: React.FC<OfferMessageProps> = ({
                     </div>
 
                     <div className="pt-2">
-                        {isMe ? (
+                        {offerData.slots?.[0]?.status && offerData.slots[0].status !== "available" ? (
+                            <div className="space-y-3">
+                                <div className="w-full py-3 bg-gray-50 text-gray-400 font-bold text-[10px] rounded-2xl text-center uppercase tracking-widest border border-gray-100 italic">
+                                    Unavailable time
+                                </div>
+                                <button
+                                    onClick={() => onReschedule(msg)}
+                                    className="w-full py-3 border border-blue-100 text-[#0A47C2] font-bold text-[10px] rounded-2xl hover:bg-blue-50 transition-all uppercase tracking-widest"
+                                >
+                                    Reschedule
+                                </button>
+                            </div>
+                        ) : isMe ? (
                             <div className="grid grid-cols-2 gap-2">
                                 <button
                                     onClick={() => onReject(msg._id)}

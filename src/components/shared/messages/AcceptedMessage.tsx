@@ -8,6 +8,7 @@ interface AcceptedMessageProps {
     msg: any;
     isMe: boolean;
     recipient: any;
+    user: any;
     onPay?: (msg: any) => void;
     onReschedule?: (msg: any) => void;
     isPaying?: boolean;
@@ -15,7 +16,7 @@ interface AcceptedMessageProps {
 
 import UserAvatar from "@/components/ui/UserAvatar";
 
-const AcceptedMessage: React.FC<AcceptedMessageProps> = ({ msg, isMe, recipient, onPay, onReschedule, isPaying }) => {
+const AcceptedMessage: React.FC<AcceptedMessageProps> = ({ msg, isMe, recipient, user, onPay, onReschedule, isPaying }) => {
     let offerData: any = {};
     if (msg.text?.startsWith("OFFER:")) {
         try {
@@ -79,18 +80,34 @@ const AcceptedMessage: React.FC<AcceptedMessageProps> = ({ msg, isMe, recipient,
                     </div>
 
                     <div className="pt-2">
-                        <div className="w-full py-3 bg-green-50 text-green-600 font-bold text-[10px] rounded-2xl text-center uppercase tracking-widest border border-green-100 flex items-center justify-center gap-2">
-                            <CheckCircle size={14} />
-                            Offer Accepted
-                        </div>
-                        {isMe && (
-                            <button
-                                onClick={() => onPay?.(msg)}
-                                disabled={isPaying}
-                                className="w-full mt-3 py-3 bg-[#0A47C2] text-white font-bold text-[10px] rounded-2xl hover:bg-[#083a9e] transition-all uppercase tracking-widest shadow-lg shadow-blue-100 flex items-center justify-center gap-2"
-                            >
-                                {isPaying ? <Loader2 size={14} className="animate-spin" /> : "Pay Now"}
-                            </button>
+                        {offerData.slots?.[0]?.status && offerData.slots[0].status !== "available" ? (
+                            <div className="space-y-3">
+                                <div className="w-full py-3 bg-gray-50 text-gray-400 font-bold text-[10px] rounded-2xl text-center uppercase tracking-widest border border-gray-100 italic">
+                                    Unavailable time
+                                </div>
+                                <button
+                                    onClick={() => onReschedule?.(msg)}
+                                    className="w-full py-3 border border-blue-100 text-[#0A47C2] font-bold text-[10px] rounded-2xl hover:bg-blue-50 transition-all uppercase tracking-widest"
+                                >
+                                    Reschedule
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="w-full py-3 bg-green-50 text-green-600 font-bold text-[10px] rounded-2xl text-center uppercase tracking-widest border border-green-100 flex items-center justify-center gap-2">
+                                    <CheckCircle size={14} />
+                                    Offer Accepted
+                                </div>
+                                {user?.role === "STUDENT" && (
+                                    <button
+                                        onClick={() => onPay?.(msg)}
+                                        disabled={isPaying}
+                                        className="w-full mt-3 py-3 bg-[#0A47C2] text-white font-bold text-[10px] rounded-2xl hover:bg-[#083a9e] transition-all uppercase tracking-widest shadow-lg shadow-blue-100 flex items-center justify-center gap-2"
+                                    >
+                                        {isPaying ? <Loader2 size={14} className="animate-spin" /> : "Pay Now"}
+                                    </button>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>

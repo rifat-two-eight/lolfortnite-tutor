@@ -1,55 +1,41 @@
-1. Connection Setup
-Initialize the socket connection by passing the logged-in user's ID in the auth object. The server uses this to automatically join the user to their private room (user_{userId}).
-JavaScriptimport { io } from "socket.io-client";const socket = io("https://your-api-url.com", {    auth: {        _id: "CURRENT_USER_ID"     }});
-2. Event Reference Table
-The following events are emitted by the backend to keep your UI in sync:
-Event Name	Room Scope	Payload Description	Triggered When...
+Rating Integration Guide (Public & Admin Routes)
+These instructions cover the newly added public and admin routes for the rating module.
+1. Public: Get Class Ratings
+Endpoint: GET /api/v1/ratings/class/:classId
+Auth: None (Public)
+Description: Use this to show a list of reviews on a specific Class details page.
+Example: /api/v1/ratings/class/69e41bfeaaf28b4527e8329f?page=1&limit=5
+2. Public: Get Teacher Ratings
+Endpoint: GET /api/v1/ratings/teacher/:tutorId
+Auth: None (Public)
+Description: Use this to show all reviews for a specific teacher on their profile page.
+Example: /api/v1/ratings/teacher/69e41bb9e030b114c94bb70a?page=1&limit=10&sort=-rating
+3. Admin: Manage All Ratings
+Endpoint: GET /api/v1/ratings/admin
+Auth: Required (ADMIN or SUPER_ADMIN)
+Description: An admin-only view to see every rating in the system. Supports all filters (tutor, student, class) and full pagination.
+Example: /api/v1/ratings/admin?limit=20&page=1
+Pagination & Sorting (Common Params)
+All the above routes support these query parameters:
+Parameter	Type	Default	Description
 
-conversation
-	
-user_{userId}
-	New Conversation Object	A student starts a new chat with a teacher.
+page
+	Number	
+1
+	The current page number.
 
-message
-	
-user_{userId} &conversation_{id}
-	New Message Object	A new text or offer message is sent.
+limit
+	Number	
+10
+	Number of items per page.
 
-notification
-	
-user_{userId}
-	
-{ conversationId, message }
-	A message is received (useful for badges/toasts).
-
-update
-	
-user_{userId} &conversation_{id}
-	Updated Message Object	An offer is accepted, rejected, or rescheduled.
-
-read
-	
-user_{userId} &conversation_{id}
-	
-{ conversationId, userId }
-	Someone opens the chat or marks messages as read.
-
-delete
-	
-user_{userId} &conversation_{id}
-	
-{ messageId, conversationId }
-	A user deletes a message.
-3. Implementing Real-Time Features
-Handling New Conversations
-Listen for this to update your conversation list immediately when someone starts a new chat with you.
-JavaScriptsocket.on("conversation", (newConversation) => {    // Add newConversation to the     top of your chat list});
-Handling Messages & Offers
-Listen for message to update the chat bubble list, and update to change the status of an offer (e.g., changing "Pending" to "Accepted").
-JavaScriptsocket.on("message", (message) => {    // Append message to your     current active chat list});socket.on("update", (updatedMessage) => {    // Find the message by ID and     update its type/status/price});
-Read Receipts
-When you receive a read event, you can show the "double check" or "Read" text in the UI for that specific user.
-JavaScriptsocket.on("read", ({ conversationId, userId }) => {    // If user is currently viewing     this conversationId,     // mark all of their sent     messages as "Read".});
-4. Best Practices
-Room Management: You don't need to manually "join" conversation rooms from the client; the backend emits to both individual user rooms and conversation rooms.
-REST + Socket: Use REST APIs (POST /messages/send, PATCH /messages/accept) to perform actions, and use Socket events only to update the UI when those actions occur.
+sort
+	String	
+-createdAt
+	Sort field (e.g., rating for lowest first,
+-rating for highest first).
+Standard Response Format
+The backend returns a standardized structure:
+JSON{  "success": true,  "message": "Ratings retrieved   successfully",  "data": [    {      "_id": "...",      "rating": 5,      "review": "Excellent class!",      "student": {        "name": "John Doe",        "profileImage": "url..."      },      "tutor": {        "name": "Jane Smith",        "profileImage": "url..."      },      "class": {        "subject": "Mathematics"      },      "createdAt": "2026-05-06T..."    }  ],  "meta": {    "page": 1,    "limit": 10,    "total": 124,    "totalPages": 13  }}
+Code Reference:
+ 

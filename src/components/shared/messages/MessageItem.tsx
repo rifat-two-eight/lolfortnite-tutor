@@ -54,7 +54,7 @@ const MessageItem: React.FC<MessageItemProps> = ({
         type = "COMPLETED";
     }
 
-    const commonProps = { msg, isMe, recipient };
+    const commonProps = { msg, isMe, recipient, user };
 
     switch (type) {
         case "OFFER":

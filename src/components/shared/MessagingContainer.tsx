@@ -369,9 +369,12 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
                 const response = await api.post(`/messages/${editingOfferId}/reschedule`, {
                     conversationId: selectedConvId,
                     type: "OFFER",
-                    slotId: offerData.slotId,
+                    slot: offerData.slotId,
                     subject: offerData.subject,
-                    text: `OFFER:${JSON.stringify(offerData)}`
+                    teacherId: offerData.tutorId,
+                    price: offerData.totalPrice,
+                    classId: offerData.hourlyClassId,
+                    date: offerData.date
                 });
                 if (response.data.success) {
                     const updatedMsg = response.data.data;
@@ -379,15 +382,15 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
                     toast.success("Offer rescheduled successfully!");
                 }
             } else {
-                const formData = new FormData();
-                formData.append("conversationId", selectedConvId);
-                formData.append("type", "OFFER");
-                formData.append("slotId", offerData.slotId);
-                formData.append("subject", offerData.subject);
-                formData.append("text", `OFFER:${JSON.stringify(offerData)}`);
-
-                const response = await api.post("/messages/send", formData, {
-                    headers: { "Content-Type": "multipart/form-data" }
+                const response = await api.post("/messages/send", {
+                    conversationId: selectedConvId,
+                    type: "OFFER",
+                    slot: offerData.slotId,
+                    subject: offerData.subject,
+                    teacherId: offerData.tutorId,
+                    price: offerData.totalPrice,
+                    classId: offerData.hourlyClassId,
+                    date: offerData.date
                 });
                 if (response.data.success) {
                     const newMessage = response.data.data;
@@ -396,6 +399,7 @@ export default function MessagingContainer({ hideLogo = false, showHeader = true
                 }
             }
         } catch (error) {
+            console.error("Failed to process offer:", error);
             toast.error("Failed to process offer.");
         } finally {
             setEditingOfferId(null);
